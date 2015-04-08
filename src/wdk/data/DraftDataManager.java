@@ -5,7 +5,7 @@
  */
 package wdk.data;
 
-import wdk.gui.WDK_GUI;
+import wdk.file.DraftFileManager;
 
 /**
  *
@@ -13,12 +13,29 @@ import wdk.gui.WDK_GUI;
  */
 public class DraftDataManager {
     private Draft draft;
+    
+    DraftDataView view;
+    
+    DraftFileManager draftFileManager;
 
-    public DraftDataManager(WDK_GUI gui) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    static String DEFAULT_LAST_NAME = "Ballrisian";
+    static String DEFAULT_FIRST_NAME = "Rando";
+    static int    DEFAULT_AGE = 2015-1937;
+    
+    
+    
+    public DraftDataManager(DraftDataView initView) {
+        view = initView;
+        draft = new Draft();
     }
     
     public Draft getDraft(){
         return draft;
+    }
+    public DraftFileManager getFileManager(){
+        return draftFileManager;
+    }
+    public void reset() {
+        draft.clearLog();
     }
 }

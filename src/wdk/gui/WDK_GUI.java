@@ -17,6 +17,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import wdk.WDK_StartUpConstants;
 import wdk.WDK_PropertyType;
 import wdk.data.Draft;
@@ -223,15 +224,25 @@ public class WDK_GUI implements DraftDataView {
         });
     }
 
-    public void setDraftFileManager(JsonDraftFileManager jsonFileManager) {
+    public void setDraftFileManager(DraftFileManager draftFileManager) {
+        this.draftFileManager = draftFileManager;
+    }
+
+    public void setDraftExporter(DraftExporter draftExporter) {
+        this.draftExporter = draftExporter;
+    }
+
+    public void setDataManager(DraftDataManager draftDataManager) {
+        this.draftDataManager = draftDataManager;
+    }
+
+    public DraftDataManager getDataManager() {
+        return draftDataManager;
+    }
+
+    public Window getWindow() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void setDraftExporter(DraftExporter exporter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setDataManager(DraftDataManager dataManager) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+  
 }

@@ -21,7 +21,7 @@ public class Hitter extends Player{
     DoubleProperty battingAverage;
     
     public Hitter(){
-        
+        super();
     }
     
     public void setRuns(int r){

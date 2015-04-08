@@ -19,8 +19,9 @@ public class Player {
     StringProperty lastName;
     StringProperty firstName;
     StringProperty fullName;
-    IntegerProperty age;
+    StringProperty yearOfBirth;
     Position currentPosition;
+    StringProperty nationOfBirth;
     StringProperty team;
     ObservableList<Position> qualifiedPositions;
     Contract contract;
@@ -67,16 +68,16 @@ public class Player {
         return fullName;
     }
     
-    public void setAge(int a){
-        age.set(a);
+    public void setYearOfBirth(String yob){
+        yearOfBirth.set(yob);
     }
     
-    public int getAge(){
-        return age.get();
+    public String getYearOfBirth(){
+        return yearOfBirth.get();
     }
     
-    public IntegerProperty ageProperty(){
-        return age;
+    public StringProperty yearOfBirthProperty(){
+        return yearOfBirth;
     }
     public void setSalary(double s){
         salary.set(s);
@@ -88,6 +89,17 @@ public class Player {
     
     public DoubleProperty salaryProperty(){
         return salary;
+    }
+     public void setNationOfBirth(String nob){
+        nationOfBirth.set(nob);
+    }
+    
+    public String getNationOfBirth(){
+        return nationOfBirth.get();
+    }
+    
+    public StringProperty nationOfBirthProperty(){
+        return fullName;
     }
     public void setContract(Contract c){
         contract = c;

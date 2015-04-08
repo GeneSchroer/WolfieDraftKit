@@ -40,4 +40,8 @@ public class Draft {
     public void removePlayerFromTeam(Player player, DraftedTeam team){
         
     }
+
+    void clearLog() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

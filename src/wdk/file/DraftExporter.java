@@ -5,6 +5,8 @@
  */
 package wdk.file;
 
+import wdk.data.Draft;
+
 /**
  *
  * @author Work
@@ -12,6 +14,14 @@ package wdk.file;
 public class DraftExporter {
 
     public DraftExporter(String PATH_BASE, String PATH_SITES) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void exportDraft(Draft courseToExport) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getPageURLPath(Draft draftToExport) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
