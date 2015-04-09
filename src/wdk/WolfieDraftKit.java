@@ -1,6 +1,5 @@
 package wdk;
 
-import static wdk.WDK_StartupConstants.*;
 import static wdk.WDK_PropertyType.*;
 import wdk.data.DraftDataManager;
 import wdk.error.ErrorHandler;
@@ -18,8 +17,8 @@ import static wdk.WDK_StartUpConstants.*;
 import xml_utilities.InvalidXMLFileFormatException;
 
 /**
- * CourseSiteBuilder is a JavaFX application that can be used to build the
- * pages for a course Web site. The CSE 219 course's schedule page is
+ * draftSiteBuilder is a JavaFX application that can be used to build the
+ * pages for a draft Web site. The CSE 219 draft's schedule page is
  * one such page: http://www.cs.stonybrook.edu/~cse219/Section02/schedule.html
  * 
  * @author Richard McKenna
@@ -47,19 +46,20 @@ public class WolfieDraftKit extends Application {
             PropertiesManager props = PropertiesManager.getPropertiesManager();
             String appTitle = props.getProperty(PROP_APP_TITLE);
             try {                
-                // WE WILL SAVE OUR COURSE DATA USING THE JSON FILE
+                // WE WILL SAVE OUR draft DATA USING THE JSON FILE
                 // FORMAT SO WE'LL LET THIS OBJECT DO THIS FOR US
                 JsonDraftFileManager jsonFileManager = new JsonDraftFileManager();
                 
-                // AND THIS ONE WILL DO THE COURSE WEB PAGE EXPORTING
-                DraftExporter exporter = new DraftExporter(PATH_BASE, PATH_SITES);
+                // AND THIS ONE WILL DO THE draft WEB PAGE EXPORTING
+                //DraftExporter exporter = new DraftExporter(PATH_BASE, PATH_SITES);
                 
                                 
                 // AND NOW GIVE ALL OF THIS STUFF TO THE GUI
                 // INITIALIZE THE USER INTERFACE COMPONENTS
                 gui = new WDK_GUI(primaryStage);
-                gui.setDraftFileManager(jsonFileManager);
-                gui.setDraftExporter(exporter);
+                
+                //gui.setDraftFileManager(jsonFileManager);
+                //gui.setDraftExporter(exporter);
                 
                 // CONSTRUCT THE DATA MANAGER AND GIVE IT TO THE GUI
                 DraftDataManager dataManager = new DraftDataManager(gui); 

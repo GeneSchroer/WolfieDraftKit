@@ -63,7 +63,7 @@ public class FileController {
                 continueToMakeNew = promptToSave(gui);
             }
 
-            // IF THE USER REALLY WANTS TO MAKE A NEW COURSE
+            // IF THE USER REALLY WANTS TO MAKE A NEW draft
             if (continueToMakeNew) {
                 // RESET THE DATA, WHICH SHOULD TRIGGER A RESET OF THE UI
                 DraftDataManager dataManager = gui.getDataManager();
@@ -74,62 +74,62 @@ public class FileController {
                 // THE APPROPRIATE CONTROLS
                 gui.updateToolbarControls(saved);
 
-                // TELL THE USER THE COURSE HAS BEEN CREATED
+                // TELL THE USER THE draft HAS BEEN CREATED
                 messageDialog.show(properties.getProperty(NEW_DRAFT_CREATED_MESSAGE));
             }
         } catch (IOException ioe) {
             // SOMETHING WENT WRONG, PROVIDE FEEDBACK
-            errorHandler.handleNewCourseError();
+            errorHandler.handleNewdraftError();
         }
     }
 
-    public void handleLoadDraftRequest(WDK_GUI gui) {
-     try {
-            // WE MAY HAVE TO SAVE CURRENT WORK
-            boolean continueToOpen = true;
-            if (!saved) {
-                // THE USER CAN OPT OUT HERE WITH A CANCEL
-                continueToOpen = promptToSave(gui);
-            }
+//    public void handleLoadDraftRequest(WDK_GUI gui) {
+//     try {
+//            // WE MAY HAVE TO SAVE CURRENT WORK
+//            boolean continueToOpen = true;
+//            if (!saved) {
+//                // THE USER CAN OPT OUT HERE WITH A CANCEL
+//                continueToOpen = promptToSave(gui);
+//            }
+//
+//            // IF THE USER REALLY WANTS TO OPEN A draft
+//            if (continueToOpen) {
+//                // GO AHEAD AND PROCEED LOADING A draft
+//                promptToOpen(gui);
+//            }
+//        } catch (IOException ioe) {
+//            // SOMETHING WENT WRONG
+//            errorHandler.handleLoaddraftError();
+//        }}
 
-            // IF THE USER REALLY WANTS TO OPEN A Course
-            if (continueToOpen) {
-                // GO AHEAD AND PROCEED LOADING A Course
-                promptToOpen(gui);
-            }
-        } catch (IOException ioe) {
-            // SOMETHING WENT WRONG
-            errorHandler.handleLoadCourseError();
-        }}
-
-    public void handleExportDraftRequest(WDK_GUI gui) {
-        // EXPORT THE COURSE
-        DraftDataManager dataManager = gui.getDataManager();
-        Draft draftToExport = dataManager.getDraft();
-
-        // WE'LL NEED THIS TO LOAD THE EXPORTED PAGE FOR VIEWING
-        String courseURL = draftExporter.getPageURLPath(draftToExport);
-        
-        // NOW GET THE EXPORTER
-        try {
-            
-            // AND EXPORT THE COURSE
-            
-            draftExporter.exportDraft(draftToExport);
-            
-            // AND THEN OPEN UP THE PAGE IN A BROWSER
-            Stage webBrowserStage = new Stage();
-            WebBrowser webBrowser = new WebBrowser(webBrowserStage, courseURL);
-            webBrowserStage.show();
-        }
-        // WE'LL HANDLE COURSE EXPORT PROBLEMS AND COURSE PAGE VIEWING
-        // PROBLEMS USING DIFFERENT ERROR MESSAGES
-        catch (MalformedURLException murle) {
-            errorHandler.handleViewSchedulePageError(courseURL);
-        } catch (Exception ioe) {
-            errorHandler.handleExportDraftError(draftToExport);
-        }
-    }
+//    public void handleExportDraftRequest(WDK_GUI gui) {
+//        // EXPORT THE draft
+//        DraftDataManager dataManager = gui.getDataManager();
+//        Draft draftToExport = dataManager.getDraft();
+//
+//        // WE'LL NEED THIS TO LOAD THE EXPORTED PAGE FOR VIEWING
+//        String draftURL = draftExporter.getPageURLPath(draftToExport);
+//        
+//        // NOW GET THE EXPORTER
+//        try {
+//            
+//            // AND EXPORT THE draft
+//            
+//            draftExporter.exportDraft(draftToExport);
+//            
+//            // AND THEN OPEN UP THE PAGE IN A BROWSER
+//            Stage webBrowserStage = new Stage();
+//            WebBrowser webBrowser = new WebBrowser(webBrowserStage, draftURL);
+//            webBrowserStage.show();
+//        }
+//        // WE'LL HANDLE draft EXPORT PROBLEMS AND draft PAGE VIEWING
+//        // PROBLEMS USING DIFFERENT ERROR MESSAGES
+//        catch (MalformedURLException murle) {
+//            errorHandler.handleViewSchedulePageError(draftURL);
+//        } catch (Exception ioe) {
+//            errorHandler.handleExportDraftError(draftToExport);
+//        }
+//    }
 
     public void handleExitRequest(WDK_GUI gui) {
         try {
@@ -151,30 +151,30 @@ public class FileController {
         }
     }
 
-    public void handleSaveDraftRequest(WDK_GUI gui, Draft draftToSave) {
-   try {
-            // SAVE IT TO A FILE
-            draftFileManager.saveDraft(draftToSave);
-
-            // MARK IT AS SAVED
-            saved = true;
-
-            // TELL THE USER THE FILE HAS BEEN SAVED
-            messageDialog.show(properties.getProperty(DRAFT_SAVED_MESSAGE));
-
-            // AND REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
-            // THE APPROPRIATE CONTROLS
-            gui.updateToolbarControls(saved);
-        } catch (IOException ioe) {
-            errorHandler.handleSaveCourseError();
-        }
-    }
+//    public void handleSaveDraftRequest(WDK_GUI gui, Draft draftToSave) {
+//   try {
+//            // SAVE IT TO A FILE
+//            draftFileManager.saveDraft(draftToSave);
+//
+//            // MARK IT AS SAVED
+//            saved = true;
+//
+//            // TELL THE USER THE FILE HAS BEEN SAVED
+//            messageDialog.show(properties.getProperty(DRAFT_SAVED_MESSAGE));
+//
+//            // AND REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
+//            // THE APPROPRIATE CONTROLS
+//            gui.updateToolbarControls(saved);
+//        } catch (IOException ioe) {
+//            errorHandler.handleSavedraftError();
+//        }
+//    }
     
      /**
      * This helper method verifies that the user really wants to save their
      * unsaved work, which they might not want to do. Note that it could be used
      * in multiple contexts before doing other actions, like creating a new
-     * Course, or opening another Course. Note that the user will be
+     * draft, or opening another draft. Note that the user will be
      * presented with 3 options: YES, NO, and CANCEL. YES means the user wants
      * to save their work and continue the other action (we return true to
      * denote this), NO means don't save the work but continue with the other
@@ -194,7 +194,7 @@ public class FileController {
 
         // IF THE USER SAID YES, THEN SAVE BEFORE MOVING ON
         if (selection.equals(YesNoCancelDialog.YES)) {
-            // SAVE THE COURSE
+            // SAVE THE draft
             DraftDataManager dataManager = gui.getDataManager();
             draftFileManager.saveDraft(dataManager.getDraft());
             saved = true;
@@ -212,10 +212,10 @@ public class FileController {
     }
 
     private void promptToOpen(WDK_GUI gui) {
-         // AND NOW ASK THE USER FOR THE COURSE TO OPEN
-        FileChooser courseFileChooser = new FileChooser();
-        courseFileChooser.setInitialDirectory(new File(PATH_DRAFTS));
-        File selectedFile = courseFileChooser.showOpenDialog(gui.getWindow());
+         // AND NOW ASK THE USER FOR THE draft TO OPEN
+        FileChooser draftFileChooser = new FileChooser();
+        draftFileChooser.setInitialDirectory(new File(PATH_DRAFTS));
+        File selectedFile = draftFileChooser.showOpenDialog(gui.getWindow());
 
         // ONLY OPEN A NEW FILE IF THE USER SAYS OK
         if (selectedFile != null) {
@@ -227,7 +227,7 @@ public class FileController {
                 gui.updateToolbarControls(saved);
             } catch (Exception e) {
                 ErrorHandler eH = ErrorHandler.getErrorHandler();
-                eH.handleLoadCourseError();
+                eH.handleLoaddraftError();
             }
         }
     }

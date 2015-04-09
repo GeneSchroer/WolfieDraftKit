@@ -43,7 +43,7 @@ import wdk.file.JsonDraftFileManager;
  * @author Work
  */
 public class WDK_GUI implements DraftDataView {
-    
+
     static final String PRIMARY_STYLE_SHEET = PATH_CSS + "csb_style.css";
     static final String CLASS_BORDERED_PANE = "bordered_pane";
     static final String CLASS_SUBJECT_PANE = "subject_pane";
@@ -59,8 +59,7 @@ public class WDK_GUI implements DraftDataView {
     FantasyStandingsScreen fantasyStandingsScreen;
     DraftScreen draftScreen;
     SportScreen sportScreen;
-    
-    
+
     DraftExporter draftExporter;
     DraftDataManager draftDataManager;
     DraftFileManager draftFileManager;
@@ -68,12 +67,12 @@ public class WDK_GUI implements DraftDataView {
     MessageDialog messageDialog;
     YesNoCancelDialog yesNoCancelDialog;
     DraftEditController draftController;
-    
+
     Stage primaryStage;
     Scene primaryScene;
-    
+
     BorderPane wdkPane;
-    
+
     /* This is the toolbar for saving/loading the draft to file*/
     FlowPane fileToolbarPane;
     Button newDraftButton;
@@ -81,17 +80,17 @@ public class WDK_GUI implements DraftDataView {
     Button saveDraftButton;
     Button exportDraftButton;
     Button exitButton;
-    
+
     /* This is for our screens, the main workspace where we manipulate the draft */
     HBox workspacePane;
     boolean workspaceActivated;
-    
+
     /* We will put the workspace inside a scroll pane so we don't have to
      * maximize the GUI to see all of our data */
     ScrollPane workspaceScrollPane;
-    
+
     /* This will be for switching between our screens */
-    HBox screenToolbarPane;
+    FlowPane screenToolbarPane;
     Button playersScreenButton;
     Button fantasyTeamsScreenButton;
     Button fantasyStandingsScreenButton;
@@ -102,6 +101,7 @@ public class WDK_GUI implements DraftDataView {
     public WDK_GUI(Stage initPrimaryStage) {
         primaryStage = initPrimaryStage;
     }
+
     /**
      * Accessor method for the data manager.
      *
@@ -110,26 +110,26 @@ public class WDK_GUI implements DraftDataView {
     public DraftDataManager getDataManager() {
         return draftDataManager;
     }
-     /**
+
+    /**
      * Accessor method for the file controller.
      *
      * @return The FileController used by this UI.
      */
-    
     public FileController getFileController() {
         return fileController;
     }
+
     /**
      * Accessor method for the draft file manager.
      *
      * @return The DraftFileManager used by this UI.
      */
-    
-    public DraftFileManager getCourseFileManager() {
+    public DraftFileManager getdraftFileManager() {
         return draftFileManager;
     }
 
-     /**
+    /**
      * Accessor method for the site exporter.
      *
      * @return The DraftExporter used by this UI.
@@ -137,7 +137,7 @@ public class WDK_GUI implements DraftDataView {
     public DraftExporter getSiteExporter() {
         return draftExporter;
     }
-    
+
     /**
      * Accessor method for the window (i.e. stage).
      *
@@ -146,11 +146,11 @@ public class WDK_GUI implements DraftDataView {
     public Stage getWindow() {
         return primaryStage;
     }
-    
+
     public MessageDialog getMessageDialog() {
         return messageDialog;
     }
-    
+
     public YesNoCancelDialog getYesNoCancelDialog() {
         return yesNoCancelDialog;
     }
@@ -163,6 +163,7 @@ public class WDK_GUI implements DraftDataView {
     public void setDraftDataManager(DraftDataManager draftDataManager) {
         this.draftDataManager = draftDataManager;
     }
+
     /**
      * Mutator method for the draft file manager.
      *
@@ -171,7 +172,8 @@ public class WDK_GUI implements DraftDataView {
     public void setDraftFileManager(DraftFileManager draftFileManager) {
         this.draftFileManager = draftFileManager;
     }
-     /**
+
+    /**
      * Mutator method for the draft exporter.
      *
      * @param draftExporter The DraftSiteExporter to be used by this UI.
@@ -179,52 +181,52 @@ public class WDK_GUI implements DraftDataView {
     public void setDraftExporter(DraftExporter draftExporter) {
         this.draftExporter = draftExporter;
     }
-     /**
+
+    /**
      * This method fully initializes the user interface for use.
      *
      * @param windowTitle The text to appear in the UI window's title bar.
      * @throws IOException Thrown if any initialization files fail to load.
      */
-    public void initGUI(String windowTitle /* maybe more parameters later */) throws IOException{
-        
+    public void initGUI(String windowTitle /* maybe more parameters later */) throws IOException {
+
         /* First we initialize the various dialog classes */
         initDialogs();
-        
+
         /* Then the toolbar that handles the draft file */
         initFileToolbar();
-        
+
         /* Then the toolbars which let us access the screens */
         initScreenToolbar();
-        
+
         /* Then initialize the workspace, 
          * the main area where we manipulate data in the draft. 
          * Which means we get each menu screen to initialize itself
          */
         initWorkspace();
-        
+
         /* Now we set up the event handlers for our various UI controls.
          * each menu screen gets called to set up its own event handlers as well*/
         initEventHandlers();
-        
-        
-        /* And finally we start up the window with no menu screen visible */
 
+        /* And finally we start up the window with no menu screen visible */
         initWindow(windowTitle);
         /* Showtime! */
-        
+
     }
-    
-    public void reloadDraft(Draft draftToReload){
-        
+
+    public void reloadDraft(Draft draftToReload) {
+
     }
+
     /**
-     * This method is used to activate/deactivate toolbar buttons when
-     * they can and cannot be used so as to provide foolproof design.
-     * 
-     * @param saved Describes whether the loaded Course has been saved or not.
+     * This method is used to activate/deactivate toolbar buttons when they can
+     * and cannot be used so as to provide foolproof design.
+     *
+     * @param saved Describes whether the loaded draft has been saved or not.
      */
     public void updateToolbarControls(boolean saved) {
-        // THIS TOGGLES WITH WHETHER THE CURRENT COURSE
+        // THIS TOGGLES WITH WHETHER THE CURRENT draft
         // HAS BEEN SAVED OR NOT
         saveDraftButton.setDisable(saved);
 
@@ -236,58 +238,66 @@ public class WDK_GUI implements DraftDataView {
         // NOTE THAT THE NEW, LOAD, AND EXIT BUTTONS
         // ARE NEVER DISABLED SO WE NEVER HAVE TO TOUCH THEM
     }
-    public void updateDraftInfo(Draft draft){
-        
+
+    public void updateDraftInfo(Draft draft) {
+
     }
-    private void initDialogs(){
+
+    private void initDialogs() {
         messageDialog = new MessageDialog(primaryStage, CLOSE_BUTTON_LABEL);
         yesNoCancelDialog = new YesNoCancelDialog(primaryStage);
     }
-    
-    private void initFileToolbar(){
+
+    private void initFileToolbar() {
         fileToolbarPane = new FlowPane();
-        
+
         newDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.NEW_DRAFT_ICON, WDK_PropertyType.NEW_DRAFT_TOOLTIP, false);
         loadDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.LOAD_DRAFT_ICON, WDK_PropertyType.LOAD_DRAFT_TOOLTIP, false);
         saveDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.SAVE_DRAFT_ICON, WDK_PropertyType.SAVE_DRAFT_TOOLTIP, true);
         exportDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.EXPORT_DRAFT_ICON, WDK_PropertyType.EXPORT_DRAFT_TOOLTIP, true);
         exitButton = initChildButton(fileToolbarPane, WDK_PropertyType.EXIT_ICON, WDK_PropertyType.EXIT_TOOLTIP, false);
-        
+
     }
-    private void initScreenToolbar(){
-        screenToolbarPane = new HBox();
-        playersScreenButton = initChildButton(screenToolbarPane, null, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        fantasyTeamsScreenButton = initChildButton(screenToolbarPane, null, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        fantasyStandingsScreenButton = initChildButton(screenToolbarPane, null, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        draftScreenButton = initChildButton(screenToolbarPane, null, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        sportScreenButton = initChildButton(screenToolbarPane, null, WDK_PropertyType.SPORT_SCREEN_TOOLTIP, true);
+
+    private void initScreenToolbar() {
+        screenToolbarPane = new FlowPane();
+
+        playersScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.PLAYERS_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
+        fantasyTeamsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_TEAMS_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
+        fantasyStandingsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_STANDINGS_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
+        draftScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.DRAFT_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
+        sportScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.SPORT_ICON, WDK_PropertyType.SPORT_SCREEN_TOOLTIP, true);
     }
-    private void initWorkspace(){
+
+    private void initWorkspace() {
+        playersScreen = new PlayersScreen(primaryStage);
+        playersScreen.initWorkspace();
         workspacePane = new HBox();
-        workspacePane.getChildren().add(playersScreen.getScreen());
+        //workspacePane.getChildren().add(playersScreen.getScreen());
     }
-    private void initEventHandlers(){
+
+    private void initEventHandlers() {
         fileController = new FileController(messageDialog, yesNoCancelDialog, draftFileManager, draftExporter);
-        
+
         newDraftButton.setOnAction(e -> {
             fileController.handleNewDraftRequest(this);
         });
         loadDraftButton.setOnAction(e -> {
-            fileController.handleLoadDraftRequest(this);
+            //   fileController.handleLoadDraftRequest(this);
         });
         saveDraftButton.setOnAction(e -> {
-            fileController.handleSaveDraftRequest(this, draftDataManager.getDraft());
+            //    fileController.handleSaveDraftRequest(this, draftDataManager.getDraft());
         });
         exportDraftButton.setOnAction(e -> {
-            fileController.handleExportDraftRequest(this);
+            //   fileController.handleExportDraftRequest(this);
         });
         exitButton.setOnAction(e -> {
             fileController.handleExitRequest(this);
         });
 
-    
     }
-    private void initWindow(String windowTitle){
+
+    private void initWindow(String windowTitle) {
         // SET THE WINDOW TITLE
         primaryStage.setTitle(windowTitle);
 
@@ -303,7 +313,7 @@ public class WDK_GUI implements DraftDataView {
 
         // ADD THE TOOLBAR ONLY, NOTE THAT THE WORKSPACE
         // HAS BEEN CONSTRUCTED, BUT WON'T BE ADDED UNTIL
-        // THE USER STARTS EDITING A COURSE
+        // THE USER STARTS EDITING A draft
         wdkPane = new BorderPane();
         wdkPane.setTop(fileToolbarPane);
         wdkPane.setBottom(screenToolbarPane);
@@ -315,12 +325,12 @@ public class WDK_GUI implements DraftDataView {
         primaryStage.setScene(primaryScene);
         primaryStage.show();
     }
-    
-    private void initMenuSceens(){
-        
+
+    private void initMenuSceens() {
+        playersScreen.initGUI();
     }
-    
-    private Button initChildButton(Pane toolbar, WDK_PropertyType icon, WDK_PropertyType tooltip, boolean disabled){
+
+    private Button initChildButton(Pane toolbar, WDK_PropertyType icon, WDK_PropertyType tooltip, boolean disabled) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String imagePath = "file:" + PATH_IMAGES + props.getProperty(icon.toString());
         Image buttonImage = new Image(imagePath);
@@ -332,34 +342,34 @@ public class WDK_GUI implements DraftDataView {
         toolbar.getChildren().add(button);
         return button;
     }
-    
+
     private Label initChildLabel(Pane container, WDK_PropertyType labelProperty, String styleClass) {
         Label label = initLabel(labelProperty, styleClass);
         container.getChildren().add(label);
         return label;
     }
+
     private CheckBox initChildCheckBox(Pane container, String text) {
         CheckBox cB = new CheckBox(text);
         container.getChildren().add(cB);
         return cB;
     }
     //private void initChildRadioButton
-    
+
     //initChildToggleButton
-    
- 
-     private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
+    private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
         Label label = initLabel(labelProperty, styleClass);
         container.add(label, col, row, colSpan, rowSpan);
         return label;
     }
-   
-     private ComboBox initGridComboBox(GridPane container, int col, int row, int colSpan, int rowSpan) throws IOException {
+
+    private ComboBox initGridComboBox(GridPane container, int col, int row, int colSpan, int rowSpan) throws IOException {
         ComboBox comboBox = new ComboBox();
         container.add(comboBox, col, row, colSpan, rowSpan);
         return comboBox;
     }
-     private TextField initGridTextField(GridPane container, int size, String initText, boolean editable, int col, int row, int colSpan, int rowSpan) {
+
+    private TextField initGridTextField(GridPane container, int size, String initText, boolean editable, int col, int row, int colSpan, int rowSpan) {
         TextField tf = new TextField();
         tf.setPrefColumnCount(size);
         tf.setText(initText);
@@ -367,21 +377,19 @@ public class WDK_GUI implements DraftDataView {
         container.add(tf, col, row, colSpan, rowSpan);
         return tf;
     }
-     
-     private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
+
+    private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String labelText = props.getProperty(labelProperty);
         Label label = new Label(labelText);
         label.getStyleClass().add(styleClass);
         return label;
     }
-    private void registerTextFieldController(TextField textField){
+
+    private void registerTextFieldController(TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             draftController.handleDraftChangeRequest(this);
         });
     }
 
-    
-
-  
 }

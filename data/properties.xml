@@ -2,11 +2,11 @@
 <!--
     This XML file allows us to easily customize the look and language used
     in our program's user interface. Note that this is for customizing settings
-    for the Course Schedule Builder interface, NOT the Web page that we're building. 
+    for the draft Schedule Builder interface, NOT the Web page that we're building. 
 -->
 <properties>
     <property_list>    
-        <property name="PROP_APP_TITLE"   value="Course Site Builder"></property>  
+        <property name="PROP_APP_TITLE"   value="draft Site Builder"></property>  
         
         <!-- PROGRAM ICON FILES -->
         <property name="NEW_DRAFT_ICON"    value="New.png"></property>
@@ -18,6 +18,15 @@
         <property name="EXIT_ICON"          value="Exit.png"></property>        
         <property name="ADD_ICON"           value="Add.png"></property>
         <property name="MINUS_ICON"         value="Minus.png"></property>
+        
+        <property name="PLAYERS_ICON"         value="Players.png"></property>
+        <property name="FANTASY_TEAMS_ICON"         value="FantasyTeams.png"></property>
+        <property name="FANTASY_STANDINGS_ICON"         value="FantasyStandings.png"></property>
+        <property name="DRAFT_ICON"         value="Draft.png"></property>
+        <property name="SPORT_ICON"         value="Sport.png"></property>
+        
+        
+        
         
         <!-- TOOLTIPS FOR BUTTONS -->
         <property name="NEW_DRAFT_TOOLTIP"         value="Create a New Draft"></property>

@@ -9,9 +9,9 @@ package wdk.sports.baseball;
  *
  * @author Work
  */
-public enum WDK_BaseballPropertyType extends WDK_PropertyType {
+public enum WDK_BaseballPropertyType  {
     
-    POSITION_CATCHER LABEL,
+    POSITION_CATCHER_LABEL
     
     
 }

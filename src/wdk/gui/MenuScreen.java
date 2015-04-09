@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
  * @author Work
  */
 public interface MenuScreen {
-   void initScreen();
+   void initWorkspace();
    void initTable();
    void initUIControls();
    Pane getScreen();

@@ -14,7 +14,7 @@ import javafx.collections.ObservableList;
 public class Draft {
     private ObservableList<DraftedTeam> teams;
     private ObservableList<? extends Player> availablePlayers;
-    private ObservableList<Log> draftLog;
+   // private ObservableList<Log> draftLog;
     public Draft(){
         
     }

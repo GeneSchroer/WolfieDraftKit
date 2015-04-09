@@ -17,7 +17,7 @@ public class DraftExporter {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void exportDraft(Draft courseToExport) {
+    public void exportDraft(Draft draftToExport) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

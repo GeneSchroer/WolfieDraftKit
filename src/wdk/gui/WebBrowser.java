@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  */
 public class WebBrowser {
 
-    public WebBrowser(Stage webBrowserStage, String courseURL) {
+    public WebBrowser(Stage webBrowserStage, String draftURL) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

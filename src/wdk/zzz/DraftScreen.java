@@ -15,7 +15,7 @@ import wdk.gui.MenuScreen;
 public class DraftScreen implements MenuScreen{
 
     @Override
-    public void initScreen() {
+    public void initWorkspace() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

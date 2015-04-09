@@ -37,7 +37,7 @@ public class MixedPlayerTable {
         
         
         
-        fillTable(players);
+        setTable(players);
     }
 // NOW SETUP THE TABLE COLUMNS
     private void initTable() {    
@@ -85,8 +85,10 @@ public class MixedPlayerTable {
 
     }
     
-    private void fillTable(ObservableList<? extends Player> players){
+    private void setTable(ObservableList<? extends Player> players){
         playerTable.setItems(players);
     }
-    
+    public TableView getTable(){
+        return playerTable;
+    }
 }
