@@ -63,7 +63,7 @@ public class WolfieDraftKit extends Application {
                 
                 // CONSTRUCT THE DATA MANAGER AND GIVE IT TO THE GUI
                 DraftDataManager dataManager = new DraftDataManager(gui); 
-                gui.setDataManager(dataManager);
+                gui.setDraftDataManager(dataManager);
 
                 // FINALLY, START UP THE USER INTERFACE WINDOW AFTER ALL
                 // REMAINING INITIALIZATION

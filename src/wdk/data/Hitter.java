@@ -14,16 +14,28 @@ import javafx.beans.property.StringProperty;
  * @author Work
  */
 public class Hitter extends Player{
+    
+    IntegerProperty atBat;
     IntegerProperty runs;
     IntegerProperty homeRuns;
     IntegerProperty runsBattedIn;
     IntegerProperty stolenBases;
-    DoubleProperty battingAverage;
     
     public Hitter(){
         super();
     }
     
+    public void setAtBat(int ab){
+        atBat.set(ab);
+    }
+    
+    public int getAtBat(){
+        return atBat.get();
+    }
+    
+    public IntegerProperty atBatProperty(){
+        return atBat;
+    }
     public void setRuns(int r){
         runs.set(r);
     }
@@ -69,16 +81,4 @@ public class Hitter extends Player{
     public IntegerProperty stolenBasesProperty(){
         return stolenBases;
     }
-    public void setBattingAverage(double ba){
-        battingAverage.set(ba);
-    }
-    
-    public double getBattingAverage(){
-        return battingAverage.get();
-    }
-    
-    public DoubleProperty battingAverageProperty(){
-        return battingAverage;
-    }
-
 }

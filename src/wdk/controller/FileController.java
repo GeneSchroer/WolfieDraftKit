@@ -75,7 +75,7 @@ public class FileController {
                 gui.updateToolbarControls(saved);
 
                 // TELL THE USER THE COURSE HAS BEEN CREATED
-                messageDialog.show(properties.getProperty(NEW_COURSE_CREATED_MESSAGE));
+                messageDialog.show(properties.getProperty(NEW_DRAFT_CREATED_MESSAGE));
             }
         } catch (IOException ioe) {
             // SOMETHING WENT WRONG, PROVIDE FEEDBACK

@@ -11,6 +11,7 @@ package wdk;
  */
 public enum WDK_PropertyType {
    //LOADED FROM properties.xml
+//LOADED FROM properties.xml
     PROP_APP_TITLE,
     
     // APPLICATION ICONS
@@ -44,6 +45,14 @@ public enum WDK_PropertyType {
     PLAYER_NOTES_LABEL,
     TEAM_NAME_LABEL,
     TEAM_OWNER_LABEL,
+    
+    
+    PLAYERS_SCREEN_TOOLTIP,
+    FANTASY_TEAM_SCREEN_TOOLTIP,
+    FANTASY_STANDINGS_SCREEN_TOOLTIP,
+    DRAFT_SCREEN_TOOLTIP,
+    SPORT_SCREEN_TOOLTIP,
+    
     
     
     //ERROR MESSAGES MORE TO COME

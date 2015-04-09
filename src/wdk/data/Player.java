@@ -19,11 +19,13 @@ public class Player {
     StringProperty lastName;
     StringProperty firstName;
     StringProperty fullName;
+    StringProperty proTeam;
     StringProperty yearOfBirth;
-    Position currentPosition;
+    Position positions;
+    StringProperty notes;
     StringProperty nationOfBirth;
     StringProperty team;
-    ObservableList<Position> qualifiedPositions;
+    String qualifiedPositions;
     Contract contract;
     DoubleProperty salary;
     Image image;
@@ -66,6 +68,17 @@ public class Player {
     
     public StringProperty fullNameProperty(){
         return fullName;
+    }
+    public void setProTeam(String pt){
+        proTeam.set(pt);
+    }
+    
+    public String getProTeam(){
+        return proTeam.get();
+    }
+    
+    public StringProperty proTeamProperty(){
+        return proTeam;
     }
     
     public void setYearOfBirth(String yob){

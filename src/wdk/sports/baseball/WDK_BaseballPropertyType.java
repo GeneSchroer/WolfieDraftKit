@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.gui;
-
-import javafx.scene.layout.Pane;
+package wdk.sports.baseball;
 
 /**
  *
  * @author Work
  */
-public interface MenuScreen {
-   void initScreen();
-   void initTable();
-   void initUIControls();
-   Pane getScreen();
+public enum WDK_BaseballPropertyType extends WDK_PropertyType {
+    
+    POSITION_CATCHER LABEL,
+    
+    
 }
