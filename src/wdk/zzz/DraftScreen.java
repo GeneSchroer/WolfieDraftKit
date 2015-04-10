@@ -25,7 +25,7 @@ public class DraftScreen implements MenuScreen{
     }
 
     @Override
-    public void initUIControls() {
+    public void initEventHandlers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

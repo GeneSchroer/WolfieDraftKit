@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import  wdk.WDK_PropertyType;
 import static wdk.WDK_StartUpConstants.*;
+import wdk.controller.PlayersScreenController;
 import wdk.data.Player;
 import static wdk.gui.WDK_GUI.CLASS_SUBHEADING_LABEL;
 
@@ -76,6 +77,12 @@ public class PlayersScreen implements MenuScreen {
     
     private final Stage primaryStage;
     
+    
+    PlayersScreenController playersScreenController;
+    
+    MessageDialog messageDialog;
+    YesNoCancelDialog yesNoCancelDialog;
+    
     public PlayersScreen(Stage initPrimaryStage){
        primaryStage = initPrimaryStage;
     }
@@ -85,7 +92,7 @@ public class PlayersScreen implements MenuScreen {
     
     public void initGUI(){
         initWorkspace();
-        initEventHandlers();
+       // initEventHandlers();
     }
     
     @Override
@@ -99,17 +106,6 @@ public class PlayersScreen implements MenuScreen {
     @Override
     public void initTable() {
         playersTable = new MixedPlayerTable(players);
-    }
-
-    @Override
-    public void initUIControls() {
-        
-        
-        
-        
-        
-        
-       
     }
     private RadioButton initGroupRadioButton(ToggleGroup toggle, String label){
         PropertiesManager props = PropertiesManager.getPropertiesManager();
@@ -133,7 +129,7 @@ public class PlayersScreen implements MenuScreen {
 
     @Override
     public Pane getScreen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return playersScreenPane;
     }
     
      private void initTopWorkspace() {
@@ -184,15 +180,23 @@ public class PlayersScreen implements MenuScreen {
      private void initBottomWorkspace() {
     }
 
-    void initEventHandlers() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void initEventHandlers() {
+        playersScreenController = new PlayersScreenController(primaryStage, messageDialog, yesNoCancelDialog);
+        registerTextFieldController(playerSearchTextField);
     }
-    
+        
         public void setPlayersTable(ObservableList<? extends Player> player){
         
     }
-         private void registerTextFieldController(TextField textField){
+        /*
+        FIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATER
+        FIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATER
+        */
         
+        private void registerTextFieldController(TextField textField) {
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+          //  playersScreenController.handleSearchForPlayerRequest(this, textField.getText());
+        });
     }
          
          private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {

@@ -22,11 +22,12 @@ public class PlayersScreenController {
     
     MessageDialog messageDialog;
     YesNoCancelDialog yesNoCancelDialog;
-    public PlayersScreenController(Stage initPrimaryStage, MessageDialog initMessageDialog, YesNoCancelDialog yesNoCancelDialog){
-        
+    public PlayersScreenController(Stage initPrimaryStage, MessageDialog initMessageDialog, YesNoCancelDialog initYesNoCancelDialog){
+        this.messageDialog = initMessageDialog;
+        this.yesNoCancelDialog = initYesNoCancelDialog;
     }
     public void handleSelectPlayerTypeRequest(WDK_GUI gui, Position position){
-        
+            
     }
     private void selectPlayerSortCriteria(boolean sortStats){
         

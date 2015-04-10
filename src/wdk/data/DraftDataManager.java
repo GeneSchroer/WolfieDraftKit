@@ -36,6 +36,6 @@ public class DraftDataManager {
         return draftFileManager;
     }
     public void reset() {
-        draft.clearLog();
+       view.reloadDraft(draft);
     }
 }

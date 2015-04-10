@@ -216,7 +216,15 @@ public class WDK_GUI implements DraftDataView {
     }
 
     public void reloadDraft(Draft draftToReload) {
-
+        if (!workspaceActivated) {
+            activateWorkspace();
+        }
+        draftController.enable(false);
+        /*
+            Everything in here gets reset. Somehow
+        
+        */
+        draftController.enable(true);
     }
 
     /**
@@ -273,7 +281,7 @@ public class WDK_GUI implements DraftDataView {
         playersScreen = new PlayersScreen(primaryStage);
         playersScreen.initWorkspace();
         workspacePane = new HBox();
-        //workspacePane.getChildren().add(playersScreen.getScreen());
+        workspacePane.getChildren().add(playersScreen.getScreen());
     }
 
     private void initEventHandlers() {
@@ -390,6 +398,10 @@ public class WDK_GUI implements DraftDataView {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             draftController.handleDraftChangeRequest(this);
         });
+    }
+
+    private void activateWorkspace() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

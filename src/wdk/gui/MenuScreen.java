@@ -14,6 +14,6 @@ import javafx.scene.layout.Pane;
 public interface MenuScreen {
    void initWorkspace();
    void initTable();
-   void initUIControls();
+   void initEventHandlers();
    Pane getScreen();
 }
