@@ -49,7 +49,7 @@ public class FantasyTeamsScreen implements MenuScreen{
     }
 
     @Override
-    public void initEventHandlers() {
+    public void initUIControls() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

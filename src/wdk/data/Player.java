@@ -8,7 +8,9 @@ package wdk.data;
 import java.awt.Image;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
@@ -16,24 +18,32 @@ import javafx.collections.ObservableList;
  * @author Work
  */
 public class Player {
+    StringProperty team;
     StringProperty lastName;
     StringProperty firstName;
     StringProperty fullName;
-    StringProperty proTeam;
-    StringProperty yearOfBirth;
-    Position positions;
+    StringProperty qualifiedPositions;
     StringProperty notes;
+    StringProperty yearOfBirth;
     StringProperty nationOfBirth;
-    StringProperty team;
-    String qualifiedPositions;
+
+    Position positions;
+    
+    
     Contract contract;
     DoubleProperty salary;
     Image image;
    
     
     public Player(){
-        lastName.set("Ballrisian");
-        firstName.set("Bando");
+        team                = new SimpleStringProperty();
+        lastName            = new SimpleStringProperty();
+        firstName           = new SimpleStringProperty();
+        fullName            = new SimpleStringProperty();
+        qualifiedPositions  = new SimpleStringProperty();
+        notes               = new SimpleStringProperty();
+        yearOfBirth         = new SimpleStringProperty();
+        nationOfBirth       = new SimpleStringProperty();
     }
     
     public void setLastName(String ln){
@@ -69,16 +79,16 @@ public class Player {
     public StringProperty fullNameProperty(){
         return fullName;
     }
-    public void setProTeam(String pt){
-        proTeam.set(pt);
+    public void setTeam(String pt){
+        team.set(pt);
     }
     
-    public String getProTeam(){
-        return proTeam.get();
+    public String getTeam(){
+        return team.get();
     }
     
-    public StringProperty proTeamProperty(){
-        return proTeam;
+    public StringProperty teamProperty(){
+        return team;
     }
     
     public void setYearOfBirth(String yob){
@@ -113,6 +123,28 @@ public class Player {
     
     public StringProperty nationOfBirthProperty(){
         return fullName;
+    }
+     public void setQualifiedPositions(String qp){
+        qualifiedPositions.set(qp);
+    }
+    
+    public String getQualifiedPositions(){
+        return qualifiedPositions.get();
+    }
+    
+    public StringProperty qualifiedPositionsProperty(){
+        return qualifiedPositions;
+    }
+     public void setNotes(String n){
+        notes.set(n);
+    }
+    
+    public String getNotes(){
+        return notes.get();
+    }
+    
+    public StringProperty notesProperty(){
+        return notes;
     }
     public void setContract(Contract c){
         contract = c;

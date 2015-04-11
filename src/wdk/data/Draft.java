@@ -5,6 +5,7 @@
  */
 package wdk.data;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
@@ -13,10 +14,11 @@ import javafx.collections.ObservableList;
  */
 public class Draft {
     private ObservableList<DraftedTeam> teams;
-    private ObservableList<? extends Player> availablePlayers;
+    private ObservableList<Player> availablePlayers;
    // private ObservableList<Log> draftLog;
     public Draft(){
-        
+        teams = FXCollections.observableArrayList();
+        availablePlayers = FXCollections.observableArrayList();
     }
     private void updatePoints(){
         
@@ -27,12 +29,12 @@ public class Draft {
     public DraftedTeam removeTeam(DraftedTeam team){
         return team;
     }
-    public void addPlayer(){
-        
+    public void addPlayer(Player playerToAdd){
+        availablePlayers.add(playerToAdd);
     }
-    public Player removePlayer(Player player){
-        
-        return player;
+    public Player removePlayer(Player playerToRemove){
+        availablePlayers.remove(playerToRemove);
+        return playerToRemove;
     }
     public void addPlayerToTeam(Player player, DraftedTeam team){
         

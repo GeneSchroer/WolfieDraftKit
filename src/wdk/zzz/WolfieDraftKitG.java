@@ -1,22 +1,34 @@
-package wdk;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package wdk.zzz;
 
-import static wdk.WDK_PropertyType.*;
-import wdk.data.DraftDataManager;
-import wdk.error.ErrorHandler;
-import wdk.file.JsonDraftFileManager;
-import wdk.file.DraftExporter;
-import wdk.gui.WDK_GUI;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Locale;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
-import static wdk.WDK_StartUpConstants.*;
-import wdk.data.Draft;
+import static wdk.WDK_PropertyType.PROP_APP_TITLE;
+import static wdk.WDK_StartUpConstants.JSON_FILE_PATH_HITTERS;
+import static wdk.WDK_StartUpConstants.JSON_FILE_PATH_PITCHERS;
+import static wdk.WDK_StartUpConstants.PATH_DATA;
+import static wdk.WDK_StartUpConstants.PROPERTIES_FILE_NAME;
+import static wdk.WDK_StartUpConstants.PROPERTIES_SCHEMA_FILE_NAME;
+import wdk.data.DraftDataManager;
+import wdk.error.ErrorHandler;
+import wdk.file.JsonDraftFileManager;
+import wdk.gui.WDK_GUI;
 import xml_utilities.InvalidXMLFileFormatException;
 
+/**
+ *
+ * @author Work
+ */
+public class WolfieDraftKitG {
+   
 /**
  * draftSiteBuilder is a JavaFX application that can be used to build the
  * pages for a draft Web site. The CSE 219 draft's schedule page is
@@ -65,7 +77,7 @@ public class WolfieDraftKit extends Application {
                 //gui.setDraftExporter(exporter);
                 
                 // CONSTRUCT THE DATA MANAGER AND GIVE IT TO THE GUI
-                DraftDataManager dataManager = new DraftDataManager(gui, startingDraft); 
+                DraftDataManager dataManager = new DraftDataManager(gui, ); 
                 gui.setDraftDataManager(dataManager);
 
                 // FINALLY, START UP THE USER INTERFACE WINDOW AFTER ALL
@@ -110,4 +122,6 @@ public class WolfieDraftKit extends Application {
         Locale.setDefault(Locale.US);
         launch(args);
     }
+}
+
 }

@@ -7,6 +7,8 @@ package wdk.data;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 
 /**
@@ -24,13 +26,13 @@ public class Pitcher extends Player{
     
     public Pitcher(){
         
-        inningsPitched.set(0);
-        earnedRuns.set(0);
-        wins.set(0);
-        saves.set(0);
-        hits.set(0);
-        basesOnBalls.set(0);
-        strikeouts.set(0);
+        inningsPitched  = new SimpleDoubleProperty();
+        earnedRuns      = new SimpleIntegerProperty();
+        wins            = new SimpleIntegerProperty();
+        saves           = new SimpleIntegerProperty();
+        hits            = new SimpleIntegerProperty();
+        basesOnBalls    = new SimpleIntegerProperty();
+        strikeouts      = new SimpleIntegerProperty();
         
     }
     

@@ -12,6 +12,7 @@ import wdk.file.DraftFileManager;
  * @author Work
  */
 public class DraftDataManager {
+    private final Draft startingDraft;
     private Draft draft;
     
     DraftDataView view;
@@ -21,12 +22,15 @@ public class DraftDataManager {
     static String DEFAULT_LAST_NAME = "Ballrisian";
     static String DEFAULT_FIRST_NAME = "Rando";
     static int    DEFAULT_AGE = 2015-1937;
+    static String DEFAULT_TEAM_NAME = " ";
+    static String DEFAULT_TEAM_OWNER = " ";
     
     
     
-    public DraftDataManager(DraftDataView initView) {
+    public DraftDataManager(DraftDataView initView, Draft startingDraft) {
+        this.startingDraft = startingDraft;
         view = initView;
-        draft = new Draft();
+        draft = startingDraft;
     }
     
     public Draft getDraft(){

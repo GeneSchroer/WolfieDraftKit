@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.file;
+package wdk.zzz;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,47 +15,13 @@ import javax.json.JsonReader;
 import wdk.data.Draft;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
+import wdk.file.DraftFileManager;
 
 /**
  *
  * @author Work
  */
-public class JsonDraftFileManager implements DraftFileManager {
-
-    String JSON_PLAYERS             = "Players";
-    String JSON_HITTERS             = "Hitters";
-    String JSON_PITCHERS            = "Pitchers";
-    String JSON_TEAM                = "TEAM";
-    String JSON_LAST_NAME           = "LAST_NAME";
-    String JSON_FIRST_NAME           = "FIRST_NAME";
-    String JSON_NOTES               = "NOTES";
-    String JSON_YEAR_OF_BIRTH       = "YEAR_OF_BIRTH";
-    String JSON_NATION_OF_BIRTH     = "NATION_OF_BIRTH";
-    String JSON_QP                  = "QP";
-    /* Hitter specific */ 
-    
-    String JSON_AB      = "AB";
-    String JSON_R       = "R";
-    String JSON_H       = "H";
-    String JSON_HR      = "HR";
-    String JSON_RBI     = "RBI";
-    String JSON_SB      = "SB";
-
-    /* Pitcher specfic */
-    String JSON_IP      = "IP";
-    String JSON_ER      = "ER";
-    String JSON_W       = "W";
-    String JSON_SV      = "SV";
-//  String JSON_H       = "H";
-    String JSON_BB      = "BB";
-    String JSON_K       = "K";
-    
-    
-    
-    
-    
-    
-    
+public abstract class JsonDraftFileManagerG implements DraftFileManager{
     
     @Override
     public void saveDraft(Draft draftToSave) throws IOException {
@@ -104,12 +70,12 @@ public class JsonDraftFileManager implements DraftFileManager {
             h.setLastName(jso.getString(JSON_LAST_NAME));
             h.setFirstName(jso.getString(JSON_FIRST_NAME));
             h.setQualifiedPositions(jso.getString(JSON_QP));
-            h.setAtBat(Integer.parseInt(jso.getString(JSON_AB)));
-            h.setRuns(Integer.parseInt(jso.getString(JSON_R)));
-            h.setHits(Integer.parseInt(jso.getString(JSON_H)));
-            h.setHomeRuns(Integer.parseInt(jso.getString(JSON_HR)));
-            h.setRunsBattedIn(Integer.parseInt(jso.getString(JSON_RBI)));
-            h.setStolenBases(Integer.parseInt(jso.getString(JSON_SB)));
+            h.setAtBat(jso.getInt(JSON_AB));
+            h.setRuns(jso.getInt(JSON_R));
+            h.setHits(jso.getInt(JSON_H));
+            h.setHomeRuns(jso.getInt(JSON_HR));
+            h.setRunsBattedIn(jso.getInt(JSON_RBI));
+            h.setStolenBases(jso.getInt(JSON_SB));
             h.setNotes(jso.getString(JSON_NOTES));
             h.setYearOfBirth(jso.getString(JSON_YEAR_OF_BIRTH));
             h.setNationOfBirth(jso.getString(JSON_NATION_OF_BIRTH));
@@ -122,14 +88,14 @@ public class JsonDraftFileManager implements DraftFileManager {
             b.setTeam(jso.getString(JSON_TEAM));
             b.setLastName(jso.getString(JSON_LAST_NAME));
             b.setFirstName(jso.getString(JSON_FIRST_NAME));
-            b.setQualifiedPositions("P");
-            b.setInningsPitched(Double.parseDouble(jso.getString(JSON_IP)));
-            b.setEarnedRuns(Integer.parseInt(jso.getString(JSON_ER)));
-            b.setWins(Integer.parseInt(jso.getString(JSON_W)));
-            b.setSaves(Integer.parseInt(jso.getString(JSON_SV)));
-            b.setHits(Integer.parseInt(jso.getString(JSON_H)));
-            b.setBasesOnBalls(Integer.parseInt(jso.getString(JSON_BB)));
-            b.setStrikeouts(Integer.parseInt(jso.getString(JSON_K)));
+            b.setQualifiedPositions(jso.getString(JSON_QP));
+            b.setInningsPitched(jso.getInt(JSON_IP));
+            b.setEarnedRuns(jso.getInt(JSON_ER));
+            b.setWins(jso.getInt(JSON_W));
+            b.setSaves(jso.getInt(JSON_SV));
+            b.setHits(jso.getInt(JSON_H));
+            b.setBasesOnBalls(jso.getInt(JSON_BB));
+            b.setStrikeouts(jso.getInt(JSON_K));
             b.setNotes(jso.getString(JSON_NOTES));
             b.setYearOfBirth(jso.getString(JSON_YEAR_OF_BIRTH));
             b.setNationOfBirth(jso.getString(JSON_NATION_OF_BIRTH));
@@ -139,5 +105,4 @@ public class JsonDraftFileManager implements DraftFileManager {
         
         return draft;
     }
-    
 }

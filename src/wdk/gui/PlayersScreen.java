@@ -219,4 +219,9 @@ public class PlayersScreen implements MenuScreen {
         container.add(tf, col, row, colSpan, rowSpan);
         return tf;
     }
+
+    @Override
+    public void initUIControls() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -7,6 +7,7 @@ package wdk.data;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 
 /**
@@ -17,12 +18,19 @@ public class Hitter extends Player{
     
     IntegerProperty atBat;
     IntegerProperty runs;
+    IntegerProperty hits;
     IntegerProperty homeRuns;
     IntegerProperty runsBattedIn;
     IntegerProperty stolenBases;
     
     public Hitter(){
-        super();
+        
+        atBat           = new SimpleIntegerProperty();
+        runs            = new SimpleIntegerProperty();
+        hits            = new SimpleIntegerProperty();
+        homeRuns        = new SimpleIntegerProperty();
+        runsBattedIn    = new SimpleIntegerProperty();
+        stolenBases     = new SimpleIntegerProperty();
     }
     
     public void setAtBat(int ab){
@@ -46,6 +54,17 @@ public class Hitter extends Player{
     
     public IntegerProperty runsProperty(){
         return runs;
+    }
+    public void setHits(int h){
+        hits.set(h);
+    }
+    
+    public int getHits(){
+        return hits.get();
+    }
+    
+    public IntegerProperty hitsProperty(){
+        return hits;
     }
     public void setHomeRuns(int hr){
         homeRuns.set(hr);
