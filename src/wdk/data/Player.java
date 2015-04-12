@@ -18,7 +18,7 @@ import javafx.collections.ObservableList;
  * @author Work
  */
 public class Player {
-    StringProperty team;
+    StringProperty proTeam;
     StringProperty lastName;
     StringProperty firstName;
     StringProperty fullName;
@@ -27,7 +27,9 @@ public class Player {
     StringProperty yearOfBirth;
     StringProperty nationOfBirth;
 
-    Position positions;
+    
+        
+    //Position positions;
     
     
     Contract contract;
@@ -36,7 +38,7 @@ public class Player {
    
     
     public Player(){
-        team                = new SimpleStringProperty();
+        proTeam                = new SimpleStringProperty();
         lastName            = new SimpleStringProperty();
         firstName           = new SimpleStringProperty();
         fullName            = new SimpleStringProperty();
@@ -79,16 +81,16 @@ public class Player {
     public StringProperty fullNameProperty(){
         return fullName;
     }
-    public void setTeam(String pt){
-        team.set(pt);
+    public void setProTeam(String pt){
+        proTeam.set(pt);
     }
     
-    public String getTeam(){
-        return team.get();
+    public String getProTeam(){
+        return proTeam.get();
     }
     
-    public StringProperty teamProperty(){
-        return team;
+    public StringProperty proTeamProperty(){
+        return proTeam;
     }
     
     public void setYearOfBirth(String yob){

@@ -5,11 +5,12 @@
  */
 package wdk.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import wdk.table.MixedPlayerTable;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -27,15 +28,19 @@ import  wdk.WDK_PropertyType;
 import static wdk.WDK_StartUpConstants.*;
 import wdk.controller.PlayersScreenController;
 import wdk.data.Player;
-import static wdk.gui.WDK_GUI.CLASS_SUBHEADING_LABEL;
+import wdk.data.Position;
+import static wdk.gui.StyleSheet.*;
 
 /**
  *
  * @author Work
  */
 public class PlayersScreen implements MenuScreen {
+
+   
     /* Our list of available players, will be fed into the mixed table*/
-    ObservableList<? extends Player> players;
+    ObservableList<Player> players;
+    
     
     /* The primary pane that is holding all of this */
     private VBox playersScreenPane;
@@ -56,7 +61,7 @@ public class PlayersScreen implements MenuScreen {
     
    /* The middle segment */
    /* This holds all of our....very many radio buttons. Dear god that's alot */
-    private HBox sortCriteriaPane;
+    private HBox centerWorkspacePane;
     private ToggleGroup sortCriteriaToggleGroup;
     private RadioButton selectAllRadioButton;
     private RadioButton selectCatcherRadioButton;
@@ -66,7 +71,7 @@ public class PlayersScreen implements MenuScreen {
     private RadioButton select2ndBasemanRadioButton;
     private RadioButton selectMiddleInfielderRadioButton;
     private RadioButton selectShortstopRadioButton;
-    private RadioButton selectOutfieldRadioButton;
+    private RadioButton selectOutfielderRadioButton;
     private RadioButton selectUtilityRadioButton;
     private RadioButton selectPitcherRadioButton;
     
@@ -83,8 +88,9 @@ public class PlayersScreen implements MenuScreen {
     MessageDialog messageDialog;
     YesNoCancelDialog yesNoCancelDialog;
     
-    public PlayersScreen(Stage initPrimaryStage){
+    public PlayersScreen(Stage initPrimaryStage, ObservableList<Player> playerList){
        primaryStage = initPrimaryStage;
+       players = playerList;
     }
 
    
@@ -92,7 +98,7 @@ public class PlayersScreen implements MenuScreen {
     
     public void initGUI(){
         initWorkspace();
-       // initEventHandlers();
+        initEventHandlers();
     }
     
     @Override
@@ -101,6 +107,11 @@ public class PlayersScreen implements MenuScreen {
         initCenterWorkspace();
         initBottomWorkspace();
         playersScreenPane = new VBox();
+        playersScreenPane.getStyleClass().add(CLASS_BORDERED_PANE);
+        playersScreenPane.getChildren().add(topWorkspacePane);
+        playersScreenPane.getChildren().add(centerWorkspacePane);
+        playersScreenPane.getChildren().add(playersTable.getTable());
+        
     }
 
     @Override
@@ -136,19 +147,20 @@ public class PlayersScreen implements MenuScreen {
         
         
         topWorkspacePane = new GridPane();
+        //topWorkspacePane.getStyleClass().add(CLASS_BORDERED_PANE);
         addRemovePlayerBox = new HBox();
-        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.AVAILABLE_PLAYER_LABEL,CLASS_SUBHEADING_LABEL, 0, 0, 1, 1);
+        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.AVAILABLE_PLAYER_LABEL, CLASS_HEADING_LABEL, 0, 0, 1, 1);
         addPlayerButton = initChildButton(addRemovePlayerBox, WDK_PropertyType.ADD_ICON, WDK_PropertyType.ADD_PLAYER_TOOLTIP, false);
         removePlayerButton = initChildButton(addRemovePlayerBox, WDK_PropertyType.MINUS_ICON, WDK_PropertyType.REMOVE_PLAYER_TOOLTIP, false);
         topWorkspacePane.add(addRemovePlayerBox, 0, 1, 1, 1);
         playerSearchLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.PLAYER_SEARCH_LABEL, CLASS_SUBHEADING_LABEL, 1, 1 , 1, 1);
-        playerSearchTextField = initGridTextField(topWorkspacePane, 3, "", true, 2, 1, 1, 1);
+        playerSearchTextField = initGridTextField(topWorkspacePane, 20, "", true, 2, 1, 1, 1);
      
      }
     
    
     private void initCenterWorkspace() {
-    sortCriteriaPane = new HBox();
+    centerWorkspacePane = new HBox();
         
     sortCriteriaToggleGroup = new ToggleGroup();
     
@@ -160,58 +172,89 @@ public class PlayersScreen implements MenuScreen {
     select2ndBasemanRadioButton = initGroupRadioButton(sortCriteriaToggleGroup, "2B");
     selectMiddleInfielderRadioButton = initGroupRadioButton(sortCriteriaToggleGroup, "MI");
     selectShortstopRadioButton = initGroupRadioButton(sortCriteriaToggleGroup, "SS");
-    selectOutfieldRadioButton = initGroupRadioButton(sortCriteriaToggleGroup, "OF");
+    selectOutfielderRadioButton = initGroupRadioButton(sortCriteriaToggleGroup, "OF");
     selectUtilityRadioButton = initGroupRadioButton(sortCriteriaToggleGroup, "U");
     selectPitcherRadioButton = initGroupRadioButton(sortCriteriaToggleGroup, "P");
-    sortCriteriaPane.getChildren().add(selectAllRadioButton);
-    sortCriteriaPane.getChildren().add(selectCatcherRadioButton);
-    sortCriteriaPane.getChildren().add(select1stBasemanRadioButton);
-    sortCriteriaPane.getChildren().add(selectCornerInfielderRadioButton);
-    sortCriteriaPane.getChildren().add(select3rdBasemanRadioButton);
-    sortCriteriaPane.getChildren().add(select2ndBasemanRadioButton);
-    sortCriteriaPane.getChildren().add(selectMiddleInfielderRadioButton);
-    sortCriteriaPane.getChildren().add(selectShortstopRadioButton);
-    sortCriteriaPane.getChildren().add(selectOutfieldRadioButton);
-    sortCriteriaPane.getChildren().add(selectUtilityRadioButton);
-    sortCriteriaPane.getChildren().add(selectPitcherRadioButton);
+    centerWorkspacePane.getChildren().add(selectAllRadioButton);
+    centerWorkspacePane.getChildren().add(selectCatcherRadioButton);
+    centerWorkspacePane.getChildren().add(select1stBasemanRadioButton);
+    centerWorkspacePane.getChildren().add(selectCornerInfielderRadioButton);
+    centerWorkspacePane.getChildren().add(select3rdBasemanRadioButton);
+    centerWorkspacePane.getChildren().add(select2ndBasemanRadioButton);
+    centerWorkspacePane.getChildren().add(selectMiddleInfielderRadioButton);
+    centerWorkspacePane.getChildren().add(selectShortstopRadioButton);
+    centerWorkspacePane.getChildren().add(selectOutfielderRadioButton);
+    centerWorkspacePane.getChildren().add(selectUtilityRadioButton);
+    centerWorkspacePane.getChildren().add(selectPitcherRadioButton);
     }
 
    
      private void initBottomWorkspace() {
+         playersTable = new MixedPlayerTable(players);
     }
 
     public void initEventHandlers() {
         playersScreenController = new PlayersScreenController(primaryStage, messageDialog, yesNoCancelDialog);
         registerTextFieldController(playerSearchTextField);
+        selectAllRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "");
+        });
+        selectCatcherRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "C");
+        });
+        select1stBasemanRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "1B");
+        });
+        selectCornerInfielderRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "CI");
+        });
+        select3rdBasemanRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "3B");
+        });
+        select2ndBasemanRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "2B");
+        });
+        selectMiddleInfielderRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "MI");
+        });
+        selectShortstopRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "SS");
+        });
+        selectOutfielderRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "OF");
+        });
+        selectUtilityRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "U");
+        });
+        selectPitcherRadioButton.setOnAction(e->{
+            playersScreenController.handleSelectPlayerTypeRequest(this, "P");
+        });
+        
+    }
+    public void setPlayersTable(ObservableList<Player> playerList){
+        playersTable.setTable(playerList);
+        
     }
         
-        public void setPlayersTable(ObservableList<? extends Player> player){
-        
-    }
-        /*
-        FIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATER
-        FIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATERFIXLATER
-        */
-        
-        private void registerTextFieldController(TextField textField) {
+    private void registerTextFieldController(TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
-          //  playersScreenController.handleSearchForPlayerRequest(this, textField.getText());
+            playersScreenController.handleSearchForPlayerRequest(this, textField.getText());
         });
     }
          
-         private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
+    private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String labelText = props.getProperty(labelProperty);
         Label label = new Label(labelText);
         label.getStyleClass().add(styleClass);
         return label;
     }
-         private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
+    private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
         Label label = initLabel(labelProperty, styleClass);
         container.add(label, col, row, colSpan, rowSpan);
         return label;
     }
-         private TextField initGridTextField(GridPane container, int size, String initText, boolean editable, int col, int row, int colSpan, int rowSpan) {
+    private TextField initGridTextField(GridPane container, int size, String initText, boolean editable, int col, int row, int colSpan, int rowSpan) {
         TextField tf = new TextField();
         tf.setPrefColumnCount(size);
         tf.setText(initText);
@@ -223,5 +266,31 @@ public class PlayersScreen implements MenuScreen {
     @Override
     public void initUIControls() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void setTable(ObservableList<Player> playerList){
+        playersTable.setTable(playerList);
+    }
+    
+    
+    public ArrayList<Player> getFilteredList(ObservableList<Player> players){
+        ArrayList <Player> filteredList = new ArrayList();
+        
+        
+        
+        
+        
+        
+        return filteredList;
+    }
+    
+    
+    void reset() {
+        sortCriteriaToggleGroup.selectToggle(selectAllRadioButton);
+        playerSearchTextField.clear();
+    }
+    
+     public List<Player> getAvailablePlayers() {
+        return players;
     }
 }

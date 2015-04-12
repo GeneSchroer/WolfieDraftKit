@@ -17,6 +17,6 @@ import wdk.data.Player;
 public interface DraftFileManager {
     public void             saveDraft(Draft draftToSave) throws IOException;
     public void             loadDraft(Draft draftToLoad, String draftPath) throws IOException;
-    public Draft            loadStartingDraft(String filePathHitters, String filePathPitchers) throws IOException;
+    public Draft            loadStartingDraft(ArrayList<String> filePathList) throws IOException;
 
 }

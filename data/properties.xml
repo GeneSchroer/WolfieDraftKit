@@ -67,6 +67,13 @@
         <property name="SAVE_UNSAVED_WORK_MESSAGE"      value="Do you want to save your unsaved work first?"></property>
         <property name="REMOVE_PLAYER_MESSAGE"          value="Are you sure you wish to remove this Player?"></property>
         <property name="REMOVE_TEAM_MESSAGE"            value="Are you sure you wish to remove this Team?"></property>
+        <property name="REMOVE_TEAM_MESSAGE"            value="Are you sure you wish to remove this Team?"></property>
+        
+        <property name="AVAILABLE_PLAYER_LABEL"            value="Available Player"></property>
+        <property name="PLAYER_SEARCH_LABEL"            value="Search"></property>
+        
+        
+        
     </property_list>
     <property_options_list>
     </property_options_list>

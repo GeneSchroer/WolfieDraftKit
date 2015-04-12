@@ -5,6 +5,8 @@
  */
 package wdk.data;
 
+import java.util.ArrayList;
+import javafx.collections.ObservableList;
 import wdk.file.DraftFileManager;
 
 /**
@@ -12,7 +14,7 @@ import wdk.file.DraftFileManager;
  * @author Work
  */
 public class DraftDataManager {
-    private final Draft startingDraft;
+    
     private Draft draft;
     
     DraftDataView view;
@@ -24,12 +26,13 @@ public class DraftDataManager {
     static int    DEFAULT_AGE = 2015-1937;
     static String DEFAULT_TEAM_NAME = " ";
     static String DEFAULT_TEAM_OWNER = " ";
+    private Draft startingDraft;
     
     
     
     public DraftDataManager(DraftDataView initView, Draft startingDraft) {
-        this.startingDraft = startingDraft;
         view = initView;
+        this.startingDraft = startingDraft;
         draft = startingDraft;
     }
     
@@ -40,6 +43,14 @@ public class DraftDataManager {
         return draftFileManager;
     }
     public void reset() {
-       view.reloadDraft(draft);
+        ArrayList<Player> temp = new ArrayList();
+        temp.addAll(startingDraft.getAvailablePlayers().subList(0, startingDraft.getAvailablePlayers().size()-1));
+        draft.getAvailablePlayers().clear();
+        draft.getAvailablePlayers().addAll(temp);
+        
+        draft.getTeams().clear();
+        view.reloadDraft(draft);
     }
+
+    
 }

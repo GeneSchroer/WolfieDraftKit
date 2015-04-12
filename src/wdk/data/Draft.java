@@ -42,8 +42,17 @@ public class Draft {
     public void removePlayerFromTeam(Player player, DraftedTeam team){
         
     }
+    
+    public ObservableList<Player> getAvailablePlayers(){
+        return availablePlayers;
+    }
+  
 
-    void clearLog() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    void clearTeams() {
+        teams.clear();
+    }
+
+    public ObservableList<DraftedTeam> getTeams() { 
+        return teams;
     }
 }

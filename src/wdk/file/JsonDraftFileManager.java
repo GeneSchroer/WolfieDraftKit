@@ -8,6 +8,7 @@ package wdk.file;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -25,7 +26,7 @@ public class JsonDraftFileManager implements DraftFileManager {
     String JSON_PLAYERS             = "Players";
     String JSON_HITTERS             = "Hitters";
     String JSON_PITCHERS            = "Pitchers";
-    String JSON_TEAM                = "TEAM";
+    String JSON_PRO_TEAM                = "TEAM";
     String JSON_LAST_NAME           = "LAST_NAME";
     String JSON_FIRST_NAME           = "FIRST_NAME";
     String JSON_NOTES               = "NOTES";
@@ -76,10 +77,11 @@ public class JsonDraftFileManager implements DraftFileManager {
      * @throws IOException
      */
     @Override
-    public Draft loadStartingDraft(String filePathHitters, String filePathPitchers) throws IOException{
-        JsonObject jsonH= loadJSONFile(filePathHitters);
-        JsonObject jsonP= loadJSONFile(filePathPitchers);
-        return buildNewDraftJsonObject(jsonH, jsonP);
+    public Draft loadStartingDraft(ArrayList<String> filePathList) throws IOException{
+        //It should be hitters first, then pitchers
+        JsonObject jsonH= loadJSONFile(filePathList.get(0));
+        JsonObject jsonP= loadJSONFile(filePathList.get(1));
+        return buildNewBaseballDraftJsonObject(jsonH, jsonP);
     }
 
     private JsonObject loadJSONFile(String jsonFilePath) throws IOException {
@@ -91,7 +93,7 @@ public class JsonDraftFileManager implements DraftFileManager {
         return json;
     }    
 
-    private Draft buildNewDraftJsonObject(JsonObject jsonH, JsonObject jsonP) {
+    private Draft buildNewBaseballDraftJsonObject(JsonObject jsonH, JsonObject jsonP) {
         
         Draft draft = new Draft();
         JsonArray jsonHittersArray = jsonH.getJsonArray(JSON_HITTERS);
@@ -100,7 +102,7 @@ public class JsonDraftFileManager implements DraftFileManager {
         for(int i = 0; i < jsonHittersArray.size(); ++i){
             JsonObject jso = jsonHittersArray.getJsonObject(i);
             Hitter h = new Hitter();
-            h.setTeam(jso.getString(JSON_TEAM));
+            h.setProTeam(jso.getString(JSON_PRO_TEAM));
             h.setLastName(jso.getString(JSON_LAST_NAME));
             h.setFirstName(jso.getString(JSON_FIRST_NAME));
             h.setQualifiedPositions(jso.getString(JSON_QP));
@@ -119,7 +121,7 @@ public class JsonDraftFileManager implements DraftFileManager {
         for(int i = 0; i < jsonPitchersArray.size(); ++i){
             JsonObject jso = jsonPitchersArray.getJsonObject(i);
             Pitcher b = new Pitcher();
-            b.setTeam(jso.getString(JSON_TEAM));
+            b.setProTeam(jso.getString(JSON_PRO_TEAM));
             b.setLastName(jso.getString(JSON_LAST_NAME));
             b.setFirstName(jso.getString(JSON_FIRST_NAME));
             b.setQualifiedPositions("P");

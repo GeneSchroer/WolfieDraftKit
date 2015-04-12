@@ -12,8 +12,6 @@ import static javafx.application.Application.launch;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import static wdk.WDK_PropertyType.PROP_APP_TITLE;
-import static wdk.WDK_StartUpConstants.JSON_FILE_PATH_HITTERS;
-import static wdk.WDK_StartUpConstants.JSON_FILE_PATH_PITCHERS;
 import static wdk.WDK_StartUpConstants.PATH_DATA;
 import static wdk.WDK_StartUpConstants.PROPERTIES_FILE_NAME;
 import static wdk.WDK_StartUpConstants.PROPERTIES_SCHEMA_FILE_NAME;
@@ -66,7 +64,7 @@ public class WolfieDraftKit extends Application {
                 // AND THIS ONE WILL DO THE draft WEB PAGE EXPORTING
                 //DraftExporter exporter = new DraftExporter(PATH_BASE, PATH_SITES);
                 
-                Draft startingDraft = jsonFileManager.loadStartingDraft(JSON_FILE_PATH_HITTERS, JSON_FILE_PATH_PITCHERS);
+               // Draft startingDraft = jsonFileManager.loadStartingDraft(JSON_FILE_PATH_HITTERS, JSON_FILE_PATH_PITCHERS);
                 
                 
                 // AND NOW GIVE ALL OF THIS STUFF TO THE GUI
@@ -77,8 +75,8 @@ public class WolfieDraftKit extends Application {
                 //gui.setDraftExporter(exporter);
                 
                 // CONSTRUCT THE DATA MANAGER AND GIVE IT TO THE GUI
-                DraftDataManager dataManager = new DraftDataManager(gui, ); 
-                gui.setDraftDataManager(dataManager);
+               // DraftDataManager dataManager = new DraftDataManager(gui, startingDraft); 
+                //gui.setDraftDataManager(dataManager);
 
                 // FINALLY, START UP THE USER INTERFACE WINDOW AFTER ALL
                 // REMAINING INITIALIZATION
@@ -118,10 +116,10 @@ public class WolfieDraftKit extends Application {
      * sending the properly initialized Stage (i.e. window) to our start
      * method in this class.
      */
-    public static void main(String[] args) {
-        Locale.setDefault(Locale.US);
-        launch(args);
-    }
+//    public static void main(String[] args) {
+//        Locale.setDefault(Locale.US);
+//        launch(args);
+//    }
 }
 
 }

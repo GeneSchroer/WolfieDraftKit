@@ -7,6 +7,8 @@ package wdk.table;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -18,6 +20,7 @@ import wdk.data.Player;
  * @author Work
  */
 public class MixedPlayerTable {
+    
     private TableView playerTable;
     private TableColumn firstNameColumn;
     private TableColumn lastNameColumn;
@@ -32,12 +35,9 @@ public class MixedPlayerTable {
     private TableColumn estimatedValueColumn;
     private TableColumn notesColumn;
     
-    public MixedPlayerTable(ObservableList<? extends Player> players){
+    public MixedPlayerTable(List<Player> playerList){
         initTable();
-        
-        
-        
-        setTable(players);
+        playerTable.setItems((ObservableList) playerList);
     }
 // NOW SETUP THE TABLE COLUMNS
     private void initTable() {    
@@ -59,15 +59,24 @@ public class MixedPlayerTable {
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<String, String>("firstName"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<String, String>("lastName"));
         proTeamColumn.setCellValueFactory(new PropertyValueFactory<String, String>("proTeam"));
-        positionsColumn.setCellValueFactory(new PropertyValueFactory<String, String>("positions")); //Come Back To this one
+        positionsColumn.setCellValueFactory(new PropertyValueFactory<String, String>("qualifiedPositions")); 
         yearOfBirthColumn.setCellValueFactory(new PropertyValueFactory<String, String>("yearOfBirth"));
+        
+        PropertyValueFactory<String, String> p = new PropertyValueFactory("");
+       
         runs_WinsColumn.setCellValueFactory(new PropertyValueFactory<String, String>(""));
+        
+        
+        
+        
         homeRuns_SavesColumn.setCellValueFactory(new PropertyValueFactory<String, String>(""));
         runsBattedIn_StrikeoutsColumn.setCellValueFactory(new PropertyValueFactory<String, String>(""));
         stolenBases_EarnedRunAverageColumn.setCellValueFactory(new PropertyValueFactory<String, String>(""));
         battingAverage_WhipColumn.setCellValueFactory(new PropertyValueFactory<String, String>(""));
         estimatedValueColumn.setCellValueFactory(new PropertyValueFactory<String, String>("estimatedValue"));
         notesColumn.setCellValueFactory(new PropertyValueFactory<String, String>("notes"));
+        
+        notesColumn.setEditable(true);
         
         playerTable.getColumns().add(firstNameColumn);
         playerTable.getColumns().add(lastNameColumn);
@@ -82,10 +91,12 @@ public class MixedPlayerTable {
         playerTable.getColumns().add(estimatedValueColumn);
         playerTable.getColumns().add(notesColumn);
         
+        
+        
 
     }
     
-    private void setTable(ObservableList<? extends Player> players){
+    public void setTable(ObservableList<Player> players){
         playerTable.setItems(players);
     }
     public TableView getTable(){

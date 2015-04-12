@@ -5,7 +5,10 @@ import wdk.zzz.FantasyStandingsScreen;
 import wdk.zzz.SportScreen;
 import wdk.zzz.FantasyTeamsScreen;
 import java.io.IOException;
+import java.util.ArrayList;
+import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -22,6 +25,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -37,6 +41,8 @@ import wdk.controller.DraftEditController;
 import wdk.controller.FileController;
 import wdk.file.DraftFileManager;
 import wdk.file.JsonDraftFileManager;
+import static wdk.gui.StyleSheet.CLASS_BORDERED_PANE;
+import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
 
 /**
  *
@@ -44,18 +50,10 @@ import wdk.file.JsonDraftFileManager;
  */
 public class WDK_GUI implements DraftDataView {
 
-    static final String PRIMARY_STYLE_SHEET = PATH_CSS + "csb_style.css";
-    static final String CLASS_BORDERED_PANE = "bordered_pane";
-    static final String CLASS_SUBJECT_PANE = "subject_pane";
-    static final String CLASS_HEADING_LABEL = "heading_label";
-    static final String CLASS_SUBHEADING_LABEL = "subheading_label";
-    static final String CLASS_PROMPT_LABEL = "prompt_label";
-    static final String EMPTY_TEXT = "";
-    static final int LARGE_TEXT_FIELD_LENGTH = 20;
-    static final int SMALL_TEXT_FIELD_LENGTH = 5;
+
 
     PlayersScreen playersScreen;
-    FantasyTeamsScreen fantasyTeams;
+    FantasyTeamsScreen fantasyTeamsScreen;
     FantasyStandingsScreen fantasyStandingsScreen;
     DraftScreen draftScreen;
     SportScreen sportScreen;
@@ -82,7 +80,7 @@ public class WDK_GUI implements DraftDataView {
     Button exitButton;
 
     /* This is for our screens, the main workspace where we manipulate the draft */
-    HBox workspacePane;
+    StackPane workspacePane;
     boolean workspaceActivated;
 
     /* We will put the workspace inside a scroll pane so we don't have to
@@ -97,6 +95,7 @@ public class WDK_GUI implements DraftDataView {
     Button draftScreenButton;
     Button sportScreenButton;  // Change the name of this one later
     private String windowTitle;
+    private Draft startingDraft;
 
     public WDK_GUI(Stage initPrimaryStage) {
         primaryStage = initPrimaryStage;
@@ -186,10 +185,10 @@ public class WDK_GUI implements DraftDataView {
      * This method fully initializes the user interface for use.
      *
      * @param windowTitle The text to appear in the UI window's title bar.
+     * @param startingDraft
      * @throws IOException Thrown if any initialization files fail to load.
      */
-    public void initGUI(String windowTitle /* maybe more parameters later */) throws IOException {
-
+    public void initGUI(String windowTitle) throws IOException {
         /* First we initialize the various dialog classes */
         initDialogs();
 
@@ -220,10 +219,12 @@ public class WDK_GUI implements DraftDataView {
             activateWorkspace();
         }
         draftController.enable(false);
-        /*
-            Everything in here gets reset. Somehow
         
+        /*
+            This space to be filled in later homeworks
         */
+        playersScreen.reset();
+        
         draftController.enable(true);
     }
 
@@ -278,9 +279,9 @@ public class WDK_GUI implements DraftDataView {
     }
 
     private void initWorkspace() {
-        playersScreen = new PlayersScreen(primaryStage);
-        playersScreen.initWorkspace();
-        workspacePane = new HBox();
+        playersScreen = new PlayersScreen(primaryStage, draftDataManager.getDraft().getAvailablePlayers());
+        playersScreen.initGUI();
+        workspacePane = new StackPane();
         workspacePane.getChildren().add(playersScreen.getScreen());
     }
 
@@ -302,7 +303,27 @@ public class WDK_GUI implements DraftDataView {
         exitButton.setOnAction(e -> {
             fileController.handleExitRequest(this);
         });
+        playersScreenButton.setOnAction(e -> {
+            handleSwitchMenuRequest(playersScreen);
+        });
+        fantasyTeamsScreenButton.setOnAction(e -> {
 
+        });
+        fantasyStandingsScreenButton.setOnAction(e -> {
+
+        });
+        draftScreenButton.setOnAction(e -> {
+
+        });
+        sportScreenButton.setOnAction(e -> {
+
+        });
+        
+        draftController = new DraftEditController();
+
+        
+        
+        
     }
 
     private void initWindow(String windowTitle) {
@@ -323,6 +344,7 @@ public class WDK_GUI implements DraftDataView {
         // HAS BEEN CONSTRUCTED, BUT WON'T BE ADDED UNTIL
         // THE USER STARTS EDITING A draft
         wdkPane = new BorderPane();
+        wdkPane.getStyleClass().add(CLASS_BORDERED_PANE);
         wdkPane.setTop(fileToolbarPane);
         wdkPane.setBottom(screenToolbarPane);
         primaryScene = new Scene(wdkPane);
@@ -401,7 +423,43 @@ public class WDK_GUI implements DraftDataView {
     }
 
     private void activateWorkspace() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(!workspaceActivated){
+            /* Make the workspace visible in the gui*/
+            
+            
+            wdkPane.setCenter(workspacePane);
+                        //wdkPane.setCenter(new BorderPane(new Label("Test")));
+                        
+            workspaceActivated = true;
+            playersScreenButton.setDisable(false);
+            fantasyTeamsScreenButton.setDisable(false);
+            fantasyStandingsScreenButton.setDisable(false);
+            draftScreenButton.setDisable(false);
+            sportScreenButton.setDisable(false);
+            
+        }
+    }
+    
+    public void handleSwitchMenuRequest(MenuScreen menuScreen){
+        workspacePane.setDisable(false);
+
+        
+        playersScreen.getScreen().setVisible(false);
+        menuScreen.getScreen().setVisible(true);
+        
+        
+//        ObservableList<Node>screenList = workspacePane.getChildren();
+//        
+//        for(int i = 0; i< screenList.size(); ++i){
+//            workspacePane.getChildren().get(i).setDisable(true);
+//        }
+//        
+//        workspacePane.getChildren().get(0).setDisable(false);
+        
+    }
+
+    public DraftDataManager getDraftDataManager() {
+        return draftDataManager;
     }
 
 }

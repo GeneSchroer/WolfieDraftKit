@@ -4,7 +4,6 @@ import static wdk.WDK_PropertyType.*;
 import wdk.data.DraftDataManager;
 import wdk.error.ErrorHandler;
 import wdk.file.JsonDraftFileManager;
-import wdk.file.DraftExporter;
 import wdk.gui.WDK_GUI;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +14,8 @@ import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import static wdk.WDK_StartUpConstants.*;
 import wdk.data.Draft;
+import static wdk.sports.baseball.WDK_BaseballStartUpConstants.JSON_FILE_PATH_HITTERS;
+import static wdk.sports.baseball.WDK_BaseballStartUpConstants.JSON_FILE_PATH_PITCHERS;
 import xml_utilities.InvalidXMLFileFormatException;
 
 /**
@@ -54,7 +55,11 @@ public class WolfieDraftKit extends Application {
                 // AND THIS ONE WILL DO THE draft WEB PAGE EXPORTING
                 //DraftExporter exporter = new DraftExporter(PATH_BASE, PATH_SITES);
                 
-                Draft startingDraft = jsonFileManager.loadStartingDraft(JSON_FILE_PATH_HITTERS, JSON_FILE_PATH_PITCHERS);
+                ArrayList<String> filePathList = new ArrayList();
+                filePathList.add(JSON_FILE_PATH_HITTERS);
+                filePathList.add(JSON_FILE_PATH_PITCHERS);
+                
+                Draft startingDraft = jsonFileManager.loadStartingDraft(filePathList);
                 
                 
                 // AND NOW GIVE ALL OF THIS STUFF TO THE GUI
