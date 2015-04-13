@@ -3,67 +3,59 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.gui.fantasy_teams_screen;
+package wdk.gui.sport_screen;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import wdk.WDK_PropertyType;
-import static wdk.WDK_PropertyType.FANTASY_TEAMS_LABEL;
 import wdk.gui.MenuScreen;
 import wdk.gui.StyleSheet;
-import static wdk.gui.StyleSheet.CLASS_BACKGROUND_PANE;
+import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
+import wdk.gui.players_screen.MixedPlayerTable;
 
 /**
  *
  * @author Work
  */
-public class FantasyTeamsScreen implements MenuScreen{
+
+
+public class SportScreen implements MenuScreen {
     private VBox mainWorkspacePane;
-    private Label headingLabel;
     
-    private VBox teamTablePane;
-    private PitcherTable hitterTable;
-    private HitterTable pitcherTable;
-    private ComboBox selectTeamComboBox;
-    private Button addTeamButton;
-    private Button removeTeamButton;
     
-    private Label teamNameLabel;
-    private TextField teamNameTextField;
-    private Label teamOwnerLabel;
-    private TextField teamOwnerTextField;
-    private GridPane topWorkspacePane;
-    private final Stage primaryStage;
     
-    public FantasyTeamsScreen(Stage initPrimaryStage){
-        primaryStage = initPrimaryStage;
-    }
-    public void updateTeamList(){
+    private GridPane    topWorkspacePane;
+    private Label       headingLabel;
+    private ComboBox    selectLeagueComboBox;
+    
+    
+    private MixedPlayerTable teamStatsTable;
+    
+    public SportScreen(Stage initPrimaryStage){
         
     }
 
     @Override
     public void initWorkspace() {
-        
-        
-        initTopWorkspace();
-        initHitterTable();
-        initPitcherTable();
-        initEventHandlers();
         mainWorkspacePane = new VBox();
+        try {
+            initTopWorkspace();
+        } catch (IOException ex) {
+            Logger.getLogger(SportScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        initBottomTable();
         mainWorkspacePane.getChildren().add(topWorkspacePane);
         mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
-        
-        
     }
 
     @Override
@@ -81,35 +73,35 @@ public class FantasyTeamsScreen implements MenuScreen{
         return mainWorkspacePane;
     }
 
-    private void initPitcherTable() {
-    }
-
-    private void initHitterTable() {
-    }
-
-    private void initTopWorkspace() {
+    private void initTopWorkspace() throws IOException {
         topWorkspacePane = new GridPane();
-        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.FANTASY_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL , 0, 0, 1, 1); 
+        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.MLB_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
+        selectLeagueComboBox = initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
         
     }
 
-    private void initEventHandlers() {
+    private void initBottomTable() {
     }
-    
-    
-    
     
     private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
         Label label = initLabel(labelProperty, styleClass);
         container.add(label, col, row, colSpan, rowSpan);
         return label;
     }
-     private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
+    private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String labelText = props.getProperty(labelProperty);
         Label label = new Label(labelText);
         label.getStyleClass().add(styleClass);
         return label;
+    }
+     private ComboBox initGridComboBox(GridPane container, int col, int row, int colSpan, int rowSpan) throws IOException {
+        ComboBox comboBox = new ComboBox();
+        container.add(comboBox, col, row, colSpan, rowSpan);
+        return comboBox;
+    }
+
+    public void reset() {
     }
 
     public void initGUI() {
@@ -117,7 +109,7 @@ public class FantasyTeamsScreen implements MenuScreen{
         initEventHandlers();
     }
 
-    public void reset() {
+    private void initEventHandlers() {
     }
-    
+
 }

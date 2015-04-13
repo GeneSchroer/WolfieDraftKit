@@ -1,9 +1,9 @@
 package wdk.gui;
 
 import wdk.gui.players_screen.PlayersScreen;
-import wdk.zzz.DraftScreen;
+import wdk.gui.draft_screen.DraftScreen;
 import wdk.gui.fantasy_standings_screen.FantasyStandingsScreen;
-import wdk.zzz.SportScreen;
+import wdk.gui.sport_screen.SportScreen;
 import wdk.gui.fantasy_teams_screen.FantasyTeamsScreen;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -233,6 +233,10 @@ public class WDK_GUI implements DraftDataView {
             This space to be filled in later homeworks
         */
         playersScreen.reset();
+        fantasyTeamsScreen.reset();
+        fantasyStandingsScreen.reset();
+        draftScreen.reset();
+        sportScreen.reset();
         
         draftController.enable(true);
     }
@@ -290,9 +294,9 @@ public class WDK_GUI implements DraftDataView {
         screenToolbarPane = new FlowPane();
 
         playersScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.PLAYERS_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        fantasyTeamsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_TEAMS_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        fantasyStandingsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_STANDINGS_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        draftScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.DRAFT_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
+        fantasyTeamsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_TEAMS_ICON, WDK_PropertyType.FANTASY_TEAMS_SCREEN_TOOLTIP, true);
+        fantasyStandingsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_STANDINGS_ICON, WDK_PropertyType.FANTASY_STANDINGS_SCREEN_TOOLTIP, true);
+        draftScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.DRAFT_ICON, WDK_PropertyType.DRAFT_SCREEN_TOOLTIP, true);
         sportScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.SPORT_ICON, WDK_PropertyType.SPORT_SCREEN_TOOLTIP, true);
     }
 
@@ -302,6 +306,13 @@ public class WDK_GUI implements DraftDataView {
         initMenuScreens();
         
         workspacePane.getChildren().add(playersScreen.getScreen());
+        workspacePane.getChildren().add(fantasyTeamsScreen.getScreen());
+        workspacePane.getChildren().add(fantasyStandingsScreen.getScreen());
+        workspacePane.getChildren().add(draftScreen.getScreen());
+        workspacePane.getChildren().add(sportScreen.getScreen());
+        
+        
+        handleSwitchMenuRequest(playersScreen);
         workspacePane.getStyleClass().add(CLASS_BACKGROUND_PANE);
         
     }
@@ -328,16 +339,16 @@ public class WDK_GUI implements DraftDataView {
             handleSwitchMenuRequest(playersScreen);
         });
         fantasyTeamsScreenButton.setOnAction(e -> {
-
+            handleSwitchMenuRequest(fantasyTeamsScreen);
         });
         fantasyStandingsScreenButton.setOnAction(e -> {
-
+            handleSwitchMenuRequest(fantasyStandingsScreen);
         });
         draftScreenButton.setOnAction(e -> {
-
+            handleSwitchMenuRequest(draftScreen);
         });
         sportScreenButton.setOnAction(e -> {
-
+            handleSwitchMenuRequest(sportScreen);
         });
         
         draftController = new DraftEditController();
@@ -378,10 +389,16 @@ public class WDK_GUI implements DraftDataView {
 
     private void initMenuScreens() {
         playersScreen = new PlayersScreen(primaryStage, draftDataManager.getDraft().getAvailablePlayers());
-        fantasyTeamsScreen
+        fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage);
+        fantasyStandingsScreen = new FantasyStandingsScreen(primaryStage);
+        draftScreen = new DraftScreen(primaryStage);
+        sportScreen = new SportScreen(primaryStage);
         
         playersScreen.initGUI();
         fantasyTeamsScreen.initGUI();
+        fantasyStandingsScreen.initGUI();
+        draftScreen.initGUI();
+        sportScreen.initGUI();
     }
 
     private Button initChildButton(Pane toolbar, WDK_PropertyType icon, WDK_PropertyType tooltip, boolean disabled) {
@@ -469,6 +486,11 @@ public class WDK_GUI implements DraftDataView {
 
         
         playersScreen.getScreen().setVisible(false);
+        fantasyTeamsScreen.getScreen().setVisible(false);
+        fantasyStandingsScreen.getScreen().setVisible(false);
+        draftScreen.getScreen().setVisible(false);
+        sportScreen.getScreen().setVisible(false);
+        
         menuScreen.getScreen().setVisible(true);
         
         

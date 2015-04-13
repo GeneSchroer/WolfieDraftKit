@@ -44,7 +44,7 @@
         <!-- TOOLTIPS FOR THE MENU SCREEN BUTTONS -->
         <property name="PLAYERS_SCREEN_TOOLTIP"             value="Available Players"></property>
         <property name="FANTASY_TEAMS_SCREEN_TOOLTIP"       value="Fantasy Teams"></property>
-        <property name="FANTASY_STANDINGS_SCREEN_TOOLTIP"   value="Fantasy Teams"></property>
+        <property name="FANTASY_STANDINGS_SCREEN_TOOLTIP"   value="Fantasy Standings"></property>
         <property name="DRAFT_SCREEN_TOOLTIP"               value="Draft Summary"></property>
         <property name="SPORT_SCREEN_TOOLTIP"               value="Profession Players"></property>
         
@@ -74,13 +74,13 @@
         <property name="SAVE_UNSAVED_WORK_MESSAGE"      value="Do you want to save your unsaved work first?"></property>
         <property name="REMOVE_PLAYER_MESSAGE"          value="Are you sure you wish to remove this Player?"></property>
         <property name="REMOVE_TEAM_MESSAGE"            value="Are you sure you wish to remove this Team?"></property>
-        <property name="REMOVE_TEAM_MESSAGE"            value="Are you sure you wish to remove this Team?"></property>
         
         <property name="AVAILABLE_PLAYER_LABEL"         value="Available Players"></property>
         <property name="PLAYER_SEARCH_LABEL"            value="Search"></property>
         <property name="FANTASY_TEAMS_LABEL"            value="Fantasy Teams"></property>
         <property name="FANTASY_STANDINGS_LABEL"        value="Fantasy Standings"></property>
         <property name="DRAFT_SUMMARY_LABEL"            value="Draft Summary"></property>
+        <property name="MLB_TEAMS_LABEL"                value="MLB Teams"></property>
         
         
         
