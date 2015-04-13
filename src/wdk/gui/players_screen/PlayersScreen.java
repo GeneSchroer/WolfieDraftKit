@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.gui;
+package wdk.gui.players_screen;
 
 import java.util.ArrayList;
 import java.util.List;
-import wdk.table.MixedPlayerTable;
+import wdk.gui.players_screen.MixedPlayerTable;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -26,9 +26,13 @@ import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import  wdk.WDK_PropertyType;
 import static wdk.WDK_StartUpConstants.*;
-import wdk.controller.PlayersScreenController;
+import wdk.gui.players_screen.PlayersScreenController;
 import wdk.data.Player;
 import wdk.data.Position;
+import wdk.gui.MenuScreen;
+import wdk.gui.MessageDialog;
+import wdk.gui.StyleSheet;
+import wdk.gui.YesNoCancelDialog;
 import static wdk.gui.StyleSheet.*;
 
 /**
@@ -43,7 +47,7 @@ public class PlayersScreen implements MenuScreen {
     
     
     /* The primary pane that is holding all of this */
-    private VBox playersScreenPane;
+    private VBox mainWorkspacePane;
     
     /* playersScreenPane is split into three broad segments, each holding
     blocks of UI controls */
@@ -106,11 +110,11 @@ public class PlayersScreen implements MenuScreen {
         initTopWorkspace();
         initCenterWorkspace();
         initBottomWorkspace();
-        playersScreenPane = new VBox();
-        playersScreenPane.getStyleClass().add(CLASS_BORDERED_PANE);
-        playersScreenPane.getChildren().add(topWorkspacePane);
-        playersScreenPane.getChildren().add(centerWorkspacePane);
-        playersScreenPane.getChildren().add(playersTable.getTable());
+        mainWorkspacePane = new VBox();
+        mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
+        mainWorkspacePane.getChildren().add(topWorkspacePane);
+        mainWorkspacePane.getChildren().add(centerWorkspacePane);
+        mainWorkspacePane.getChildren().add(playersTable.getTable());
         
     }
 
@@ -140,16 +144,16 @@ public class PlayersScreen implements MenuScreen {
 
     @Override
     public Pane getScreen() {
-        return playersScreenPane;
+        return mainWorkspacePane;
     }
     
      private void initTopWorkspace() {
         
         
         topWorkspacePane = new GridPane();
-        //topWorkspacePane.getStyleClass().add(CLASS_BORDERED_PANE);
+        //topWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
         addRemovePlayerBox = new HBox();
-        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.AVAILABLE_PLAYER_LABEL, CLASS_HEADING_LABEL, 0, 0, 1, 1);
+        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.AVAILABLE_PLAYER_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1);
         addPlayerButton = initChildButton(addRemovePlayerBox, WDK_PropertyType.ADD_ICON, WDK_PropertyType.ADD_PLAYER_TOOLTIP, false);
         removePlayerButton = initChildButton(addRemovePlayerBox, WDK_PropertyType.MINUS_ICON, WDK_PropertyType.REMOVE_PLAYER_TOOLTIP, false);
         topWorkspacePane.add(addRemovePlayerBox, 0, 1, 1, 1);
@@ -186,6 +190,9 @@ public class PlayersScreen implements MenuScreen {
     centerWorkspacePane.getChildren().add(selectOutfielderRadioButton);
     centerWorkspacePane.getChildren().add(selectUtilityRadioButton);
     centerWorkspacePane.getChildren().add(selectPitcherRadioButton);
+    
+    centerWorkspacePane.getStyleClass().add(CLASS_BORDERED_PANE);
+    
     }
 
    
@@ -198,36 +205,49 @@ public class PlayersScreen implements MenuScreen {
         registerTextFieldController(playerSearchTextField);
         selectAllRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "");
+            playersTable.statsSorted(false);
         });
         selectCatcherRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "C");
+            playersTable.statsSorted(true);
+
         });
         select1stBasemanRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "1B");
+            playersTable.statsSorted(true);
+
         });
         selectCornerInfielderRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "CI");
+            playersTable.statsSorted(true);
         });
         select3rdBasemanRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "3B");
+            playersTable.statsSorted(true);
         });
         select2ndBasemanRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "2B");
+            playersTable.statsSorted(true);
         });
         selectMiddleInfielderRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "MI");
+            playersTable.statsSorted(true);
         });
         selectShortstopRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "SS");
+            playersTable.statsSorted(true);
         });
         selectOutfielderRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "OF");
+            playersTable.statsSorted(true);
         });
         selectUtilityRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "U");
+            playersTable.statsSorted(true);
         });
         selectPitcherRadioButton.setOnAction(e->{
             playersScreenController.handleSelectPlayerTypeRequest(this, "P");
+            playersTable.statsSorted(true);
         });
         
     }
@@ -285,7 +305,7 @@ public class PlayersScreen implements MenuScreen {
     }
     
     
-    void reset() {
+    public void reset() {
         sortCriteriaToggleGroup.selectToggle(selectAllRadioButton);
         playerSearchTextField.clear();
     }
@@ -293,4 +313,5 @@ public class PlayersScreen implements MenuScreen {
      public List<Player> getAvailablePlayers() {
         return players;
     }
+     
 }

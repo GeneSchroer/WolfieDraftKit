@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.controller;
+package wdk.gui.players_screen;
 
 import javafx.stage.Stage;
 import wdk.data.Position;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import wdk.gui.PlayersScreen;
+import wdk.gui.players_screen.PlayersScreen;
 /**
  *
  * @author Work
@@ -64,6 +64,24 @@ public class PlayersScreenController {
         for(int i = 0; i < playerList.size(); ++i){
             String ln = playerList.get(i).getLastName();
             String fn = playerList.get(i).getFirstName();
+            
+            if(sortPosition.equalsIgnoreCase("CI")){
+                if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+                    ||fn.toLowerCase().startsWith(sp.toLowerCase()))
+                    && (playerList.get(i).getQualifiedPositions().contains("1B")
+                        ||playerList.get(i).getQualifiedPositions().contains("3B"))){
+                filteredList.add(playerList.get(i));
+                }
+            }
+            if(sortPosition.equalsIgnoreCase("MI")){
+                if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+                    ||fn.toLowerCase().startsWith(sp.toLowerCase()))
+                    && (playerList.get(i).getQualifiedPositions().contains("2B")
+                        ||playerList.get(i).getQualifiedPositions().contains("SS"))){
+                filteredList.add(playerList.get(i));
+                }
+            }
+            
             
             if( (ln.toLowerCase().startsWith(sp.toLowerCase())
                     ||fn.toLowerCase().startsWith(sp.toLowerCase()))

@@ -5,6 +5,8 @@
  */
 package wdk.data;
 
+import java.text.DecimalFormat;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -23,7 +25,8 @@ public class Pitcher extends Player{
     IntegerProperty hits;
     IntegerProperty basesOnBalls;
     IntegerProperty strikeouts;
-    
+    DoubleBinding   whip;
+    private final DoubleBinding earnedRunAverage;
     public Pitcher(){
         
         inningsPitched  = new SimpleDoubleProperty();
@@ -34,6 +37,33 @@ public class Pitcher extends Player{
         basesOnBalls    = new SimpleIntegerProperty();
         strikeouts      = new SimpleIntegerProperty();
         
+        earnedRunAverage             = new DoubleBinding(){
+            {
+                super.bind(earnedRuns, inningsPitched);
+            }
+            @Override
+            protected double computeValue() {
+                if(inningsPitched.getValue() == 0)
+                    return 0;
+                
+                Double era = Double.parseDouble(DecimalFormat.getInstance().format(9 * (earnedRuns.getValue() / inningsPitched.getValue())));
+                return era;
+            }
+            
+        };
+        
+        whip            = new DoubleBinding(){
+            {
+                super.bind(basesOnBalls, hits, inningsPitched);
+            }
+            @Override
+            protected double computeValue() {
+                if(inningsPitched.getValue() == 0)
+                    return 0;
+                Double w = Double.parseDouble(DecimalFormat.getInstance().format((basesOnBalls.getValue() + hits.getValue())/inningsPitched.getValue()));
+                return w;
+            }
+        };
     }
     
     public void setInningsPitched(double ip){
@@ -118,6 +148,14 @@ public class Pitcher extends Player{
     public IntegerProperty strikeoutsProperty(){
         return strikeouts;
     }
+    
+    public DoubleProperty whipProperty(){
+        return new SimpleDoubleProperty(whip.getValue());
+    }
+    public DoubleProperty earnedRunAverageProperty(){
+        return new SimpleDoubleProperty(earnedRunAverage.getValue());
+    }
+    
     
    
 }

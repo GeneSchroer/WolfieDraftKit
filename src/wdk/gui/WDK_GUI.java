@@ -1,9 +1,10 @@
 package wdk.gui;
 
+import wdk.gui.players_screen.PlayersScreen;
 import wdk.zzz.DraftScreen;
-import wdk.zzz.FantasyStandingsScreen;
+import wdk.gui.fantasy_standings_screen.FantasyStandingsScreen;
 import wdk.zzz.SportScreen;
-import wdk.zzz.FantasyTeamsScreen;
+import wdk.gui.fantasy_teams_screen.FantasyTeamsScreen;
 import java.io.IOException;
 import java.util.ArrayList;
 import javafx.collections.ObservableList;
@@ -41,6 +42,7 @@ import wdk.controller.DraftEditController;
 import wdk.controller.FileController;
 import wdk.file.DraftFileManager;
 import wdk.file.JsonDraftFileManager;
+import static wdk.gui.StyleSheet.CLASS_BACKGROUND_PANE;
 import static wdk.gui.StyleSheet.CLASS_BORDERED_PANE;
 import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
 
@@ -213,7 +215,14 @@ public class WDK_GUI implements DraftDataView {
         /* Showtime! */
 
     }
-
+    
+    /**
+     * This function takes all of the data out of the courseToReload 
+     * argument and loads its values into the user interface controls.
+     * 
+     * @param draftToReload The Course whose data we'll load into the GUI.
+     */
+    @Override
     public void reloadDraft(Draft draftToReload) {
         if (!workspaceActivated) {
             activateWorkspace();
@@ -247,11 +256,20 @@ public class WDK_GUI implements DraftDataView {
         // NOTE THAT THE NEW, LOAD, AND EXIT BUTTONS
         // ARE NEVER DISABLED SO WE NEVER HAVE TO TOUCH THEM
     }
-
+    /**
+     * This function loads all the values currently in the user interface
+     * into the course argument.
+     * 
+     * @param draft The course to be updated using the data from the UI controls.
+     */
     public void updateDraftInfo(Draft draft) {
-
+//        This will be added to in HW6
     }
 
+     /****************************************************************************/
+    /* The private methods used to initialze the GUI. */
+    /****************************************************************************/
+    
     private void initDialogs() {
         messageDialog = new MessageDialog(primaryStage, CLOSE_BUTTON_LABEL);
         yesNoCancelDialog = new YesNoCancelDialog(primaryStage);
@@ -279,10 +297,13 @@ public class WDK_GUI implements DraftDataView {
     }
 
     private void initWorkspace() {
-        playersScreen = new PlayersScreen(primaryStage, draftDataManager.getDraft().getAvailablePlayers());
-        playersScreen.initGUI();
         workspacePane = new StackPane();
+        
+        initMenuScreens();
+        
         workspacePane.getChildren().add(playersScreen.getScreen());
+        workspacePane.getStyleClass().add(CLASS_BACKGROUND_PANE);
+        
     }
 
     private void initEventHandlers() {
@@ -344,7 +365,6 @@ public class WDK_GUI implements DraftDataView {
         // HAS BEEN CONSTRUCTED, BUT WON'T BE ADDED UNTIL
         // THE USER STARTS EDITING A draft
         wdkPane = new BorderPane();
-        wdkPane.getStyleClass().add(CLASS_BORDERED_PANE);
         wdkPane.setTop(fileToolbarPane);
         wdkPane.setBottom(screenToolbarPane);
         primaryScene = new Scene(wdkPane);
@@ -356,8 +376,12 @@ public class WDK_GUI implements DraftDataView {
         primaryStage.show();
     }
 
-    private void initMenuSceens() {
+    private void initMenuScreens() {
+        playersScreen = new PlayersScreen(primaryStage, draftDataManager.getDraft().getAvailablePlayers());
+        fantasyTeamsScreen
+        
         playersScreen.initGUI();
+        fantasyTeamsScreen.initGUI();
     }
 
     private Button initChildButton(Pane toolbar, WDK_PropertyType icon, WDK_PropertyType tooltip, boolean disabled) {

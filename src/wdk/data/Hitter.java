@@ -5,8 +5,12 @@
  */
 package wdk.data;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.StringProperty;
 
@@ -22,7 +26,7 @@ public class Hitter extends Player{
     IntegerProperty homeRuns;
     IntegerProperty runsBattedIn;
     IntegerProperty stolenBases;
-    
+    DoubleBinding battingAverage;
     public Hitter(){
         
         atBat           = new SimpleIntegerProperty();
@@ -31,6 +35,19 @@ public class Hitter extends Player{
         homeRuns        = new SimpleIntegerProperty();
         runsBattedIn    = new SimpleIntegerProperty();
         stolenBases     = new SimpleIntegerProperty();
+        battingAverage  = new DoubleBinding(){
+            {
+                super.bind(hits, atBat);
+            }
+            @Override
+            protected double computeValue() {
+                if(atBat.getValue() == 0)
+                    return 0;
+                
+                Double ba = Double.parseDouble(DecimalFormat.getInstance().format((double)hits.getValue()/atBat.getValue())); 
+                return ba;
+            }
+        };
     }
     
     public void setAtBat(int ab){
@@ -99,5 +116,8 @@ public class Hitter extends Player{
     
     public IntegerProperty stolenBasesProperty(){
         return stolenBases;
+    }
+    public DoubleProperty battingAverageProperty(){
+        return new SimpleDoubleProperty(battingAverage.getValue());
     }
 }

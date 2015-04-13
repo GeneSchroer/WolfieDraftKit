@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.zzz;
+package wdk.gui.fantasy_standings_screen;
 
 /**
  *

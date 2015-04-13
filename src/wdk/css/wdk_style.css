@@ -21,12 +21,30 @@
     -fx-progress-color:#ff33cc;
 }
 
-// CSS CLASS FOR OUR BIG PANES
-.bordered_pane {
-    -fx-background-color: #aaaaff;
+// CSS CLASS FOR OUR BACKGROUND PANES
+.background_pane {
+    -fx-background-color: #f08080;
     -fx-background-radius: 5.0;
     -fx-padding: 15;
     -fx-spacing: 10;
+    -fx-border-width: 2px;
+    -fx-border-color: #7777dd;
+}
+// CSS CLASS FOR OUR BIG PANES
+.bordered_pane {
+    -fx-background-color: #f08080;
+    -fx-background-radius: 5.0;
+    -fx-padding: 15;
+    -fx-spacing: 15;
+    -fx-border-width: 2px;
+    -fx-border-color: #8b0000;
+}
+// CSS CLASS FOR OUR BIG PANES
+.screen_background_pane {
+    -fx-background-color: #dcdcdc;
+    -fx-background-radius: 5.0;
+    //-fx-padding: 15;
+   // -fx-spacing: 10;
     -fx-border-width: 2px;
     -fx-border-color: #7777dd;
 }

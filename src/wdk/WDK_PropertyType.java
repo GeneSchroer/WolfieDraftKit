@@ -75,6 +75,10 @@ public enum WDK_PropertyType {
     //Figure these out later
     
     AVAILABLE_PLAYER_LABEL,
+    FANTASY_TEAMS_LABEL,
+    FANTASY_STANDINGS_LABEL,
+    DRAFT_LABEL,
+    SPORT_LABEL,
     PLAYER_SEARCH_LABEL, 
     PLAYERS_ICON, 
     FANTASY_TEAMS_ICON, 
