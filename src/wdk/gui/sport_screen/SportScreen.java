@@ -8,7 +8,6 @@ package wdk.gui.sport_screen;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -16,10 +15,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
-import wdk.WDK_PropertyType;
+import wdk.GeneralPropertyType;
 import wdk.gui.MenuScreen;
 import wdk.gui.StyleSheet;
-import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
 import wdk.gui.players_screen.MixedPlayerTable;
 
@@ -59,23 +57,13 @@ public class SportScreen implements MenuScreen {
     }
 
     @Override
-    public void initTable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void initUIControls() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Pane getScreen() {
         return mainWorkspacePane;
     }
 
     private void initTopWorkspace() throws IOException {
         topWorkspacePane = new GridPane();
-        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.MLB_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
+        headingLabel = initGridLabel(topWorkspacePane, GeneralPropertyType.MLB_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
         selectLeagueComboBox = initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
         
     }
@@ -83,12 +71,12 @@ public class SportScreen implements MenuScreen {
     private void initBottomTable() {
     }
     
-    private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
+    private Label initGridLabel(GridPane container, GeneralPropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
         Label label = initLabel(labelProperty, styleClass);
         container.add(label, col, row, colSpan, rowSpan);
         return label;
     }
-    private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
+    private Label initLabel(GeneralPropertyType labelProperty, String styleClass) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String labelText = props.getProperty(labelProperty);
         Label label = new Label(labelText);
@@ -104,12 +92,14 @@ public class SportScreen implements MenuScreen {
     public void reset() {
     }
 
+    @Override
     public void initGUI() {
         initWorkspace();
         initEventHandlers();
     }
 
-    private void initEventHandlers() {
+    @Override
+    public void initEventHandlers() {
     }
 
 }

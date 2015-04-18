@@ -67,27 +67,27 @@ public class ErrorHandler {
     
 
     public void handleNewdraftError() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Error occured during New Draft"); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void handleLoaddraftError() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Error occured during Load Draft"); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void handleSavedraftError() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Error occured during Save Draft"); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void handleViewSchedulePageError(String draftURL) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Error occured during View Schedule Page"); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void handleExportDraftError(Draft draftToExport) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Error occured during Export Draft"); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void handleExitError() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Error occured during Exit Draft"); //To change body of generated methods, choose Tools | Templates.
     }
     public void handlePropertiesFileError() {
         messageDialog.show(properties.getProperty(PROPERTIES_FILE_ERROR_MESSAGE));

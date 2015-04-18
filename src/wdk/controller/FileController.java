@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
-import static wdk.WDK_PropertyType.*;
+import static wdk.GeneralPropertyType.*;
 import static wdk.WDK_StartUpConstants.PATH_DRAFTS;
 import wdk.data.Draft;
 import wdk.data.DraftDataManager;

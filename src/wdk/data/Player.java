@@ -7,17 +7,14 @@ package wdk.data;
 
 import java.awt.Image;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  *
  * @author Work
  */
-public class Player {
+public class Player implements Comparable {
     StringProperty proTeam;
     StringProperty lastName;
     StringProperty firstName;
@@ -37,7 +34,7 @@ public class Player {
     Image image;
    
     
-    public Player(){
+    public Player() {
         proTeam                = new SimpleStringProperty();
         lastName            = new SimpleStringProperty();
         firstName           = new SimpleStringProperty();
@@ -163,6 +160,11 @@ public class Player {
         return image;
     }
     
+    @Override
+    public int compareTo(Object obj){
+        Player otherPlayer = (Player)obj;
+        return getLastName().compareTo(otherPlayer.getLastName());
+    }
    
 }
 

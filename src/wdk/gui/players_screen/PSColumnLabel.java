@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.data;
+package wdk.gui.players_screen;
 
 /**
  *
  * @author Work
  */
-class IntergerProperty {
-    
+public enum PSColumnLabel {
+    ALL,
+    HITTER,
+    PITCHER
 }

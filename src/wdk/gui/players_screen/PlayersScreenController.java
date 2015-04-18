@@ -65,6 +65,16 @@ public class PlayersScreenController {
             String ln = playerList.get(i).getLastName();
             String fn = playerList.get(i).getFirstName();
             
+            
+            if(sortPosition.equalsIgnoreCase("U")){
+                if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+                    ||fn.toLowerCase().startsWith(sp.toLowerCase()))
+                    && !playerList.get(i).getQualifiedPositions().contains("P")){
+                filteredList.add(playerList.get(i));
+                }
+            }
+            
+            else{
             if(sortPosition.equalsIgnoreCase("CI")){
                 if( (ln.toLowerCase().startsWith(sp.toLowerCase())
                     ||fn.toLowerCase().startsWith(sp.toLowerCase()))
@@ -81,12 +91,12 @@ public class PlayersScreenController {
                 filteredList.add(playerList.get(i));
                 }
             }
-            
-            
+                        
             if( (ln.toLowerCase().startsWith(sp.toLowerCase())
                     ||fn.toLowerCase().startsWith(sp.toLowerCase()))
                     && playerList.get(i).getQualifiedPositions().contains(sortPosition)){
                 filteredList.add(playerList.get(i));
+            }
             }
         }
         

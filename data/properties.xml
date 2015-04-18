@@ -25,6 +25,9 @@
         <property name="DRAFT_ICON"                 value="Draft.png"></property>
         <property name="SPORT_ICON"                 value="Sport.png"></property>
         
+        <property name="START_ICON"                 value="Start.png"></property>
+        <property name="PAUSE_ICON"                 value="Pause.png"></property>
+        
         
         
         
@@ -56,9 +59,12 @@
         <property name="PLAYER_AGE_LABEL"               value="Age:"></property>
         <property name="PLAYER_NATIONALITY_LABEL"       value="Year:"></property>
         <property name="PLAYER_NOTES_LABEL"             value="Notes:"></property>
-        <property name="TEAM_NAME_LABEL"                value="Title:"></property>
-        <property name="TEAM_NAME_LABEL"                value="Owner:"></property>
-        <property name="TEAM_NAME_LABEL"                value="Title:"></property>
+        <property name="TEAM_NAME_LABEL"                value="Name:"></property>
+        <property name="TEAM_OWNER_LABEL"               value="Owner:"></property>
+        <property name="TEAM_SELECT_LABEL"              value="Select Team:"></property>
+        <property name="DRAFT_BEST_PLAYER_TOOLTIP"      value="Draft the best player"></property>
+        <property name="START_AUTOMATED_DRAFT_TOOLTIP"  value="Start an automated draft"></property>
+        <property name="PAUSE_AUTOMATED_DRAFT_TOOLTIP"  value="Pause an automated draft"></property>
         
         <!-- ERROR MESSAGES -->
         <property name="NOT_A_VALID_AGE_MESSAGE"        value="The This is not a valid age"></property>

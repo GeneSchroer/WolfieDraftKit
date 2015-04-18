@@ -22,7 +22,7 @@ public class Team {
     private StringProperty owner;
     private ObservableList<Hitter> hitterLine;
     private ObservableList<Pitcher> pitcherLine;
-    private ObservableList<? extends Player> taxiList;
+    private ObservableList<Player> taxiList;
     private IntegerProperty salaryLeft;
     private DoubleProperty moneyPerPlayer;
     
@@ -31,6 +31,8 @@ public class Team {
     }
     
     public Team(String name, String owner){
+        this.name.set(name);
+        this.owner.set(owner);
         
     }
     

@@ -5,6 +5,7 @@
  */
 package wdk.data;
 
+import java.util.Collections;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -31,6 +32,7 @@ public class Draft {
     }
     public void addPlayer(Player playerToAdd){
         availablePlayers.add(playerToAdd);
+        
     }
     public Player removePlayer(Player playerToRemove){
         availablePlayers.remove(playerToRemove);

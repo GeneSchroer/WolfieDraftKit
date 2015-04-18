@@ -9,18 +9,21 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
-import wdk.WDK_PropertyType;
+import wdk.GeneralPropertyType;
 import wdk.gui.MenuScreen;
 import wdk.gui.StyleSheet;
 import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
+import wdk.util.MethodList;
 
 /**
  *
@@ -36,6 +39,10 @@ public class DraftScreen implements MenuScreen {
     private GridPane    topWorkspacePane;
     private Label       headingLabel;
     private ComboBox    selectTeamComboBox;
+    private HBox automatedDraftBox;
+    private Button draftBestPlayerButton;
+    private Button startAutomatedDraftButton;
+    private Button pauseAutomatedDraftButton;
     
     
     //private TeamStatsTable teamStatsTable;
@@ -57,16 +64,7 @@ public class DraftScreen implements MenuScreen {
         mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
     }
 
-    @Override
-    public void initTable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void initUIControls() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+  
     @Override
     public Pane getScreen() {
         return mainWorkspacePane;
@@ -74,39 +72,27 @@ public class DraftScreen implements MenuScreen {
 
     private void initTopWorkspace() throws IOException {
         topWorkspacePane = new GridPane();
-        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.DRAFT_SUMMARY_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
-        selectTeamComboBox = initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
-        
+        headingLabel = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.DRAFT_SUMMARY_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
+        automatedDraftBox = new HBox();
+        draftBestPlayerButton = MethodList.initChildButton(automatedDraftBox, GeneralPropertyType.ADD_ICON, GeneralPropertyType.DRAFT_BEST_PLAYER_TOOLTIP, true);
+        startAutomatedDraftButton = MethodList.initChildButton(automatedDraftBox, GeneralPropertyType.START_ICON, GeneralPropertyType.START_AUTOMATED_DRAFT_TOOLTIP, false);
+        pauseAutomatedDraftButton = MethodList.initChildButton(automatedDraftBox, GeneralPropertyType.PAUSE_ICON, GeneralPropertyType.PAUSE_AUTOMATED_DRAFT_TOOLTIP, true);
+        topWorkspacePane.add(automatedDraftBox, 0, 1);
+    
     }
 
     private void initBottomTable() {
     }
     
-    private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
-        Label label = initLabel(labelProperty, styleClass);
-        container.add(label, col, row, colSpan, rowSpan);
-        return label;
-    }
-    private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
-        PropertiesManager props = PropertiesManager.getPropertiesManager();
-        String labelText = props.getProperty(labelProperty);
-        Label label = new Label(labelText);
-        label.getStyleClass().add(styleClass);
-        return label;
-    }
-     private ComboBox initGridComboBox(GridPane container, int col, int row, int colSpan, int rowSpan) throws IOException {
-        ComboBox comboBox = new ComboBox();
-        container.add(comboBox, col, row, colSpan, rowSpan);
-        return comboBox;
-    }
-
     public void reset() {
     }
+    @Override
     public void initGUI() {
         initWorkspace();
         initEventHandlers();
     }
 
-    private void initEventHandlers() {
+    @Override
+    public void initEventHandlers() {
     }
 }

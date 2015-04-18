@@ -11,7 +11,7 @@ import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
-import static wdk.WDK_PropertyType.PROP_APP_TITLE;
+import static wdk.GeneralPropertyType.PROP_APP_TITLE;
 import static wdk.WDK_StartUpConstants.PATH_DATA;
 import static wdk.WDK_StartUpConstants.PROPERTIES_FILE_NAME;
 import static wdk.WDK_StartUpConstants.PROPERTIES_SCHEMA_FILE_NAME;

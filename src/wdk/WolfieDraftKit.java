@@ -1,13 +1,12 @@
 package wdk;
 
-import static wdk.WDK_PropertyType.*;
+import static wdk.GeneralPropertyType.*;
 import wdk.data.DraftDataManager;
 import wdk.error.ErrorHandler;
 import wdk.file.JsonDraftFileManager;
 import wdk.gui.WDK_GUI;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.stage.Stage;
@@ -96,6 +95,7 @@ public class WolfieDraftKit extends Application {
             PropertiesManager props = PropertiesManager.getPropertiesManager();
             props.addProperty(PropertiesManager.DATA_PATH_PROPERTY, PATH_DATA);
             props.loadProperties(PROPERTIES_FILE_NAME, PROPERTIES_SCHEMA_FILE_NAME);
+            props.loadProperties(PROPERTIES_FILE_NAME, PROPERTIES_SCHEMA_FILE_NAME);
             return true;
        } catch (InvalidXMLFileFormatException ixmlffe) {
             // SOMETHING WENT WRONG INITIALIZING THE XML FILE
@@ -110,9 +110,9 @@ public class WolfieDraftKit extends Application {
      * it will simply call launch, which gets JavaFX rolling, resulting in
      * sending the properly initialized Stage (i.e. window) to our start
      * method in this class.
+     * @param args
      */
     public static void main(String[] args) {
-        Locale.setDefault(Locale.US);
         launch(args);
     }
 }

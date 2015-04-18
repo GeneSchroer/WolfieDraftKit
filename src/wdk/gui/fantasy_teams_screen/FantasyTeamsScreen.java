@@ -5,22 +5,27 @@
  */
 package wdk.gui.fantasy_teams_screen;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
-import wdk.WDK_PropertyType;
-import static wdk.WDK_PropertyType.FANTASY_TEAMS_LABEL;
+import wdk.GeneralPropertyType;
+import static wdk.GeneralPropertyType.FANTASY_TEAMS_LABEL;
 import wdk.gui.MenuScreen;
 import wdk.gui.StyleSheet;
 import static wdk.gui.StyleSheet.CLASS_BACKGROUND_PANE;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
+import wdk.util.MethodList;
 
 /**
  *
@@ -30,18 +35,29 @@ public class FantasyTeamsScreen implements MenuScreen{
     private VBox mainWorkspacePane;
     private Label headingLabel;
     
-    private VBox teamTablePane;
-    private PitcherTable hitterTable;
-    private HitterTable pitcherTable;
+    
+    /* Panes and controls for top pane */
+    private GridPane topWorkspacePane;
+    
+    private Label selectTeamLabel;
     private ComboBox selectTeamComboBox;
+    private HBox addRemoveTeamBox;
     private Button addTeamButton;
     private Button removeTeamButton;
-    
     private Label teamNameLabel;
     private TextField teamNameTextField;
     private Label teamOwnerLabel;
     private TextField teamOwnerTextField;
-    private GridPane topWorkspacePane;
+    
+    
+    
+    /* Hitter and pitcher tables */
+    private VBox teamTablePane;
+    private PitcherTable hitterTable;
+    private HitterTable pitcherTable;
+    
+    
+    
     private final Stage primaryStage;
     
     public FantasyTeamsScreen(Stage initPrimaryStage){
@@ -52,7 +68,7 @@ public class FantasyTeamsScreen implements MenuScreen{
     }
 
     @Override
-    public void initWorkspace() {
+    public void initWorkspace() throws IOException {
         
         
         initTopWorkspace();
@@ -67,16 +83,6 @@ public class FantasyTeamsScreen implements MenuScreen{
     }
 
     @Override
-    public void initTable() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void initUIControls() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Pane getScreen() {
         return mainWorkspacePane;
     }
@@ -87,37 +93,48 @@ public class FantasyTeamsScreen implements MenuScreen{
     private void initHitterTable() {
     }
 
-    private void initTopWorkspace() {
-        topWorkspacePane = new GridPane();
-        headingLabel = initGridLabel(topWorkspacePane, WDK_PropertyType.FANTASY_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL , 0, 0, 1, 1); 
+    private void initTopWorkspace() throws IOException {
+        topWorkspacePane    = new GridPane();
+        headingLabel        = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.FANTASY_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
+        selectTeamLabel     = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.TEAM_SELECT_LABEL, StyleSheet.CLASS_SUBHEADING_LABEL, 0, 1, 1, 1); 
+        selectTeamComboBox  = MethodList.initGridComboBox(topWorkspacePane, 1, 1, 1, 1);
+        addRemoveTeamBox    = new HBox();
+        addTeamButton       = MethodList.initChildButton(addRemoveTeamBox, GeneralPropertyType.ADD_ICON, GeneralPropertyType.ADD_TEAM_TOOLTIP, false);
+        removeTeamButton    = MethodList.initChildButton(addRemoveTeamBox, GeneralPropertyType.MINUS_ICON, GeneralPropertyType.REMOVE_TEAM_TOOLTIP, false);
+        topWorkspacePane.add(addRemoveTeamBox, 0, 2, 1, 1);
+        teamNameLabel       = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.TEAM_NAME_LABEL, StyleSheet.CLASS_SUBHEADING_LABEL, 1, 2, 1, 1); 
+        teamNameTextField   = MethodList.initGridTextField(topWorkspacePane, 10, null, true, 2, 2, 1, 1);
+        teamOwnerLabel      = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.TEAM_OWNER_LABEL, StyleSheet.CLASS_SUBHEADING_LABEL, 3, 2, 1, 1); 
+        teamOwnerTextField  = MethodList.initGridTextField(topWorkspacePane, 10, null, true, 4, 2, 1, 1);
+
+    }
+
+    @Override
+    public void initEventHandlers() {
+        addTeamButton.setOnAction(e -> {
+            //   fileController.handleExportDraftRequest(this);
+        });
+        
+        removeTeamButton.setOnAction(e -> {
+            //   fileController.handleExportDraftRequest(this);
+        });
+        
+        
         
     }
 
-    private void initEventHandlers() {
-    }
-    
-    
-    
-    
-    private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
-        Label label = initLabel(labelProperty, styleClass);
-        container.add(label, col, row, colSpan, rowSpan);
-        return label;
-    }
-     private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
-        PropertiesManager props = PropertiesManager.getPropertiesManager();
-        String labelText = props.getProperty(labelProperty);
-        Label label = new Label(labelText);
-        label.getStyleClass().add(styleClass);
-        return label;
-    }
-
+    @Override
     public void initGUI() {
-        initWorkspace();
+        try {
+            initWorkspace();
+        } catch (IOException ex) {
+            Logger.getLogger(FantasyTeamsScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initEventHandlers();
     }
 
     public void reset() {
+        
     }
     
 }

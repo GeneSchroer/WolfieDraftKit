@@ -5,20 +5,19 @@
  */
 package wdk.gui.players_screen;
 
-import java.net.URL;
-import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableCell;
+import javafx.event.EventHandler;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
-import javafx.util.Pair;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
 import wdk.data.Player;
@@ -30,23 +29,23 @@ import wdk.data.Player;
 public class MixedPlayerTable {
     
     private TableView<Player> playerTable;
-    private TableColumn firstNameColumn;
-    private TableColumn lastNameColumn;
-    private TableColumn proTeamColumn;
-    private TableColumn positionsColumn;
-    private TableColumn yearOfBirthColumn;
+    private TableColumn<Player, String> firstNameColumn;
+    private TableColumn<Player, String> lastNameColumn;
+    private TableColumn<Player, String> proTeamColumn;
+    private TableColumn<Player, String> positionsColumn;
+    private TableColumn<Player, String> yearOfBirthColumn;
     private TableColumn<Player, Integer> runsWinsColumn;
-    private TableColumn homeRunsSavesColumn;
-    private TableColumn runsBattedInStrikeoutsColumn;
-    private TableColumn stolenBasesEarnedRunAverageColumn;
-    private TableColumn battingAverageWhipColumn;
-    private TableColumn estimatedValueColumn;
-    private TableColumn notesColumn;
-    private TableColumn winsColumn;
+    private TableColumn<Player, Integer> homeRunsSavesColumn;
+    private TableColumn<Player, Integer> runsBattedInStrikeoutsColumn;
+    private TableColumn<Player, Double> stolenBasesEarnedRunAverageColumn;
+    private TableColumn<Player, Double> battingAverageWhipColumn;
+    private TableColumn<Player, String> estimatedValueColumn;
+    private TableColumn<Player, String> notesColumn;
     
     public MixedPlayerTable(List<Player> playerList){
         initTable();
         playerTable.setItems((ObservableList) playerList);
+        Collections.sort(playerList);
     }
 // NOW SETUP THE TABLE COLUMNS
     private void initTable() {    
@@ -56,22 +55,20 @@ public class MixedPlayerTable {
         proTeamColumn                       = new TableColumn("Pro Team");
         positionsColumn                     = new TableColumn("Positions");
         yearOfBirthColumn                   = new TableColumn("Year Of Birth");
-        runsWinsColumn                          = new TableColumn("R/W");
-        winsColumn                          = new TableColumn();
-        
-        homeRunsSavesColumn                = new TableColumn("HR/SV");
-        runsBattedInStrikeoutsColumn       = new TableColumn("RBI/K");
-        stolenBasesEarnedRunAverageColumn  = new TableColumn("SB/ERA");
-        battingAverageWhipColumn           = new TableColumn("BA/WHIP");
+        runsWinsColumn                      = new TableColumn("R/W");
+        homeRunsSavesColumn                 = new TableColumn("HR/SV");
+        runsBattedInStrikeoutsColumn        = new TableColumn("RBI/K");
+        stolenBasesEarnedRunAverageColumn   = new TableColumn("SB/ERA");
+        battingAverageWhipColumn            = new TableColumn("BA/WHIP");
         estimatedValueColumn                = new TableColumn("Estimated Value");
         notesColumn                         = new TableColumn("Notes");
         notesColumn.setSortable(false);
         
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<String, String>("firstName"));
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<String, String>("lastName"));
-        proTeamColumn.setCellValueFactory(new PropertyValueFactory<String, String>("proTeam"));
-        positionsColumn.setCellValueFactory(new PropertyValueFactory<String, String>("qualifiedPositions")); 
-        yearOfBirthColumn.setCellValueFactory(new PropertyValueFactory<String, String>("yearOfBirth"));
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("firstName"));
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("lastName"));
+        proTeamColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("proTeam"));
+        positionsColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("qualifiedPositions")); 
+        yearOfBirthColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("yearOfBirth"));
         
         runsWinsColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Player,Integer>,ObservableValue<Integer>>(){
             @Override
@@ -158,11 +155,21 @@ public class MixedPlayerTable {
         
         
         
-        estimatedValueColumn.setCellValueFactory(new PropertyValueFactory<String, String>("estimatedValue"));
-        notesColumn.setCellValueFactory(new PropertyValueFactory<String, String>("notes"));
-        
+        estimatedValueColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("estimatedValue"));
+        notesColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("notes"));
+        notesColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         notesColumn.setEditable(true);
         
+        notesColumn.setOnEditCommit(new EventHandler<CellEditEvent<Player, String>>() {
+        @Override
+        public void handle(CellEditEvent<Player, String> t) {
+            ((Player) t.getTableView().getItems().get(
+                t.getTablePosition().getRow())
+                ).setNotes(t.getNewValue());
+        }
+    }
+);
+        playerTable.setEditable(true);
         playerTable.getColumns().add(firstNameColumn);
         playerTable.getColumns().add(lastNameColumn);
         playerTable.getColumns().add(proTeamColumn);
@@ -175,8 +182,6 @@ public class MixedPlayerTable {
         playerTable.getColumns().add(battingAverageWhipColumn);
         playerTable.getColumns().add(estimatedValueColumn);
         playerTable.getColumns().add(notesColumn);
-        winsColumn.setVisible(false);
-        playerTable.getColumns().add(winsColumn);
         
         
         
@@ -196,6 +201,34 @@ public class MixedPlayerTable {
             runsBattedInStrikeoutsColumn.setSortable(isSorted);
             stolenBasesEarnedRunAverageColumn.setSortable(isSorted);
             battingAverageWhipColumn.setSortable(isSorted);
-        
     }
+
+    public void setColumnLabels(PSColumnLabel pSCL) {
+        if(pSCL == PSColumnLabel.ALL){
+        runsWinsColumn.setText("R/W");
+        homeRunsSavesColumn.setText("HR/SV");
+        runsBattedInStrikeoutsColumn.setText("RBI/K");
+        stolenBasesEarnedRunAverageColumn.setText("SB/ERA");
+        battingAverageWhipColumn.setText("BA/WHIP");
+        }
+        else if(pSCL == PSColumnLabel.HITTER){
+            runsWinsColumn.setText("R");
+            homeRunsSavesColumn.setText("HR");
+            runsBattedInStrikeoutsColumn.setText("RBI");
+            stolenBasesEarnedRunAverageColumn.setText("SB");
+            battingAverageWhipColumn.setText("BA");    
+        }
+        else if(pSCL == PSColumnLabel.PITCHER){
+        runsWinsColumn.setText("W");
+        homeRunsSavesColumn.setText("SV");
+        runsBattedInStrikeoutsColumn.setText("K");
+        stolenBasesEarnedRunAverageColumn.setText("ERA");
+        battingAverageWhipColumn.setText("WHIP");
+        }
+    }
+    
+    
+    
+    
+    
 }

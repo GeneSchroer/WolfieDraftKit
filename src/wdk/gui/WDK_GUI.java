@@ -31,7 +31,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import wdk.WDK_StartUpConstants;
-import wdk.WDK_PropertyType;
+import wdk.GeneralPropertyType;
 import wdk.data.Draft;
 import wdk.data.DraftDataManager;
 import wdk.data.DraftDataView;
@@ -282,22 +282,22 @@ public class WDK_GUI implements DraftDataView {
     private void initFileToolbar() {
         fileToolbarPane = new FlowPane();
 
-        newDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.NEW_DRAFT_ICON, WDK_PropertyType.NEW_DRAFT_TOOLTIP, false);
-        loadDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.LOAD_DRAFT_ICON, WDK_PropertyType.LOAD_DRAFT_TOOLTIP, false);
-        saveDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.SAVE_DRAFT_ICON, WDK_PropertyType.SAVE_DRAFT_TOOLTIP, true);
-        exportDraftButton = initChildButton(fileToolbarPane, WDK_PropertyType.EXPORT_DRAFT_ICON, WDK_PropertyType.EXPORT_DRAFT_TOOLTIP, true);
-        exitButton = initChildButton(fileToolbarPane, WDK_PropertyType.EXIT_ICON, WDK_PropertyType.EXIT_TOOLTIP, false);
+        newDraftButton = initChildButton(fileToolbarPane, GeneralPropertyType.NEW_DRAFT_ICON, GeneralPropertyType.NEW_DRAFT_TOOLTIP, false);
+        loadDraftButton = initChildButton(fileToolbarPane, GeneralPropertyType.LOAD_DRAFT_ICON, GeneralPropertyType.LOAD_DRAFT_TOOLTIP, false);
+        saveDraftButton = initChildButton(fileToolbarPane, GeneralPropertyType.SAVE_DRAFT_ICON, GeneralPropertyType.SAVE_DRAFT_TOOLTIP, true);
+        exportDraftButton = initChildButton(fileToolbarPane, GeneralPropertyType.EXPORT_DRAFT_ICON, GeneralPropertyType.EXPORT_DRAFT_TOOLTIP, true);
+        exitButton = initChildButton(fileToolbarPane, GeneralPropertyType.EXIT_ICON, GeneralPropertyType.EXIT_TOOLTIP, false);
 
     }
 
     private void initScreenToolbar() {
         screenToolbarPane = new FlowPane();
 
-        playersScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.PLAYERS_ICON, WDK_PropertyType.PLAYERS_SCREEN_TOOLTIP, true);
-        fantasyTeamsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_TEAMS_ICON, WDK_PropertyType.FANTASY_TEAMS_SCREEN_TOOLTIP, true);
-        fantasyStandingsScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.FANTASY_STANDINGS_ICON, WDK_PropertyType.FANTASY_STANDINGS_SCREEN_TOOLTIP, true);
-        draftScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.DRAFT_ICON, WDK_PropertyType.DRAFT_SCREEN_TOOLTIP, true);
-        sportScreenButton = initChildButton(screenToolbarPane, WDK_PropertyType.SPORT_ICON, WDK_PropertyType.SPORT_SCREEN_TOOLTIP, true);
+        playersScreenButton = initChildButton(screenToolbarPane, GeneralPropertyType.PLAYERS_ICON, GeneralPropertyType.PLAYERS_SCREEN_TOOLTIP, true);
+        fantasyTeamsScreenButton = initChildButton(screenToolbarPane, GeneralPropertyType.FANTASY_TEAMS_ICON, GeneralPropertyType.FANTASY_TEAMS_SCREEN_TOOLTIP, true);
+        fantasyStandingsScreenButton = initChildButton(screenToolbarPane, GeneralPropertyType.FANTASY_STANDINGS_ICON, GeneralPropertyType.FANTASY_STANDINGS_SCREEN_TOOLTIP, true);
+        draftScreenButton = initChildButton(screenToolbarPane, GeneralPropertyType.DRAFT_ICON, GeneralPropertyType.DRAFT_SCREEN_TOOLTIP, true);
+        sportScreenButton = initChildButton(screenToolbarPane, GeneralPropertyType.SPORT_ICON, GeneralPropertyType.SPORT_SCREEN_TOOLTIP, true);
     }
 
     private void initWorkspace() {
@@ -401,7 +401,7 @@ public class WDK_GUI implements DraftDataView {
         sportScreen.initGUI();
     }
 
-    private Button initChildButton(Pane toolbar, WDK_PropertyType icon, WDK_PropertyType tooltip, boolean disabled) {
+    private Button initChildButton(Pane toolbar, GeneralPropertyType icon, GeneralPropertyType tooltip, boolean disabled) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String imagePath = "file:" + PATH_IMAGES + props.getProperty(icon.toString());
         Image buttonImage = new Image(imagePath);
@@ -414,7 +414,7 @@ public class WDK_GUI implements DraftDataView {
         return button;
     }
 
-    private Label initChildLabel(Pane container, WDK_PropertyType labelProperty, String styleClass) {
+    private Label initChildLabel(Pane container, GeneralPropertyType labelProperty, String styleClass) {
         Label label = initLabel(labelProperty, styleClass);
         container.getChildren().add(label);
         return label;
@@ -428,7 +428,7 @@ public class WDK_GUI implements DraftDataView {
     //private void initChildRadioButton
 
     //initChildToggleButton
-    private Label initGridLabel(GridPane container, WDK_PropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
+    private Label initGridLabel(GridPane container, GeneralPropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
         Label label = initLabel(labelProperty, styleClass);
         container.add(label, col, row, colSpan, rowSpan);
         return label;
@@ -449,7 +449,7 @@ public class WDK_GUI implements DraftDataView {
         return tf;
     }
 
-    private Label initLabel(WDK_PropertyType labelProperty, String styleClass) {
+    private Label initLabel(GeneralPropertyType labelProperty, String styleClass) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String labelText = props.getProperty(labelProperty);
         Label label = new Label(labelText);

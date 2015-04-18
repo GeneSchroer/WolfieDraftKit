@@ -6,13 +6,11 @@
 package wdk.data;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.StringProperty;
 
 /**
  *
