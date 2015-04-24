@@ -5,85 +5,46 @@
  */
 package wdk.gui.fantasy_standings_screen;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import properties_manager.PropertiesManager;
-import wdk.GeneralPropertyType;
+import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
-import wdk.gui.StyleSheet;
-import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
-import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
-import wdk.util.MethodList;
+import wdk.gui.MenuView;
+import wdk.gui.MessageDialog;
+import wdk.gui.YesNoCancelDialog;
 
 /**
  *
  * @author Work
  */
-
-
 public class FantasyStandingsScreen implements MenuScreen {
-    private VBox mainWorkspacePane;
+    
+    FantasyStandingsView fantasyStandingsView;
+    private  FantasyStandingsController fantasyStandingsController;
     
     
+    public FantasyStandingsScreen(DraftDataManager draftManager){
+        fantasyStandingsController = new FantasyStandingsController(draftManager.getDraft());
+        fantasyStandingsView = new FantasyStandingsView(fantasyStandingsController, draftManager);
+    }
     
-    private GridPane    topWorkspacePane;
-    private Label       headingLabel;
-    private ComboBox    selectTeamComboBox;
     
-    
-    private TeamStatsTable teamStatsTable;
-    
-    public FantasyStandingsScreen(Stage initPrimaryStage){
-        
+    @Override
+    public void setVisible(boolean b) {
+        fantasyStandingsView.getScreen().setVisible(b);
     }
 
     @Override
-    public void initWorkspace() {
-        mainWorkspacePane = new VBox();
-        try {
-            initTopWorkspace();
-        } catch (IOException ex) {
-            Logger.getLogger(FantasyStandingsScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        initBottomTable();
-        mainWorkspacePane.getChildren().add(topWorkspacePane);
-        mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
+    public MenuView getView() {
+        return fantasyStandingsView;
     }
 
     @Override
-    public Pane getScreen() {
-        return mainWorkspacePane;
-    }
-
-    private void initTopWorkspace() throws IOException {
-        topWorkspacePane = new GridPane();
-        headingLabel = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.FANTASY_STANDINGS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
-        selectTeamComboBox = MethodList.initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
-        
-    }
-
-    private void initBottomTable() {
-    }
-    
-
     public void reset() {
+        fantasyStandingsView.reset();
     }
 
-    @Override
     public void initGUI() {
-        initWorkspace();
-        initEventHandlers();
+        fantasyStandingsView.initGUI();
     }
-
-    @Override
-    public void initEventHandlers() {
-    }
+    
 }

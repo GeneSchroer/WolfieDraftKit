@@ -26,7 +26,7 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     EXIT_ICON,
     ADD_ICON,
     MINUS_ICON,
-    
+    EDIT_ICON,
     // Application Tooltips for various buttons
     NEW_DRAFT_TOOLTIP,
     LOAD_DRAFT_TOOLTIP,
@@ -39,6 +39,7 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     REMOVE_PLAYER_TOOLTIP,
     ADD_TEAM_TOOLTIP,
     REMOVE_TEAM_TOOLTIP,
+    EDIT_TEAM_TOOLTIP,
     DRAFT_HEADING_LABEL,
     DRAFT_INFO_LABEL,
     PLAYER_NAME_LABEL,
@@ -102,7 +103,8 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     START_AUTOMATED_DRAFT_TOOLTIP,
     PAUSE_AUTOMATED_DRAFT_TOOLTIP, 
     START_ICON,
-    PAUSE_ICON,
+    PAUSE_ICON,  
+    
     
     
     

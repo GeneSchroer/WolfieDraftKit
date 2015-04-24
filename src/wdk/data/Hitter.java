@@ -118,4 +118,16 @@ public class Hitter extends Player{
     public DoubleProperty battingAverageProperty(){
         return new SimpleDoubleProperty(battingAverage.getValue());
     }
+    
+    @Override
+    public void setQualifiedPositions(String pos){
+        if(pos.contains("1B")||pos.contains("3B"))
+            pos += "_CI";
+        
+        if(pos.contains("2B")||pos.contains("SS"))
+            pos += "_MI";
+        
+        qualifiedPositions.set(pos + "_U");
+    }
+    
 }

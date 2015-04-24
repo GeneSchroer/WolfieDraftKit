@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.gui;
+package wdk.gui.sport_screen;
+
+import wdk.data.Draft;
 
 /**
  *
  * @author Work
  */
-public interface MenuScreen {
-
-    public void setVisible(boolean b);
-    public MenuView getView();
-    public void reset();
-   
+public class SportController {
+    private final Draft draft;
+     public SportController( Draft initDraft ){
+      draft = initDraft;
+    }
 }

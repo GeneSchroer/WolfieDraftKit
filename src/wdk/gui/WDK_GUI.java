@@ -1,22 +1,13 @@
 package wdk.gui;
 
-import wdk.gui.players_screen.PlayersScreen;
-import wdk.gui.draft_screen.DraftScreen;
-import wdk.gui.fantasy_standings_screen.FantasyStandingsScreen;
-import wdk.gui.sport_screen.SportScreen;
-import wdk.gui.fantasy_teams_screen.FantasyTeamsScreen;
 import java.io.IOException;
-import java.util.ArrayList;
-import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -24,13 +15,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import wdk.WDK_StartUpConstants;
 import wdk.GeneralPropertyType;
 import wdk.data.Draft;
 import wdk.data.DraftDataManager;
@@ -41,10 +29,13 @@ import static wdk.WDK_StartUpConstants.*;
 import wdk.controller.DraftEditController;
 import wdk.controller.FileController;
 import wdk.file.DraftFileManager;
-import wdk.file.JsonDraftFileManager;
 import static wdk.gui.StyleSheet.CLASS_BACKGROUND_PANE;
-import static wdk.gui.StyleSheet.CLASS_BORDERED_PANE;
 import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
+import wdk.gui.draft_screen.DraftScreen;
+import wdk.gui.fantasy_standings_screen.FantasyStandingsScreen;
+import wdk.gui.fantasy_teams_screen.FantasyTeamsScreen;
+import wdk.gui.players_screen.PlayersScreen;
+import wdk.gui.sport_screen.SportScreen;
 
 /**
  *
@@ -52,6 +43,9 @@ import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
  */
 public class WDK_GUI implements DraftDataView {
 
+    static final String CLASS_HEADING_LABEL = "heading_label";
+    static final String CLASS_PROMPT_LABEL = "prompt_label";
+    static final String PRIMARY_STYLE_SHEET = PATH_CSS + "csb_style.css";
 
 
     PlayersScreen playersScreen;
@@ -305,11 +299,11 @@ public class WDK_GUI implements DraftDataView {
         
         initMenuScreens();
         
-        workspacePane.getChildren().add(playersScreen.getScreen());
-        workspacePane.getChildren().add(fantasyTeamsScreen.getScreen());
-        workspacePane.getChildren().add(fantasyStandingsScreen.getScreen());
-        workspacePane.getChildren().add(draftScreen.getScreen());
-        workspacePane.getChildren().add(sportScreen.getScreen());
+        workspacePane.getChildren().add(playersScreen.getView().getScreen());
+        workspacePane.getChildren().add(fantasyTeamsScreen.getView().getScreen());
+        workspacePane.getChildren().add(fantasyStandingsScreen.getView().getScreen());
+        workspacePane.getChildren().add(draftScreen.getView().getScreen());
+        workspacePane.getChildren().add(sportScreen.getView().getScreen());
         
         
         handleSwitchMenuRequest(playersScreen);
@@ -388,11 +382,11 @@ public class WDK_GUI implements DraftDataView {
     }
 
     private void initMenuScreens() {
-        playersScreen = new PlayersScreen(primaryStage, draftDataManager.getDraft().getAvailablePlayers());
-        fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage);
-        fantasyStandingsScreen = new FantasyStandingsScreen(primaryStage);
-        draftScreen = new DraftScreen(primaryStage);
-        sportScreen = new SportScreen(primaryStage);
+        playersScreen = new PlayersScreen(primaryStage, draftDataManager, messageDialog, yesNoCancelDialog);
+        fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage, draftDataManager, messageDialog, yesNoCancelDialog);
+        fantasyStandingsScreen = new FantasyStandingsScreen(draftDataManager);
+        draftScreen = new DraftScreen(draftDataManager);
+        sportScreen = new SportScreen(draftDataManager);
         
         playersScreen.initGUI();
         fantasyTeamsScreen.initGUI();
@@ -485,13 +479,13 @@ public class WDK_GUI implements DraftDataView {
         workspacePane.setDisable(false);
 
         
-        playersScreen.getScreen().setVisible(false);
-        fantasyTeamsScreen.getScreen().setVisible(false);
-        fantasyStandingsScreen.getScreen().setVisible(false);
-        draftScreen.getScreen().setVisible(false);
-        sportScreen.getScreen().setVisible(false);
+        playersScreen.setVisible(false);
+        fantasyTeamsScreen.setVisible(false);
+        fantasyStandingsScreen.setVisible(false);
+        draftScreen.setVisible(false);
+        sportScreen.setVisible(false);
         
-        menuScreen.getScreen().setVisible(true);
+        menuScreen.setVisible(true);
         
         
 //        ObservableList<Node>screenList = workspacePane.getChildren();

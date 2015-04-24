@@ -5,14 +5,16 @@
  */
 package wdk.gui;
 
+import java.io.IOException;
+import javafx.scene.layout.Pane;
+
 /**
  *
  * @author Work
  */
-public interface MenuScreen {
-
-    public void setVisible(boolean b);
-    public MenuView getView();
-    public void reset();
-   
+public interface MenuView {
+    public void initGUI();
+   void initWorkspace() throws IOException;
+   void initEventHandlers();   
+   Pane getScreen();
 }

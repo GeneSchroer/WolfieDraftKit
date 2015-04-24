@@ -10,14 +10,68 @@ package wdk.data;
  * @author Work
  */
 public enum Position {
-    C,
-    B1,
-    B3,
-    CI,
-    B2,
-    SS,
-    MI,
-    OF,
-    U,
-    P
+    C{
+        @Override
+        public String toString(){
+            return "C";
+        }
+    },
+    B1{
+        @Override
+        public String toString(){
+            return "1B";
+        }
+    },
+    CI{
+        @Override
+        public String toString(){
+            return "CI";
+        }
+    },
+    B3{
+        @Override
+        public String toString(){
+            return "3B";
+        }
+    },
+    B2{
+        @Override
+        public String toString(){
+            return "2B";
+        }
+    },
+    MI{
+        @Override
+        public String toString(){
+            return "MI";
+        }
+    },
+    SS{
+        @Override
+        public String toString(){
+            return "SS";
+        }
+    },
+    OF{
+        @Override
+        public String toString(){
+            return "OF";
+        }
+    },
+    U{
+        @Override
+        public String toString(){
+            return "U";
+        }
+    },
+    P{
+        @Override
+        public String toString(){
+            return "P";
+        }
+    }
+    
+    
+    
+    
 }

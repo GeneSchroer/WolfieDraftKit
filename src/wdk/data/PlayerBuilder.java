@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.gui;
+package wdk.data;
 
 /**
  *
  * @author Work
  */
-public interface MenuScreen {
-
-    public void setVisible(boolean b);
-    public MenuView getView();
-    public void reset();
-   
+public class PlayerBuilder {
+    
 }

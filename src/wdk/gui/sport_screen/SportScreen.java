@@ -5,101 +5,39 @@
  */
 package wdk.gui.sport_screen;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import properties_manager.PropertiesManager;
-import wdk.GeneralPropertyType;
+import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
-import wdk.gui.StyleSheet;
-import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
-import wdk.gui.players_screen.MixedPlayerTable;
+import wdk.gui.MessageDialog;
+import wdk.gui.YesNoCancelDialog;
+
 
 /**
  *
  * @author Work
  */
-
-
-public class SportScreen implements MenuScreen {
-    private VBox mainWorkspacePane;
+public class SportScreen implements MenuScreen{
+    SportView sportView;
+    SportController sportController;
     
-    
-    
-    private GridPane    topWorkspacePane;
-    private Label       headingLabel;
-    private ComboBox    selectLeagueComboBox;
-    
-    
-    private MixedPlayerTable teamStatsTable;
-    
-    public SportScreen(Stage initPrimaryStage){
-        
+   public SportScreen(DraftDataManager draftManager){
+        sportController = new SportController(draftManager.getDraft());
+        sportView = new SportView(sportController, draftManager);
+    }
+    public void initGUI(){
+        sportView.initGUI();
+    }
+    @Override
+    public SportView getView(){
+        return sportView;
+    }
+    @Override
+    public void reset(){
+        sportView.reset();
     }
 
     @Override
-    public void initWorkspace() {
-        mainWorkspacePane = new VBox();
-        try {
-            initTopWorkspace();
-        } catch (IOException ex) {
-            Logger.getLogger(SportScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        initBottomTable();
-        mainWorkspacePane.getChildren().add(topWorkspacePane);
-        mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
+    public void setVisible(boolean isVisible) {
+        sportView.getScreen().setVisible(isVisible);
     }
-
-    @Override
-    public Pane getScreen() {
-        return mainWorkspacePane;
-    }
-
-    private void initTopWorkspace() throws IOException {
-        topWorkspacePane = new GridPane();
-        headingLabel = initGridLabel(topWorkspacePane, GeneralPropertyType.MLB_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
-        selectLeagueComboBox = initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
-        
-    }
-
-    private void initBottomTable() {
-    }
-    
-    private Label initGridLabel(GridPane container, GeneralPropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
-        Label label = initLabel(labelProperty, styleClass);
-        container.add(label, col, row, colSpan, rowSpan);
-        return label;
-    }
-    private Label initLabel(GeneralPropertyType labelProperty, String styleClass) {
-        PropertiesManager props = PropertiesManager.getPropertiesManager();
-        String labelText = props.getProperty(labelProperty);
-        Label label = new Label(labelText);
-        label.getStyleClass().add(styleClass);
-        return label;
-    }
-     private ComboBox initGridComboBox(GridPane container, int col, int row, int colSpan, int rowSpan) throws IOException {
-        ComboBox comboBox = new ComboBox();
-        container.add(comboBox, col, row, colSpan, rowSpan);
-        return comboBox;
-    }
-
-    public void reset() {
-    }
-
-    @Override
-    public void initGUI() {
-        initWorkspace();
-        initEventHandlers();
-    }
-
-    @Override
-    public void initEventHandlers() {
-    }
-
 }

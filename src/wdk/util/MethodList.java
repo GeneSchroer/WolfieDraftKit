@@ -54,6 +54,11 @@ public class MethodList {
         return cB;
     }
     
+    public static ComboBox initChildComboBox(Pane container) throws IOException {
+        ComboBox comboBox = new ComboBox();
+        container.getChildren().add(comboBox);
+        return comboBox;
+    }
     public static ComboBox initGridComboBox(GridPane container, int col, int row, int colSpan, int rowSpan) throws IOException {
         ComboBox comboBox = new ComboBox();
         container.add(comboBox, col, row, colSpan, rowSpan);
@@ -70,6 +75,14 @@ public class MethodList {
         tf.setText(initText);
         tf.setEditable(editable);
         container.add(tf, col, row, colSpan, rowSpan);
+        return tf;
+    }
+    public static TextField initChildTextField(Pane container, int size, String initText, boolean editable) {
+        TextField tf = new TextField();
+        tf.setPrefColumnCount(size);
+        tf.setText(initText);
+        tf.setEditable(editable);
+        container.getChildren().add(tf);
         return tf;
     }
     public static Label initLabel(WDK_PropertyType labelProperty, String styleClass) {

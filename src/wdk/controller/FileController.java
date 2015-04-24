@@ -7,9 +7,7 @@ package wdk.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import static wdk.GeneralPropertyType.*;
 import static wdk.WDK_StartUpConstants.PATH_DRAFTS;
@@ -20,7 +18,6 @@ import wdk.file.DraftExporter;
 import wdk.file.DraftFileManager;
 import wdk.gui.MessageDialog;
 import wdk.gui.WDK_GUI;
-import wdk.gui.WebBrowser;
 import wdk.gui.YesNoCancelDialog;
 
 /**

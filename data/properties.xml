@@ -6,7 +6,7 @@
 -->
 <properties>
     <property_list>    
-        <property name="PROP_APP_TITLE"             value="draft Site Builder"></property>  
+        <property name="PROP_APP_TITLE"             value="Draft Site Builder"></property>  
         
         <!-- PROGRAM ICON FILES -->
         <property name="NEW_DRAFT_ICON"             value="New.png"></property>
@@ -47,7 +47,7 @@
         <!-- TOOLTIPS FOR THE MENU SCREEN BUTTONS -->
         <property name="PLAYERS_SCREEN_TOOLTIP"             value="Available Players"></property>
         <property name="FANTASY_TEAMS_SCREEN_TOOLTIP"       value="Fantasy Teams"></property>
-        <property name="FANTASY_STANDINGS_SCREEN_TOOLTIP"   value="Fantasy Standings"></property>
+        <property name="FANTASY_STANDINGS_SCREEN_TOOLTIP"   value="Fantasy Standings Estimates"></property>
         <property name="DRAFT_SCREEN_TOOLTIP"               value="Draft Summary"></property>
         <property name="SPORT_SCREEN_TOOLTIP"               value="Profession Players"></property>
         

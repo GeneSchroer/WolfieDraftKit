@@ -9,6 +9,6 @@ package wdk.controller;
  *
  * @author Work
  */
-public class ScreenController {
+public class DraftController {
     
 }

@@ -5,13 +5,13 @@
  */
 package wdk.gui;
 
+import java.time.LocalDate;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -19,49 +19,53 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import wdk.data.Draft;
-import wdk.data.Player;
+import wdk.gui.MessageDialog;
+import static wdk.gui.WDK_GUI.CLASS_HEADING_LABEL;
+import static wdk.gui.WDK_GUI.CLASS_PROMPT_LABEL;
+import static wdk.gui.WDK_GUI.PRIMARY_STYLE_SHEET;
 
 /**
  *
  * @author Work
  */
-public class PlayerDialog extends Stage{
-    
-     Player player;
-    
+public class TeamDialog extends Stage {
+
     // GUI CONTROLS FOR OUR DIALOG
     GridPane gridPane;
     Scene dialogScene;
     Label headingLabel;
-    Label firstNameLabel;
-    TextField firstNameTextField;
+    Label nameLabel;
+    TextField nameTextField;
     Label dateLabel;
-    Label lastNameLabel;
-    TextField lastNameTextField;
-    Label proTeamLabel;
-    ComboBox proTeamComboBox;
-    CheckBox catcherCheckBox;
-    CheckBox firstBasemanCheckBox;
-    CheckBox thirdBasemanCheckBox;
-    CheckBox secondBasemanCheckBox;
-    CheckBox shortstopCheckBox;
-    CheckBox outFielderCheckBox;
-    CheckBox pitcherCheckBox;
-    
-    
-    
-    
+    DatePicker datePicker;
+    Label teamownerLabel;
+    TextField teamownerTextField;
     Button completeButton;
     Button cancelButton;
-    private final GridPane gridPane;
-    private final Label headingLabel;
+    
+    // THIS IS FOR KEEPING TRACK OF WHICH BUTTON THE USER PRESSED
+    String selection;
+    
+    // CONSTANTS FOR OUR UI
     public static final String COMPLETE = "Complete";
     public static final String CANCEL = "Cancel";
-    private static final String PLAYER_DETAILS_HEADING = "Player Details";
-//    private static final String PLAYER_DETAILS_HEADING = "Player Details";
-//    private static final String PLAYER_DETAILS_HEADING = "Player Details";
-
-    public PlayerDialog(Stage primaryStage, Draft draft, MessageDialog initMessageDialog) {
+    public static final String DESCRIPTION_PROMPT = "Description: ";
+    public static final String DATE_PROMPT = "Date";
+    public static final String TEAMOWNER_PROMPT = "TEAMOWNER";
+    public static final String SCHEDULE_ITEM_HEADING = "Schedule Item Details";
+    public static final String ADD_SCHEDULE_ITEM_TITLE = "Add New Schedule Item";
+    public static final String EDIT_SCHEDULE_ITEM_TITLE = "Edit Schedule Item";
+    /**
+     * Initializes this dialog so that it can be used for either adding
+     * new schedule items or editing existing ones.
+     * 
+     * @param primaryStage The owner of this modal dialog.
+     * @param draft
+     * @param messageDialog
+     */
+    public TeamDialog(Stage primaryStage, Draft draft,  MessageDialog messageDialog) {       
+        // MAKE THIS DIALOG MODAL, MEANING OTHERS WILL WAIT
+        // FOR IT WHEN IT IS DISPLAYED
         initModality(Modality.WINDOW_MODAL);
         initOwner(primaryStage);
         
@@ -73,24 +77,25 @@ public class PlayerDialog extends Stage{
         
         // PUT THE HEADING IN THE GRID, NOTE THAT THE TEXT WILL DEPEND
         // ON WHETHER WE'RE ADDING OR EDITING
-        headingLabel = new Label(PLAYER_DETAILS_HEADING);
+        headingLabel = new Label(SCHEDULE_ITEM_HEADING);
         headingLabel.getStyleClass().add(CLASS_HEADING_LABEL);
     
-        // NOW THE FIRSTNAME 
-        firstNameLabel = new Label(FIRSTNAME_PROMPT);
-        firstNameLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
-        firstNameTextField = new TextField();
-        firstNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-//            scheduleItem.setFirstName(newValue);
+        // NOW THE DESCRIPTION 
+        nameLabel = new Label(DESCRIPTION_PROMPT);
+        nameLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        nameTextField = new TextField();
+        nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+           // scheduleItem.setDescription(newValue);
         });
         
-        // AND THE DATE
-
-        catcherCheckBox = new CheckBox("C");
-        catcherCheckBox.setOnAction(e->{
-            
-        });
         
+        // AND THE TEAMOWNER
+        teamownerLabel = new Label(TEAMOWNER_PROMPT);
+        teamownerLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        teamownerTextField = new TextField();
+        teamownerTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+          //  scheduleItem.setLink(newValue);
+        });
         
         // AND FINALLY, THE BUTTONS
         completeButton = new Button(COMPLETE);
@@ -99,33 +104,27 @@ public class PlayerDialog extends Stage{
         // REGISTER EVENT HANDLERS FOR OUR BUTTONS
         EventHandler completeCancelHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
             Button sourceButton = (Button)ae.getSource();
-            PlayerDialog.this.selection = sourceButton.getText();
-            PlayerDialog.this.hide();
+            TeamDialog.this.selection = sourceButton.getText();
+            TeamDialog.this.hide();
         };
         completeButton.setOnAction(completeCancelHandler);
         cancelButton.setOnAction(completeCancelHandler);
 
         // NOW LET'S ARRANGE THEM ALL AT ONCE
         gridPane.add(headingLabel, 0, 0, 2, 1);
-        gridPane.add(firstNameLabel, 0, 1, 1, 1);
-        gridPane.add(firstNameTextField, 1, 1, 1, 1);
-        gridPane.add(lastNameLabel, 0, 2, 1, 1);
-        gridPane.add(lastNameTextField, 1, 2, 1, 1);
-        gridPane.add(catcherCheckBox, 0, 3, 1, 1);
-        gridPane.add(firstBasemanCheckBox, 1, 3, 1, 1);
-        gridPane.add(thirdBasemanCheckBox, 2, 3, 1, 1);
-        gridPane.add(secondBasemanCheckBox, 3, 3, 1, 1);
-        gridPane.add(shortstopCheckBox, 4, 3, 1, 1);
-        gridPane.add(outFielderCheckBox, 5, 3, 1, 1);
-        gridPane.add(pitcherCheckBox, 6, 3, 1, 1);
-        gridPane.add(completeButton, 0, 7, 1, 1);
-        gridPane.add(cancelButton, 1, 7, 1, 1);
+        gridPane.add(nameLabel, 0, 1, 1, 1);
+        gridPane.add(nameTextField, 1, 1, 1, 1);
+        gridPane.add(dateLabel, 0, 2, 1, 1);
+        gridPane.add(datePicker, 1, 2, 1, 1);
+        gridPane.add(teamownerLabel, 0, 3, 1, 1);
+        gridPane.add(teamownerTextField, 1, 3, 1, 1);
+        gridPane.add(completeButton, 0, 4, 1, 1);
+        gridPane.add(cancelButton, 1, 4, 1, 1);
 
         // AND PUT THE GRID PANE IN THE WINDOW
         dialogScene = new Scene(gridPane);
         dialogScene.getStylesheets().add(PRIMARY_STYLE_SHEET);
         this.setScene(dialogScene);
-    
     }
     
     /**
@@ -148,18 +147,16 @@ public class PlayerDialog extends Stage{
      * 
      * @param message Message to appear inside the dialog.
      */
-    public Player showAddPlayerDialog() {
+    public ScheduleItem showAddScheduleItemDialog(LocalDate initDate) {
         // SET THE DIALOG TITLE
-        setTitle(ADD_PLAYER_TITLE);
+        setTitle(ADD_SCHEDULE_ITEM_TITLE);
         
         // RESET THE SCHEDULE ITEM OBJECT WITH DEFAULT VALUES
-        player = new Player();
+        scheduleItem = new ScheduleItem();
         
         // LOAD THE UI STUFF
-        firstNameTextField.setText(player.getFirstName());
-        
-        
-        
+        nameTextField.setText(scheduleItem.getDescription());
+        datePicker.setValue(initDate);
         teamownerTextField.setText(scheduleItem.getLink());
         
         // AND OPEN IT UP
@@ -170,7 +167,7 @@ public class PlayerDialog extends Stage{
     
     public void loadGUIData() {
         // LOAD THE UI STUFF
-        nameTextField.setText(scheduleItem.getFirstName());
+        nameTextField.setText(scheduleItem.getDescription());
         datePicker.setValue(scheduleItem.getDate());
         teamownerTextField.setText(scheduleItem.getLink());       
     }
@@ -185,7 +182,7 @@ public class PlayerDialog extends Stage{
         
         // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
         scheduleItem = new ScheduleItem();
-        scheduleItem.setFirstName(itemToEdit.getFirstName());
+        scheduleItem.setDescription(itemToEdit.getDescription());
         scheduleItem.setDate(itemToEdit.getDate());
         scheduleItem.setLink(itemToEdit.getLink());
         

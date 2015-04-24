@@ -7,8 +7,10 @@ package wdk.data;
 
 import java.awt.Image;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -24,7 +26,8 @@ public class Player implements Comparable {
     StringProperty yearOfBirth;
     StringProperty nationOfBirth;
 
-    
+    //ObservableList<ExplicitPosition> enumPositions;
+
         
     //Position positions;
     
@@ -166,5 +169,9 @@ public class Player implements Comparable {
         return getLastName().compareTo(otherPlayer.getLastName());
     }
    
+//    public void addPosition(ExplicitPosition position){
+//        
+//    }
+    
 }
 
