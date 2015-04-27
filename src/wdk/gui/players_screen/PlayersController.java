@@ -28,9 +28,6 @@ public class PlayersController {
     TeamDialog td;
     Draft draft;
     
-    String sortPosition = "";
-    String sortPlayer = "";
-    
     MessageDialog messageDialog;
     YesNoCancelDialog yesNoCancelDialog;
     public PlayersController(Stage initPrimaryStage, Draft draft, MessageDialog initMessageDialog, YesNoCancelDialog initYesNoCancelDialog){
@@ -42,19 +39,16 @@ public class PlayersController {
     }
 
     public void handleSelectPlayerTypeRequest(PlayersView playersView, String position){
+            
             if(!playersView.getAvailablePlayers().isEmpty()){
-                sortPosition = position;
-                ObservableList<Player> temp = FXCollections.observableArrayList();
-                temp.addAll(buildFilteredList(playersView.getAvailablePlayers()));
-                playersView.setTable(temp);
+                playersView.setSortPosition(position);
+                playersView.update();
             }
     }
         
-    public void handleSearchForPlayerRequest(PlayersView ps, String name){
-        sortPlayer = name;
-            ObservableList<Player> temp = FXCollections.observableArrayList();
-                   temp.addAll(buildFilteredList(ps.getAvailablePlayers()));
-            ps.setTable(temp);
+    public void handleSearchForPlayerRequest(PlayersView playersView, String name){
+        playersView.setSortPlayer(name);
+        playersView.update();
     }
     public void handleAddPlayerRequest(WDK_GUI gui){
         DraftDataManager ddm = gui.getDataManager();
@@ -66,9 +60,8 @@ public class PlayersController {
             gui.updateGUI(false);
         }
         else{
-            
+            //
         }
-        
     }
     public void handleRemovePlayerRequest(WDK_GUI gui, Player playerToRemove) {
         yesNoCancelDialog.show(PropertiesManager.getPropertiesManager().getProperty(REMOVE_PLAYER_MESSAGE));
@@ -81,27 +74,30 @@ public class PlayersController {
             gui.updateGUI(false);
         }        
     }
-    
-    private List<Player> buildFilteredList(List<Player> playerList){
-        ArrayList<Player> filteredList = new ArrayList();
-        String sp = sortPlayer;
-        for(int i = 0; i < playerList.size(); ++i){
-            String ln = playerList.get(i).getLastName();
-            String fn = playerList.get(i).getFirstName();
-            
-  
-            if( (ln.toLowerCase().startsWith(sp.toLowerCase())
-                    ||fn.toLowerCase().startsWith(sp.toLowerCase()))
-                    && playerList.get(i).getQualifiedPositions().contains(sortPosition)){
-                    filteredList.add(playerList.get(i));
-            }
-        }
-        //}
-        
-        return filteredList;
-        
-    }
 
-    
+    void handleEditPlayerRequest(WDK_GUI gui, Player playerToEdit) {
+        DraftDataManager ddm = gui.getDataManager();
+        Draft draft = ddm.getDraft();
+        pd.showEditPlayerDialog(playerToEdit);
+        
+        // DID THE USER CONFIRM?
+        if (pd.wasCompleteSelected()) {
+            // UPDATE THE SCHEDULE ITEM
+            Player player = pd.getPlayer();
+            
+            //playerToEdit.setFantasyTeam(player.getFantasyTeam());
+            //playerToEdit.setTeamPosition(player.getTeamPosition());
+            //player.setContract(player.getContract());
+           // playerToEdit.setSalary(player.getSalary());
+            
+            
+            //Update the Toolbar, because this is not saved.
+            gui.updateToolbarControls(false);
+        }
+        else {
+            // THE USER MUST HAVE PRESSED CANCEL, SO
+            // WE DO NOTHING
+        }   
+    }
     
 }

@@ -27,6 +27,11 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     ADD_ICON,
     MINUS_ICON,
     EDIT_ICON,
+    
+    BLANK_IMAGE,
+    DEFAULT_FLAG,
+    
+    
     // Application Tooltips for various buttons
     NEW_DRAFT_TOOLTIP,
     LOAD_DRAFT_TOOLTIP,
@@ -106,8 +111,10 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     PAUSE_ICON,  
     
     
-    
-    
-    
+    //DIALOG TAG
+    DIALOG_TEAM_LABEL,
+    DIALOG_POSITION_LABEL,
+    DIALOG_CONTRACT_LABEL,
+    DIALOG_SALARY_LABEL
     
 }

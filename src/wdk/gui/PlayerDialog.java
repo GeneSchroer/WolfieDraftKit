@@ -14,10 +14,16 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import wdk.controller.FileController;
+import properties_manager.PropertiesManager;
+import wdk.GeneralPropertyType;
+import static wdk.WDK_StartUpConstants.PATH_FLAGS;
+import static wdk.WDK_StartUpConstants.PATH_IMAGES;
+import static wdk.WDK_StartUpConstants.PATH_PLAYERS;
 import wdk.data.Draft;
 import wdk.data.Player;
 import wdk.data.Position;
@@ -30,6 +36,13 @@ import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
  * @author Work
  */
 public class PlayerDialog extends Stage{
+    private Object props;
+    
+    
+    EventHandler completeAddHandler;
+    EventHandler completeEditHandler;
+    
+
     private enum screen { ADD, EDIT };
      Player player;
     
@@ -37,6 +50,8 @@ public class PlayerDialog extends Stage{
     GridPane gridPane;
     Scene dialogScene;
     Label headingLabel;
+    
+    //CONTROLS FOR OUR ADD DIALOG 
     Label firstNameLabel;
     TextField firstNameTextField;
     Label dateLabel;
@@ -51,6 +66,27 @@ public class PlayerDialog extends Stage{
     CheckBox shortstopCheckBox;
     CheckBox outFielderCheckBox;
     CheckBox pitcherCheckBox;
+    
+    
+    //CONTROLS FOR OUR EDIT DIALOG
+    
+    Image playerImage;
+    ImageView playerView;
+    Image flagImage;
+    ImageView flagView;
+    Label playerNameLabel;
+    Label qualifiedPositionLabel;
+    Label fantasyTeamLabel;
+    ComboBox fantasyTeamComboBox;
+    Label positionLabel;
+    ComboBox positionComboBox;
+    Label contractLabel;
+    ComboBox contractComboBox;
+    Label salaryLabel;
+    ComboBox salaryComboBox;
+            
+            
+            
     Button completeButton;
     Button cancelButton;
     
@@ -66,7 +102,11 @@ public class PlayerDialog extends Stage{
     public static final String PRO_TEAM_PROMPT = "Pro Team:";
     public static final String ADD_PLAYER_TITLE = "Add New Player";
     public static final String EDIT_PLAYER_TITLE = "Edit Player";
-
+    public static final String DIALOG_FANTASY_LABEL = "Fantasy Team";
+    public static final String DIALOG_POSITION_LABEL = "Position";
+    public static final String DIALOG_CONTRACT_LABEL = "Contract";
+    public static final String DIALOG_SALARY_LABEL = "Salary";
+    
     public static final String COMPLETE = "Complete";
     public static final String CANCEL = "Cancel";
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
@@ -103,7 +143,7 @@ public class PlayerDialog extends Stage{
         firstNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             player.setFirstName(newValue);
         });
-        // NOW THE FIRSTNAME 
+        // NOW THE PROTEAM
         proTeamLabel = new Label(PRO_TEAM_PROMPT);
         proTeamLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         proTeamComboBox = new ComboBox();
@@ -238,13 +278,42 @@ public class PlayerDialog extends Stage{
                 
         });
         
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        String imagePath = "file:" + PATH_PLAYERS + props.getProperty(GeneralPropertyType.BLANK_IMAGE);
+        playerImage = new Image(imagePath);
+        playerView = new ImageView(playerImage);
+        imagePath = "file:" + PATH_FLAGS + props.getProperty(GeneralPropertyType.DEFAULT_FLAG);
+        flagImage = new Image(imagePath);
+        flagView = new ImageView(flagImage);
+        playerNameLabel = new Label();
+        qualifiedPositionLabel = new Label();
+        
+        fantasyTeamLabel = new Label(DIALOG_FANTASY_LABEL);
+        fantasyTeamLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        
+        fantasyTeamComboBox = new ComboBox();
+        positionLabel = new Label(DIALOG_POSITION_LABEL);
+        positionLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        positionComboBox = new ComboBox();
+        contractLabel = new Label(DIALOG_CONTRACT_LABEL);
+        positionLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        contractComboBox = new ComboBox();
+        salaryLabel = new Label(DIALOG_SALARY_LABEL);
+        salaryComboBox = new ComboBox();
+        
+        
+        
+        
         // AND FINALLY, THE BUTTONS
         completeButton = new Button(COMPLETE);
         cancelButton = new Button(CANCEL);
         
         // REGISTER EVENT HANDLERS FOR OUR BUTTONS
-        EventHandler completeCancelHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
-            if(lastNameTextField.getText()==null
+        completeAddHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
+            Button sourceButton = (Button)ae.getSource();
+            PlayerDialog.this.selection = sourceButton.getText();
+            if(selection.equals(COMPLETE)
+                && (lastNameTextField.getText()==null
                     || firstNameTextField.getText()==null
                     || (!catcherCheckBox.isSelected()
                         && !firstBasemanCheckBox.isSelected()
@@ -253,40 +322,30 @@ public class PlayerDialog extends Stage{
                                     &&!secondBasemanCheckBox.isSelected()
                                         &&!shortstopCheckBox.isSelected()
                                             &&!outFielderCheckBox.isSelected()
-                                                &&!pitcherCheckBox.isSelected()))
+                                                &&!pitcherCheckBox.isSelected())))
                 messageDialog.show("You haven't finished adding stuff.");
             else{
-            Button sourceButton = (Button)ae.getSource();
+            
 
-            PlayerDialog.this.selection = sourceButton.getText();
+            
             PlayerDialog.this.hide();
             }
         };
-        completeButton.setOnAction(completeCancelHandler);
-        cancelButton.setOnAction(completeCancelHandler);
+        completeEditHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
+            Button sourceButton = (Button)ae.getSource();
+            PlayerDialog.this.selection = sourceButton.getText();
+            PlayerDialog.this.hide();
+        };
 
         // NOW LET'S ARRANGE THEM ALL AT ONCE
-        gridPane.add(headingLabel, 0, 0, 2, 1);
-        gridPane.add(firstNameLabel, 0, 1, 1, 1);
-        gridPane.add(firstNameTextField, 1, 1, 1, 1);
-        gridPane.add(lastNameLabel, 0, 2, 1, 1);
-        gridPane.add(lastNameTextField, 1, 2, 1, 1);
-        gridPane.add(catcherCheckBox, 0, 3, 1, 1);
-        gridPane.add(firstBasemanCheckBox, 1, 3, 1, 1);
-        gridPane.add(thirdBasemanCheckBox, 2, 3, 1, 1);
-        gridPane.add(secondBasemanCheckBox, 3, 3, 1, 1);
-        gridPane.add(shortstopCheckBox, 4, 3, 1, 1);
-        gridPane.add(outFielderCheckBox, 5, 3, 1, 1);
-        gridPane.add(pitcherCheckBox, 6, 3, 1, 1);
-        gridPane.add(completeButton, 0, 7, 1, 1);
-        gridPane.add(cancelButton, 1, 7, 1, 1);
-
+        
+        
         // AND PUT THE GRID PANE IN THE WINDOW
         dialogScene = new Scene(gridPane);
         dialogScene.getStylesheets().add(PRIMARY_STYLE_SHEET);
         this.setScene(dialogScene);
-    
     }
+    
     
     /**
      * Accessor method for getting the selection the user made.
@@ -306,11 +365,12 @@ public class PlayerDialog extends Stage{
      * This method loads a custom message into the label and
      * then pops open the dialog.
      * 
-     * @param message Message to appear inside the dialog.
+     * @return 
      */
     public Player showAddPlayerDialog() {
         // SET THE DIALOG TITLE
         setTitle(ADD_PLAYER_TITLE);
+        setScreen(screen.ADD);
         uncheckPositions();
         // RESET THE SCHEDULE ITEM OBJECT WITH DEFAULT VALUES
         player = new Player();
@@ -339,6 +399,7 @@ public class PlayerDialog extends Stage{
     
     public void showEditPlayerDialog(Player playerToEdit) {
         // SET THE DIALOG TITLE
+        setScreen(screen.EDIT);
         setTitle(EDIT_PLAYER_TITLE);
         
         // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
@@ -373,10 +434,50 @@ public class PlayerDialog extends Stage{
     }
     public void setScreen(screen s){
         if (s == screen.ADD ){
+            gridPane.getChildren().clear();
             
+            gridPane.add(headingLabel, 0, 0, 2, 1);
+        gridPane.add(firstNameLabel, 0, 1, 1, 1);
+        gridPane.add(firstNameTextField, 1, 1, 1, 1);
+        gridPane.add(lastNameLabel, 0, 2, 1, 1);
+        gridPane.add(lastNameTextField, 1, 2, 1, 1);
+        gridPane.add(proTeamLabel, 0, 3, 1, 1);
+        gridPane.add(proTeamComboBox, 1, 3, 1, 1);
+        gridPane.add(catcherCheckBox, 0, 4, 1, 1);
+        gridPane.add(firstBasemanCheckBox, 1, 4, 1, 1);
+        gridPane.add(thirdBasemanCheckBox, 2, 4, 1, 1);
+        gridPane.add(secondBasemanCheckBox, 3, 4, 1, 1);
+        gridPane.add(shortstopCheckBox, 4, 4, 1, 1);
+        gridPane.add(outFielderCheckBox, 5, 4, 1, 1);
+        gridPane.add(pitcherCheckBox, 6, 4, 1, 1);
+        gridPane.add(completeButton, 0, 10, 1, 1);
+        gridPane.add(cancelButton, 1, 10, 1, 1);
+          completeButton.setOnAction(completeAddHandler);
+        cancelButton.setOnAction(completeAddHandler);  
         }
         else{
-            
+            gridPane.getChildren().clear();
+            gridPane.add(playerView, 0, 1, 3, 3);
+        gridPane.add(flagView, 1, 1, 1, 1);
+        gridPane.add(playerNameLabel, 1, 2, 1, 1);
+        gridPane.add(qualifiedPositionLabel, 1, 3, 1, 1);
+        gridPane.add(fantasyTeamLabel, 0, 4, 1, 1);
+        gridPane.add(fantasyTeamComboBox, 1, 4, 1, 1);
+        gridPane.add(positionLabel, 0, 5, 1, 1);
+        gridPane.add(positionComboBox, 1, 5, 1, 1);
+        gridPane.add(contractLabel, 0, 6, 1, 1);
+        gridPane.add(contractComboBox, 1, 6, 1, 1);
+        gridPane.add(salaryLabel, 0, 7, 1, 1);
+        gridPane.add(salaryComboBox, 1, 7, 1, 1);
+        gridPane.add(completeButton, 0, 10, 1, 1);
+        gridPane.add(cancelButton, 1, 10, 1, 1);
+        
+        completeButton.setOnAction(completeEditHandler);
+        cancelButton.setOnAction(completeEditHandler);
         }
     }
+    
+    
+    
+    
 }

@@ -33,7 +33,11 @@ import wdk.util.MethodList;
  * @author Work
  */
 public class PlayersView implements MenuView {
-
+    
+   private enum sortPlayer  { ALL, C, B1, B3, CI, B2, SS, MI, OF, U, P};
+   private String sortPosition;
+   private String sortPlayer;
+   
    
     /* Our list of available players, will be fed into the mixed table*/
     ArrayList<Player> availablePlayers;
@@ -84,6 +88,7 @@ public class PlayersView implements MenuView {
     private DraftDataManager draftManager;
     private WDK_GUI gui;
     
+    
    
     PlayersView(PlayersController initPlayersController, WDK_GUI initGUI) {
         this.playersController = initPlayersController;
@@ -91,7 +96,8 @@ public class PlayersView implements MenuView {
         draftManager = initGUI.getDataManager();
         availablePlayers = new ArrayList();
         availablePlayers.addAll( draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
-
+        sortPosition = "";
+        sortPlayer = "";
     }
     
     @Override
@@ -237,7 +243,13 @@ public class PlayersView implements MenuView {
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.PITCHER);
         });
-        
+        playersTable.getTable().setOnMouseClicked(e -> {
+            if(e.getClickCount() == 2){
+            //Open up the lecture editor
+            Player player = playersTable.getTable().getSelectionModel().getSelectedItem();
+            playersController.handleEditPlayerRequest(this.gui, player);
+            }
+        });
     }
     public void setPlayersTable(ObservableList<Player> playerList){
         playersTable.setTable(playerList);
@@ -259,7 +271,9 @@ public class PlayersView implements MenuView {
         ArrayList <Player> filteredList = new ArrayList();
         return filteredList;
     }
-    
+    public void setSortPosition(String sp){
+        sortPosition = sp;
+    }
     
     public void reset() {
         sortCriteriaToggleGroup.selectToggle(selectAllRadioButton);
@@ -276,9 +290,35 @@ public class PlayersView implements MenuView {
          return draftManager;
      }
 
-    void update() {
+    public void update() {
         availablePlayers.clear();
-        availablePlayers.addAll(draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
+        ArrayList<Player> temp = buildFilteredList(draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
+        availablePlayers.addAll(temp);
         playersTable.setTable(availablePlayers);
+    }
+    
+    
+    private ArrayList<Player> buildFilteredList(List<Player> playerList){
+        ArrayList<Player> filteredList = new ArrayList();
+        String sp = sortPlayer;
+        for(int i = 0; i < playerList.size(); ++i){
+            String ln = playerList.get(i).getLastName();
+            String fn = playerList.get(i).getFirstName();
+            
+  
+            if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+                    ||fn.toLowerCase().startsWith(sp.toLowerCase()))
+                    && playerList.get(i).getQualifiedPositions().contains(sortPosition)){
+                    filteredList.add(playerList.get(i));
+            }
+        }
+        //}
+        
+        return filteredList;
+        
+    }
+    
+    public void setSortPlayer(String p){
+        sortPlayer = p;
     }
 }

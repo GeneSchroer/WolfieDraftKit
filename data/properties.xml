@@ -19,6 +19,10 @@
         <property name="ADD_ICON"                   value="Add.png"></property>
         <property name="MINUS_ICON"                 value="Minus.png"></property>
         
+        <property name="BLANK_IMAGE"                 value="AAA_PhotoMissing.jpg"></property>
+        <property name="DEFAULT_FLAG"                 value="USA.png"></property>
+        
+        
         <property name="PLAYERS_ICON"               value="Players.png"></property>
         <property name="FANTASY_TEAMS_ICON"         value="FantasyTeams.png"></property>
         <property name="FANTASY_STANDINGS_ICON"     value="FantasyStandings.png"></property>
@@ -87,6 +91,12 @@
         <property name="FANTASY_STANDINGS_LABEL"        value="Fantasy Standings"></property>
         <property name="DRAFT_SUMMARY_LABEL"            value="Draft Summary"></property>
         <property name="MLB_TEAMS_LABEL"                value="MLB Teams"></property>
+        
+        
+        <property name="DIALOG_TEAM_LABEL"                value="Fantasy Team"></property>
+        <property name="DIALOG_POSITION_LABEL"                value="Position"></property>
+        <property name="DIALOG_CONTRACT_LABEL"                value="Contract"></property>
+        <property name="DIALOG_SALARY_LABEL"                value="Salary"></property>
         
         
         
