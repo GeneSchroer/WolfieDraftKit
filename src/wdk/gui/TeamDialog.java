@@ -17,12 +17,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import properties_manager.PropertiesManager;
 import wdk.data.Draft;
-import wdk.gui.MessageDialog;
-import static wdk.gui.WDK_GUI.CLASS_HEADING_LABEL;
-import static wdk.gui.WDK_GUI.CLASS_PROMPT_LABEL;
-import static wdk.gui.WDK_GUI.PRIMARY_STYLE_SHEET;
+import wdk.data.Team;
+import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
+import static wdk.gui.StyleSheet.CLASS_PROMPT_LABEL;
+import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
 
 /**
  *
@@ -35,11 +34,9 @@ public class TeamDialog extends Stage {
     Scene dialogScene;
     Label headingLabel;
     Label nameLabel;
-    TextField nameTextField;
-    Label dateLabel;
-    DatePicker datePicker;
+    TextField teamNameTextField;
     Label teamownerLabel;
-    TextField teamownerTextField;
+    TextField teamOwnerTextField;
     Button completeButton;
     Button cancelButton;
     
@@ -55,6 +52,7 @@ public class TeamDialog extends Stage {
     public static final String SCHEDULE_ITEM_HEADING = "Schedule Item Details";
     public static final String ADD_SCHEDULE_ITEM_TITLE = "Add New Schedule Item";
     public static final String EDIT_SCHEDULE_ITEM_TITLE = "Edit Schedule Item";
+    private Team team;
     /**
      * Initializes this dialog so that it can be used for either adding
      * new schedule items or editing existing ones.
@@ -83,8 +81,8 @@ public class TeamDialog extends Stage {
         // NOW THE DESCRIPTION 
         nameLabel = new Label(DESCRIPTION_PROMPT);
         nameLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
-        nameTextField = new TextField();
-        nameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        teamNameTextField = new TextField();
+        teamNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
            // scheduleItem.setDescription(newValue);
         });
         
@@ -92,8 +90,8 @@ public class TeamDialog extends Stage {
         // AND THE TEAMOWNER
         teamownerLabel = new Label(TEAMOWNER_PROMPT);
         teamownerLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
-        teamownerTextField = new TextField();
-        teamownerTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+        teamOwnerTextField = new TextField();
+        teamOwnerTextField.textProperty().addListener((observable, oldValue, newValue) -> {
           //  scheduleItem.setLink(newValue);
         });
         
@@ -113,11 +111,9 @@ public class TeamDialog extends Stage {
         // NOW LET'S ARRANGE THEM ALL AT ONCE
         gridPane.add(headingLabel, 0, 0, 2, 1);
         gridPane.add(nameLabel, 0, 1, 1, 1);
-        gridPane.add(nameTextField, 1, 1, 1, 1);
-        gridPane.add(dateLabel, 0, 2, 1, 1);
-        gridPane.add(datePicker, 1, 2, 1, 1);
+        gridPane.add(teamNameTextField, 1, 1, 1, 1);
         gridPane.add(teamownerLabel, 0, 3, 1, 1);
-        gridPane.add(teamownerTextField, 1, 3, 1, 1);
+        gridPane.add(teamOwnerTextField, 1, 3, 1, 1);
         gridPane.add(completeButton, 0, 4, 1, 1);
         gridPane.add(cancelButton, 1, 4, 1, 1);
 
@@ -147,49 +143,48 @@ public class TeamDialog extends Stage {
      * 
      * @param message Message to appear inside the dialog.
      */
-    public ScheduleItem showAddScheduleItemDialog(LocalDate initDate) {
+    public Team showAddScheduleItemDialog(LocalDate initDate) {
         // SET THE DIALOG TITLE
         setTitle(ADD_SCHEDULE_ITEM_TITLE);
         
         // RESET THE SCHEDULE ITEM OBJECT WITH DEFAULT VALUES
-        scheduleItem = new ScheduleItem();
+        team = new Team();
         
         // LOAD THE UI STUFF
-        nameTextField.setText(scheduleItem.getDescription());
-        datePicker.setValue(initDate);
-        teamownerTextField.setText(scheduleItem.getLink());
+        teamNameTextField.setText(team.getName());
+        teamOwnerTextField.setText(team.getOwner());
         
         // AND OPEN IT UP
         this.showAndWait();
         
-        return scheduleItem;
+        return team;
     }
     
-    public void loadGUIData() {
-        // LOAD THE UI STUFF
-        nameTextField.setText(scheduleItem.getDescription());
-        datePicker.setValue(scheduleItem.getDate());
-        teamownerTextField.setText(scheduleItem.getLink());       
-    }
+//    public void loadGUIData() {
+//        // LOAD THE UI STUFF
+//        teamNameTextField.setText(scheduleItem.getDescription());
+//        datePicker.setValue(scheduleItem.getDate());
+//        teamOwnerTextField.setText(scheduleItem.getLink());       
+//    }
     
     public boolean wasCompleteSelected() {
         return selection.equals(COMPLETE);
     }
     
-    public void showEditScheduleItemDialog(ScheduleItem itemToEdit) {
-        // SET THE DIALOG TITLE
-        setTitle(EDIT_SCHEDULE_ITEM_TITLE);
-        
-        // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
-        scheduleItem = new ScheduleItem();
-        scheduleItem.setDescription(itemToEdit.getDescription());
-        scheduleItem.setDate(itemToEdit.getDate());
-        scheduleItem.setLink(itemToEdit.getLink());
-        
-        // AND THEN INTO OUR GUI
-        loadGUIData();
-               
-        // AND OPEN IT UP
-        this.showAndWait();
-    }
+//    public void showEditScheduleItemDialog(ScheduleItem itemToEdit) {
+//        // SET THE DIALOG TITLE
+//        setTitle(EDIT_SCHEDULE_ITEM_TITLE);
+//        
+//        // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
+//        scheduleItem = new ScheduleItem();
+//        scheduleItem.setDescription(itemToEdit.getDescription());
+//        scheduleItem.setDate(itemToEdit.getDate());
+//        scheduleItem.setLink(itemToEdit.getLink());
+//        
+//        // AND THEN INTO OUR GUI
+//        loadGUIData();
+//               
+//        // AND OPEN IT UP
+//        this.showAndWait();
+//    }
 }

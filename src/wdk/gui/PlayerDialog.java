@@ -17,16 +17,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import properties_manager.PropertiesManager;
+import wdk.controller.FileController;
 import wdk.data.Draft;
 import wdk.data.Player;
+import wdk.data.Position;
+import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
+import static wdk.gui.StyleSheet.CLASS_PROMPT_LABEL;
+import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
 
 /**
  *
  * @author Work
  */
 public class PlayerDialog extends Stage{
-    
+    private enum screen { ADD, EDIT };
      Player player;
     
     // GUI CONTROLS FOR OUR DIALOG
@@ -47,23 +51,32 @@ public class PlayerDialog extends Stage{
     CheckBox shortstopCheckBox;
     CheckBox outFielderCheckBox;
     CheckBox pitcherCheckBox;
-    
-    
-    
-    
     Button completeButton;
     Button cancelButton;
-    private final GridPane gridPane;
-    private final Label headingLabel;
+    
+    
+    String selection;
+    
+    
+    private int qp;
+    
+    private static final String PLAYER_DETAILS_HEADING = "Player Details";
+    public static final String FIRST_NAME_PROMPT = "First Name:";
+    public static final String LAST_NAME_PROMPT = "Last Name:";
+    public static final String PRO_TEAM_PROMPT = "Pro Team:";
+    public static final String ADD_PLAYER_TITLE = "Add New Player";
+    public static final String EDIT_PLAYER_TITLE = "Edit Player";
+
     public static final String COMPLETE = "Complete";
     public static final String CANCEL = "Cancel";
-    private static final String PLAYER_DETAILS_HEADING = "Player Details";
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
 
-    public PlayerDialog(Stage primaryStage, Draft draft, MessageDialog initMessageDialog) {
+    public PlayerDialog(Stage primaryStage, Draft draft, MessageDialog messageDialog) {
         initModality(Modality.WINDOW_MODAL);
         initOwner(primaryStage);
+        
+        qp = 0;
         
         // FIRST OUR CONTAINER
         gridPane = new GridPane();
@@ -77,20 +90,153 @@ public class PlayerDialog extends Stage{
         headingLabel.getStyleClass().add(CLASS_HEADING_LABEL);
     
         // NOW THE FIRSTNAME 
-        firstNameLabel = new Label(FIRSTNAME_PROMPT);
+        lastNameLabel = new Label(LAST_NAME_PROMPT);
+        lastNameLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        lastNameTextField = new TextField();
+        lastNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            player.setLastName(newValue);
+        });
+        // NOW THE FIRSTNAME 
+        firstNameLabel = new Label(FIRST_NAME_PROMPT);
         firstNameLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         firstNameTextField = new TextField();
         firstNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-//            scheduleItem.setFirstName(newValue);
+            player.setFirstName(newValue);
         });
+        // NOW THE FIRSTNAME 
+        proTeamLabel = new Label(PRO_TEAM_PROMPT);
+        proTeamLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        proTeamComboBox = new ComboBox();
+//        proTeamComboBox.textProperty().addListener((observable, oldValue, newValue) -> {
+//            player.setFirstName(newValue);
+//        });
         
         // AND THE DATE
 
-        catcherCheckBox = new CheckBox("C");
+        catcherCheckBox = new CheckBox(Position.C.toString());
         catcherCheckBox.setOnAction(e->{
-            
+            if(catcherCheckBox.isSelected()){
+            pitcherCheckBox.setSelected(false);
+            player.removePosition(Position.P);
+            --qp;
+            player.addPosition(Position.C);            
+            player.addPosition(Position.U);
+            qp += 2;
+            }
+            else{
+                player.removePosition(Position.C);
+                --qp;
+                if(player.getPositionList().size() == 1 
+                        && player.getPositionList().contains(Position.U)){
+                        player.removePosition(Position.U);
+                        --qp;
+                }
+            }
         });
-        
+        firstBasemanCheckBox = new CheckBox(Position.B1.toString());
+        firstBasemanCheckBox.setOnAction(e->{
+            if(firstBasemanCheckBox.isSelected()){
+            pitcherCheckBox.setSelected(false);
+            player.removePosition(Position.P);
+            player.addPosition(Position.B1);
+            player.addPosition(Position.CI);
+            player.addPosition(Position.U);
+            }
+            else{
+                player.removePosition(Position.B1);
+                if(!player.getPositionList().contains(Position.B3))
+                    player.removePosition(Position.CI);
+                if(player.getPositionList().size() == 1 
+                        && player.getPositionList().contains(Position.U));
+                        player.removePosition(Position.U);
+            }
+        });
+        thirdBasemanCheckBox = new CheckBox(Position.B3.toString());
+        thirdBasemanCheckBox.setOnAction(e->{
+            if(thirdBasemanCheckBox.isSelected()){
+            pitcherCheckBox.setSelected(false);
+            player.removePosition(Position.P);
+            player.addPosition(Position.B3);            
+            player.addPosition(Position.CI);            
+            player.addPosition(Position.U);
+            }
+            else{
+                player.removePosition(Position.B3);
+                if(!player.getPositionList().contains(Position.B1))
+                    player.removePosition(Position.CI);
+                if(player.getPositionList().size() == 1 
+                        && player.getPositionList().contains(Position.U));
+                        player.removePosition(Position.U);
+            }
+        });
+        secondBasemanCheckBox = new CheckBox(Position.B2.toString());
+        secondBasemanCheckBox.setOnAction(e->{
+        if(secondBasemanCheckBox.isSelected()){    
+            pitcherCheckBox.setSelected(false);
+            player.removePosition(Position.P);
+            player.addPosition(Position.B2);            
+            player.addPosition(Position.MI);            
+            player.addPosition(Position.U);
+        }
+            else{
+                player.removePosition(Position.B2);
+                if(!player.getPositionList().contains(Position.SS))
+                    player.removePosition(Position.MI);
+                if(player.getPositionList().size() == 1 
+                        && player.getPositionList().contains(Position.U));
+                        player.removePosition(Position.U);
+            }
+        });
+        shortstopCheckBox = new CheckBox(Position.SS.toString());
+        shortstopCheckBox.setOnAction(e->{
+            if(shortstopCheckBox.isSelected()){
+            pitcherCheckBox.setSelected(false);
+            player.removePosition(Position.P);
+            player.addPosition(Position.SS);            
+            player.addPosition(Position.MI);            
+            player.addPosition(Position.U);
+            }
+            else{
+                player.removePosition(Position.SS);
+                if(!player.getPositionList().contains(Position.B2))
+                    player.removePosition(Position.MI);
+                if(player.getPositionList().size() == 1 
+                        && player.getPositionList().contains(Position.U));
+                        player.removePosition(Position.U);
+            }
+        });
+        outFielderCheckBox = new CheckBox(Position.OF.toString());
+        outFielderCheckBox.setOnAction(e->{
+            if(outFielderCheckBox.isSelected()){
+            pitcherCheckBox.setSelected(false);
+            player.removePosition(Position.P);
+            player.addPosition(Position.OF);            
+            player.addPosition(Position.U);
+            }
+            else{
+                player.removePosition(Position.OF);
+                if(player.getPositionList().size() == 1 
+                        && player.getPositionList().contains(Position.U));
+                        player.removePosition(Position.U);
+            }
+        });
+        pitcherCheckBox = new CheckBox(Position.P.toString());
+        pitcherCheckBox.setOnAction(e->{
+            if(pitcherCheckBox.isSelected()){
+            catcherCheckBox.setSelected(false);
+            firstBasemanCheckBox.setSelected(false);
+            thirdBasemanCheckBox.setSelected(false);
+            secondBasemanCheckBox.setSelected(false);
+            shortstopCheckBox.setSelected(false);
+            outFielderCheckBox.setSelected(false);
+            player.getPositionList().clear();
+            player.addPosition(Position.P);
+            }
+            else{
+                player.removePosition(Position.P);
+            }
+                
+        });
         
         // AND FINALLY, THE BUTTONS
         completeButton = new Button(COMPLETE);
@@ -98,9 +244,23 @@ public class PlayerDialog extends Stage{
         
         // REGISTER EVENT HANDLERS FOR OUR BUTTONS
         EventHandler completeCancelHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
+            if(lastNameTextField.getText()==null
+                    || firstNameTextField.getText()==null
+                    || (!catcherCheckBox.isSelected()
+                        && !firstBasemanCheckBox.isSelected()
+                            && !thirdBasemanCheckBox.isSelected()
+                                &&!firstBasemanCheckBox.isSelected()
+                                    &&!secondBasemanCheckBox.isSelected()
+                                        &&!shortstopCheckBox.isSelected()
+                                            &&!outFielderCheckBox.isSelected()
+                                                &&!pitcherCheckBox.isSelected()))
+                messageDialog.show("You haven't finished adding stuff.");
+            else{
             Button sourceButton = (Button)ae.getSource();
+
             PlayerDialog.this.selection = sourceButton.getText();
             PlayerDialog.this.hide();
+            }
         };
         completeButton.setOnAction(completeCancelHandler);
         cancelButton.setOnAction(completeCancelHandler);
@@ -138,8 +298,8 @@ public class PlayerDialog extends Stage{
         return selection;
     }
     
-//    public ScheduleItem getScheduleItem() { 
-//        return scheduleItem;
+//    public Player getPlayer() { 
+//        return player;
 //    }
     
     /**
@@ -151,48 +311,72 @@ public class PlayerDialog extends Stage{
     public Player showAddPlayerDialog() {
         // SET THE DIALOG TITLE
         setTitle(ADD_PLAYER_TITLE);
-        
+        uncheckPositions();
         // RESET THE SCHEDULE ITEM OBJECT WITH DEFAULT VALUES
         player = new Player();
         
         // LOAD THE UI STUFF
-        firstNameTextField.setText(player.getFirstName());
+            firstNameTextField.setText(player.getFirstName());
         
-        
-        
-        teamownerTextField.setText(scheduleItem.getLink());
+            lastNameTextField.setText(player.getLastName());
         
         // AND OPEN IT UP
         this.showAndWait();
         
-        return scheduleItem;
+        return player;
     }
     
     public void loadGUIData() {
-        // LOAD THE UI STUFF
-        nameTextField.setText(scheduleItem.getFirstName());
-        datePicker.setValue(scheduleItem.getDate());
-        teamownerTextField.setText(scheduleItem.getLink());       
+//        // LOAD THE UI STUFF
+//        nameTextField.setText(player.getFirstName());
+//        datePicker.setValue(player.getDate());
+//        teamownerTextField.setText(player.getLink());       
     }
     
     public boolean wasCompleteSelected() {
         return selection.equals(COMPLETE);
     }
     
-    public void showEditScheduleItemDialog(ScheduleItem itemToEdit) {
+    public void showEditPlayerDialog(Player playerToEdit) {
         // SET THE DIALOG TITLE
-        setTitle(EDIT_SCHEDULE_ITEM_TITLE);
+        setTitle(EDIT_PLAYER_TITLE);
         
         // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
-        scheduleItem = new ScheduleItem();
-        scheduleItem.setFirstName(itemToEdit.getFirstName());
-        scheduleItem.setDate(itemToEdit.getDate());
-        scheduleItem.setLink(itemToEdit.getLink());
+        player = new Player();
+        player.setFirstName(playerToEdit.getFirstName());
+//        player.setDate(playerToEdit.getDate());
+//        player.setLink(playerToEdit.getLink());
         
         // AND THEN INTO OUR GUI
         loadGUIData();
                
         // AND OPEN IT UP
         this.showAndWait();
+    }
+
+    public void updatePlayerUsingCheckBox(CheckBox cB, Player player, Position ep){
+        
+    }
+    
+    public Player getPlayer() {
+        return player;
+    }
+
+    private void uncheckPositions() {
+        catcherCheckBox.setSelected(false);
+        firstBasemanCheckBox.setSelected(false);
+        thirdBasemanCheckBox.setSelected(false);
+        secondBasemanCheckBox.setSelected(false);
+        shortstopCheckBox.setSelected(false);
+        outFielderCheckBox.setSelected(false);
+        pitcherCheckBox.setSelected(false);
+    }
+    public void setScreen(screen s){
+        if (s == screen.ADD ){
+            
+        }
+        else{
+            
+        }
     }
 }

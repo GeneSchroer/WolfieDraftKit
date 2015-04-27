@@ -10,6 +10,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
@@ -26,7 +27,7 @@ public class Player implements Comparable {
     StringProperty yearOfBirth;
     StringProperty nationOfBirth;
 
-    //ObservableList<ExplicitPosition> enumPositions;
+    ObservableList<Position> PositionList;
 
         
     //Position positions;
@@ -46,6 +47,8 @@ public class Player implements Comparable {
         notes               = new SimpleStringProperty();
         yearOfBirth         = new SimpleStringProperty();
         nationOfBirth       = new SimpleStringProperty();
+        PositionList = FXCollections.observableArrayList();
+        PositionList.sorted();
     }
     
     public void setLastName(String ln){
@@ -168,10 +171,55 @@ public class Player implements Comparable {
         Player otherPlayer = (Player)obj;
         return getLastName().compareTo(otherPlayer.getLastName());
     }
-   
+    public void addPosition(Position ep){
+        if(!PositionList.contains(ep))
+            PositionList.add(ep);
+        else{
+            // We don't add anything
+        }
+        setQualifiedPositions(positionString());
+        
+    }
+    
+    public ObservableList getPositionList(){
+        return PositionList;
+    }
+    
+    public void removePosition(Position ep){
+        if(PositionList.contains(ep)){
+            PositionList.remove(ep);
+        }
+        setQualifiedPositions(positionString());
+    }
+           
+    public String positionString(){
+            String positions = "";
+            for(int i = 0 ; i < PositionList.size() ; ++i){
+                positions += PositionList.get(i).toString() + "_";
+            }
+            if (!positions.equals(""))
+                positions = positions.subSequence(0, positions.length()-1).toString();
+
+            return positions;
+        }
+
 //    public void addPosition(ExplicitPosition position){
 //        
 //    }
+    public static class PlayerBuilder {
+        private final StringProperty lastName;
+        private final SimpleStringProperty firstName;
+        private final SimpleStringProperty proTeam;
     
+        public PlayerBuilder(String firstName, String lastName, String proTeam){
+        this.lastName = new SimpleStringProperty(lastName);
+        this.firstName = new SimpleStringProperty(firstName);
+        this.proTeam = new SimpleStringProperty(proTeam);
+        }
+        
+     
+        
+        
+    }
 }
 

@@ -43,9 +43,6 @@ import wdk.gui.sport_screen.SportScreen;
  */
 public class WDK_GUI implements DraftDataView {
 
-    static final String CLASS_HEADING_LABEL = "heading_label";
-    static final String CLASS_PROMPT_LABEL = "prompt_label";
-    static final String PRIMARY_STYLE_SHEET = PATH_CSS + "csb_style.css";
 
 
     PlayersScreen playersScreen;
@@ -241,6 +238,13 @@ public class WDK_GUI implements DraftDataView {
      *
      * @param saved Describes whether the loaded draft has been saved or not.
      */
+    public void updateGUI(boolean saved){
+        updateToolbarControls(saved);
+        updateMenuControls();
+    }
+    public void updateMenuControls(){
+        playersScreen.update();
+    }
     public void updateToolbarControls(boolean saved) {
         // THIS TOGGLES WITH WHETHER THE CURRENT draft
         // HAS BEEN SAVED OR NOT
@@ -382,7 +386,7 @@ public class WDK_GUI implements DraftDataView {
     }
 
     private void initMenuScreens() {
-        playersScreen = new PlayersScreen(primaryStage, draftDataManager, messageDialog, yesNoCancelDialog);
+        playersScreen = new PlayersScreen(primaryStage, this, messageDialog, yesNoCancelDialog);
         fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage, draftDataManager, messageDialog, yesNoCancelDialog);
         fantasyStandingsScreen = new FantasyStandingsScreen(draftDataManager);
         draftScreen = new DraftScreen(draftDataManager);

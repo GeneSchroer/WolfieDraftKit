@@ -25,6 +25,7 @@ import wdk.gui.YesNoCancelDialog;
  * @author Work
  */
 public class FileController {
+    private enum screen {ADD, EDIT};
     private boolean saved;
     private final DraftFileManager draftFileManager;
     private final DraftExporter draftExporter;
@@ -69,7 +70,7 @@ public class FileController {
 
                 // REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
                 // THE APPROPRIATE CONTROLS
-                gui.updateToolbarControls(saved);
+                gui.updateGUI(saved);
 
                 // TELL THE USER THE draft HAS BEEN CREATED
                 messageDialog.show(properties.getProperty(NEW_DRAFT_CREATED_MESSAGE));
@@ -228,5 +229,6 @@ public class FileController {
             }
         }
     }
+    
     
 }

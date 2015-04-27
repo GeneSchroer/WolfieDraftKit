@@ -26,14 +26,17 @@ public class DraftDataManager {
     static int    DEFAULT_AGE = 2015-1937;
     static String DEFAULT_TEAM_NAME = " ";
     static String DEFAULT_TEAM_OWNER = " ";
-    private Draft startingDraft;
+    private final Draft startingDraft;
     
     
     
     public DraftDataManager(DraftDataView initView, Draft startingDraft) {
         view = initView;
         this.startingDraft = startingDraft;
-        draft = startingDraft;
+        ArrayList<Player> temp = new ArrayList();
+        temp.addAll(startingDraft.getAvailablePlayers());
+        draft = new Draft();
+        draft.getAvailablePlayers().addAll(temp);
     }
     
     public Draft getDraft(){
@@ -44,9 +47,9 @@ public class DraftDataManager {
     }
     public void reset() {
         ArrayList<Player> temp = new ArrayList();
-        temp.addAll(startingDraft.getAvailablePlayers().subList(0, startingDraft.getAvailablePlayers().size()-1));
+        temp.addAll(startingDraft.getAvailablePlayers().subList(0, startingDraft.getAvailablePlayers().size()));
         draft.getAvailablePlayers().clear();
-        draft.getAvailablePlayers().addAll(temp);
+        draft.getAvailablePlayers().addAll(temp.subList(0, temp.size()));
         
         draft.getTeams().clear();
         view.reloadDraft(draft);

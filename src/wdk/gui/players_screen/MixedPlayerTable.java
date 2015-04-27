@@ -10,6 +10,7 @@ import java.util.List;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableColumn;
@@ -44,12 +45,12 @@ public class MixedPlayerTable {
     
     public MixedPlayerTable(List<Player> playerList){
         initTable();
-        playerTable.setItems((ObservableList) playerList);
-        Collections.sort(playerList);
+        setTable(playerList);
+        //Collections.sort(playerList);
     }
 // NOW SETUP THE TABLE COLUMNS
     private void initTable() {    
-        playerTable                         = new TableView();
+        playerTable                         = new TableView<Player>();
         firstNameColumn                     = new TableColumn("First");
         lastNameColumn                      = new TableColumn("Last");
         proTeamColumn                       = new TableColumn("Pro Team");
@@ -188,10 +189,11 @@ public class MixedPlayerTable {
 
     }
     
-    public void setTable(ObservableList<Player> players){
-        playerTable.setItems(players);
+    public void setTable(List<Player> players){
+        ObservableList<Player> temp = FXCollections.observableArrayList(players);
+        playerTable.setItems(temp);
     }
-    public TableView getTable(){
+    public TableView<Player> getTable(){
         return playerTable;
     }
     public void statsSorted(boolean isSorted){

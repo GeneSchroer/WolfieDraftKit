@@ -25,6 +25,7 @@ import wdk.gui.MessageDialog;
 import wdk.gui.StyleSheet;
 import wdk.gui.YesNoCancelDialog;
 import static wdk.gui.StyleSheet.*;
+import wdk.gui.WDK_GUI;
 import wdk.util.MethodList;
 
 /**
@@ -35,7 +36,7 @@ public class PlayersView implements MenuView {
 
    
     /* Our list of available players, will be fed into the mixed table*/
-    ObservableList<Player> availablePlayers;
+    ArrayList<Player> availablePlayers;
     
     
     /* The primary pane that is holding all of this */
@@ -81,11 +82,16 @@ public class PlayersView implements MenuView {
     MessageDialog messageDialog;
     YesNoCancelDialog yesNoCancelDialog;
     private DraftDataManager draftManager;
+    private WDK_GUI gui;
     
-    public PlayersView(PlayersController initPlayersController, DraftDataManager initDraftManager){
-       this.playersController = initPlayersController;
-       this.draftManager = initDraftManager;
-       availablePlayers = draftManager.getDraft().getAvailablePlayers();
+   
+    PlayersView(PlayersController initPlayersController, WDK_GUI initGUI) {
+        this.playersController = initPlayersController;
+        this.gui = initGUI;
+        draftManager = initGUI.getDataManager();
+        availablePlayers = new ArrayList();
+        availablePlayers.addAll( draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
+
     }
     
     @Override
@@ -162,14 +168,17 @@ public class PlayersView implements MenuView {
    
      private void initBottomWorkspace() {
 
-        playersTable = new MixedPlayerTable(draftManager.getDraft().getAvailablePlayers());
+        playersTable = new MixedPlayerTable(availablePlayers);
     }
 
     @Override
     public void initEventHandlers() {
         
         addPlayerButton.setOnAction(e->{
-            playersController.handleAddPlayerRequest(this);
+            playersController.handleAddPlayerRequest(this.gui);
+        });
+        removePlayerButton.setOnAction(e->{
+            playersController.handleRemovePlayerRequest(this.gui, playersTable.getTable().getSelectionModel().getSelectedItem());
         });
         
         registerTextFieldController(playerSearchTextField);
@@ -260,10 +269,16 @@ public class PlayersView implements MenuView {
         playersController.handleSelectPlayerTypeRequest(this, "");
     }
     
-     public List<Player> getAvailablePlayers() {
+     public ArrayList<Player> getAvailablePlayers() {
         return availablePlayers;
     }
      public DraftDataManager getDraftManager(){
          return draftManager;
      }
+
+    void update() {
+        availablePlayers.clear();
+        availablePlayers.addAll(draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
+        playersTable.setTable(availablePlayers);
+    }
 }
