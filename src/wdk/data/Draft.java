@@ -14,18 +14,23 @@ import javafx.collections.ObservableList;
  * @author Work
  */
 public class Draft {
-    private ObservableList<DraftedTeam> teams;
+    private ObservableList<Team> teams;
     private ObservableList<Player> availablePlayers;
+    
+    
    // private ObservableList<Log> draftLog;
+    private int numTeams;
     public Draft(){
         teams = FXCollections.observableArrayList();
         availablePlayers = FXCollections.observableArrayList();
+        numTeams=0;
     }
     private void updatePoints(){
         
     }
-    public void addTeam(){
-        
+    public void addTeam(Team t){
+        teams.add(t);
+        ++numTeams;
     }
     public DraftedTeam removeTeam(DraftedTeam team){
         return team;
@@ -57,4 +62,9 @@ public class Draft {
     public ObservableList<DraftedTeam> getTeams() { 
         return teams;
     }
+    
+    public int getNumTeams(){
+        return numTeams;
+    }
+    
 }

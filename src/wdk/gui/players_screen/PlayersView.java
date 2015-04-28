@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import  wdk.GeneralPropertyType;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import wdk.data.DraftDataManager;
 import wdk.data.Player;
 import wdk.gui.MenuView;
@@ -34,7 +35,7 @@ import wdk.util.MethodList;
  */
 public class PlayersView implements MenuView {
     
-   private enum sortPlayer  { ALL, C, B1, B3, CI, B2, SS, MI, OF, U, P};
+   private enum sortPosition  { ALL, C, B1, B3, CI, B2, SS, MI, OF, U, P};
    private String sortPosition;
    private String sortPlayer;
    
@@ -308,7 +309,8 @@ public class PlayersView implements MenuView {
   
             if( (ln.toLowerCase().startsWith(sp.toLowerCase())
                     ||fn.toLowerCase().startsWith(sp.toLowerCase()))
-                    && playerList.get(i).getQualifiedPositions().contains(sortPosition)){
+                    && playerList.get(i).getQualifiedPositions().contains(sortPosition)
+                        && playerList.get(i).getFantasyTeam().equals(FREE_AGENT)){
                     filteredList.add(playerList.get(i));
             }
         }

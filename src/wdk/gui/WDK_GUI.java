@@ -1,6 +1,7 @@
 package wdk.gui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -178,10 +179,10 @@ public class WDK_GUI implements DraftDataView {
      * This method fully initializes the user interface for use.
      *
      * @param windowTitle The text to appear in the UI window's title bar.
-     * @param startingDraft
+     * @param proTeams
      * @throws IOException Thrown if any initialization files fail to load.
      */
-    public void initGUI(String windowTitle) throws IOException {
+    public void initGUI(String windowTitle, ArrayList<String> proTeams) throws IOException {
         /* First we initialize the various dialog classes */
         initDialogs();
 
@@ -195,7 +196,7 @@ public class WDK_GUI implements DraftDataView {
          * the main area where we manipulate data in the draft. 
          * Which means we get each menu screen to initialize itself
          */
-        initWorkspace();
+        initWorkspace(proTeams);
 
         /* Now we set up the event handlers for our various UI controls.
          * each menu screen gets called to set up its own event handlers as well*/
@@ -297,11 +298,11 @@ public class WDK_GUI implements DraftDataView {
         draftScreenButton = initChildButton(screenToolbarPane, GeneralPropertyType.DRAFT_ICON, GeneralPropertyType.DRAFT_SCREEN_TOOLTIP, true);
         sportScreenButton = initChildButton(screenToolbarPane, GeneralPropertyType.SPORT_ICON, GeneralPropertyType.SPORT_SCREEN_TOOLTIP, true);
     }
-
-    private void initWorkspace() {
+    
+    private void initWorkspace(ArrayList<String> proTeams) {
         workspacePane = new StackPane();
         
-        initMenuScreens();
+        initMenuScreens(proTeams);
         
         workspacePane.getChildren().add(playersScreen.getView().getScreen());
         workspacePane.getChildren().add(fantasyTeamsScreen.getView().getScreen());
@@ -385,14 +386,14 @@ public class WDK_GUI implements DraftDataView {
         primaryStage.show();
     }
 
-    private void initMenuScreens() {
-        playersScreen = new PlayersScreen(primaryStage, this, messageDialog, yesNoCancelDialog);
+    private void initMenuScreens(ArrayList<String> proTeams) {
+        playersScreen = new PlayersScreen(primaryStage, this, messageDialog, yesNoCancelDialog, proTeams);
         fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage, draftDataManager, messageDialog, yesNoCancelDialog);
         fantasyStandingsScreen = new FantasyStandingsScreen(draftDataManager);
         draftScreen = new DraftScreen(draftDataManager);
         sportScreen = new SportScreen(draftDataManager);
         
-        playersScreen.initGUI();
+        playersScreen.initGUI(proTeams);
         fantasyTeamsScreen.initGUI();
         fantasyStandingsScreen.initGUI();
         draftScreen.initGUI();

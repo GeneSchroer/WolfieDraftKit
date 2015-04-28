@@ -6,24 +6,30 @@
 package wdk.file;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.json.JsonWriter;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
+import static wdk.WDK_StartUpConstants.JSON_FILE_PATH_TEAMS;
 import wdk.data.Draft;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
+import wdk.data.Position;
 
 /**
  *
  * @author Work
  */
 public class JsonDraftFileManager implements DraftFileManager {
-
+    private String JSON_PRO_TEAMS = "teams";
     String JSON_PLAYERS             = "Players";
     String JSON_HITTERS             = "Hitters";
     String JSON_PITCHERS            = "Pitchers";
@@ -51,9 +57,12 @@ public class JsonDraftFileManager implements DraftFileManager {
 //  String JSON_H       = "H";
     String JSON_BB      = "BB";
     String JSON_K       = "K";
+
     
     
+    //File Strings
     
+    String SLASH = "/";
     
     
     
@@ -61,7 +70,35 @@ public class JsonDraftFileManager implements DraftFileManager {
     
     @Override
     public void saveDraft(Draft draftToSave) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String courseListing = "" + draftToSave.getDraftName();
+        String jsonFilePath = PATH_DRAFTS + SLASH + courseListing + JSON_EXT;
+        
+        // INIT THE WRITER
+        OutputStream os = new FileOutputStream(jsonFilePath);
+        JsonWriter jsonWriter = Json.createWriter(os);  
+        
+        // MAKE A JSON ARRAY FOR THE PAGES ARRAY
+        JsonArray pagesJsonArray = makePagesJsonArray(courseToSave.getPages());
+        
+        // AND AN OBJECT FOR THE INSTRUCTOR
+        JsonObject instructorJsonObject = makeInstructorJsonObject(courseToSave.getInstructor());
+        
+        // ONE FOR EACH OF OUR DATES
+        JsonObject startingMondayJsonObject = makeLocalDateJsonObject(courseToSave.getStartingMonday());
+        JsonObject endingFridayJsonObject = makeLocalDateJsonObject(courseToSave.getEndingFriday());
+        
+        // THE LECTURE DAYS ARRAY
+        JsonArray lectureDaysJsonArray = makeLectureDaysJsonArray(courseToSave.getLectureDays());
+        
+        // THE SCHEDULE ITEMS ARRAY
+        JsonArray scheduleItemsJsonArray = makeScheduleItemsJsonArray(courseToSave.getScheduleItems());
+        
+        // THE LECTURES ARRAY
+        JsonArray lecturesJsonArray = makeLecturesJsonArray(courseToSave.getLectures());
+        
+        // THE HWS ARRAY
+        JsonArray hwsJsonArray = makeHWsJsonArray(courseToSave.getAssignments());
+        
     }
 
     @Override
@@ -106,7 +143,39 @@ public class JsonDraftFileManager implements DraftFileManager {
             h.setProTeam(jso.getString(JSON_PRO_TEAM));
             h.setLastName(jso.getString(JSON_LAST_NAME));
             h.setFirstName(jso.getString(JSON_FIRST_NAME));
-            h.setQualifiedPositions(jso.getString(JSON_QP));
+            
+            h.setFantasyTeam(FREE_AGENT);
+            
+            String qp = jso.getString(JSON_QP);
+            if(qp.contains((CharSequence) Position.C.toString())){
+                h.addPosition(Position.C);
+                h.addPosition(Position.U);
+            }
+            if(qp.contains((CharSequence) Position.B1.toString())){
+                h.addPosition(Position.B1);
+                h.addPosition(Position.CI);
+                h.addPosition(Position.U);
+            }
+            if(qp.contains((CharSequence) Position.B3.toString())){
+                h.addPosition(Position.B3);
+                h.addPosition(Position.CI);
+                h.addPosition(Position.U);
+            }
+            if(qp.contains((CharSequence) Position.B2.toString())){
+                h.addPosition(Position.B2);
+                h.addPosition(Position.MI);
+                h.addPosition(Position.U);
+            }
+            if(qp.contains((CharSequence) Position.SS.toString())){
+                h.addPosition(Position.SS);
+                h.addPosition(Position.MI);
+                h.addPosition(Position.U);
+            }
+            if(qp.contains((CharSequence) Position.OF.toString())){
+                h.addPosition(Position.OF);
+                h.addPosition(Position.U);
+            }
+            
             h.setAtBat(Integer.parseInt(jso.getString(JSON_AB)));
             h.setRuns(Integer.parseInt(jso.getString(JSON_R)));
             h.setHits(Integer.parseInt(jso.getString(JSON_H)));
@@ -117,6 +186,8 @@ public class JsonDraftFileManager implements DraftFileManager {
             h.setYearOfBirth(jso.getString(JSON_YEAR_OF_BIRTH));
             h.setNationOfBirth(jso.getString(JSON_NATION_OF_BIRTH));
             
+            
+            
             draft.addPlayer(h);
         }
         for(int i = 0; i < jsonPitchersArray.size(); ++i){
@@ -125,7 +196,10 @@ public class JsonDraftFileManager implements DraftFileManager {
             b.setProTeam(jso.getString(JSON_PRO_TEAM));
             b.setLastName(jso.getString(JSON_LAST_NAME));
             b.setFirstName(jso.getString(JSON_FIRST_NAME));
-            b.setQualifiedPositions("P");
+            
+            b.setFantasyTeam(FREE_AGENT);
+            
+            b.addPosition(Position.P);
             b.setInningsPitched(Double.parseDouble(jso.getString(JSON_IP)));
             b.setEarnedRuns(Integer.parseInt(jso.getString(JSON_ER)));
             b.setWins(Integer.parseInt(jso.getString(JSON_W)));
@@ -142,5 +216,28 @@ public class JsonDraftFileManager implements DraftFileManager {
         
         return draft;
     }
+     public ArrayList<String> loadProTeams(String jsonFilePath) throws IOException {
+        ArrayList<String> subjectsArray = loadArrayFromJSONFile(jsonFilePath, JSON_PRO_TEAMS);
+        ArrayList<String> cleanedArray = new ArrayList();
+        for (String s : subjectsArray) {
+            // GET RID OF ALL THE QUOTE CHARACTERS
+            s = s.replaceAll("\"", "");
+            cleanedArray.add(s);
+        }
+        return cleanedArray;
+    }
     
+     private ArrayList<String> loadArrayFromJSONFile(String jsonFilePath, String arrayName) throws IOException {
+        JsonObject json = loadJSONFile(jsonFilePath);
+        ArrayList<String> items = new ArrayList();
+        JsonArray jsonArray = json.getJsonArray(arrayName);
+        for (JsonValue jsV : jsonArray) {
+            items.add(jsV.toString());
+        }
+        return items;
+    }
+    
+    private void addImage(String lastName, String firstName){
+        
+    }
 }

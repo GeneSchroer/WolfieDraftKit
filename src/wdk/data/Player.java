@@ -6,12 +6,15 @@
 package wdk.data;
 
 import java.awt.Image;
+import java.util.Collections;
+import java.util.Comparator;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 
 /**
  *
@@ -26,9 +29,9 @@ public class Player implements Comparable {
     StringProperty notes;
     StringProperty yearOfBirth;
     StringProperty nationOfBirth;
+    StringProperty fantasyTeam;
 
     ObservableList<Position> PositionList;
-
         
     //Position positions;
     
@@ -39,7 +42,7 @@ public class Player implements Comparable {
    
     
     public Player() {
-        proTeam                = new SimpleStringProperty();
+        proTeam             = new SimpleStringProperty();
         lastName            = new SimpleStringProperty();
         firstName           = new SimpleStringProperty();
         fullName            = new SimpleStringProperty();
@@ -47,8 +50,10 @@ public class Player implements Comparable {
         notes               = new SimpleStringProperty();
         yearOfBirth         = new SimpleStringProperty();
         nationOfBirth       = new SimpleStringProperty();
-        PositionList = FXCollections.observableArrayList();
-        PositionList.sorted();
+        fantasyTeam         = new SimpleStringProperty();
+        
+       PositionList = FXCollections.observableArrayList();
+       
     }
     
     public void setLastName(String ln){
@@ -172,12 +177,24 @@ public class Player implements Comparable {
         return getLastName().compareTo(otherPlayer.getLastName());
     }
     public void addPosition(Position ep){
-        if(!PositionList.contains(ep))
+        if(!PositionList.contains(ep)){
             PositionList.add(ep);
-        else{
-            // We don't add anything
+            FXCollections.sort(PositionList, new Comparator<Position>(){
+                @Override
+                public int compare(Position p1, Position p2){
+                    if(p1.ordinal() > p2.ordinal())
+                        return 1;
+                    if(p1.ordinal() < p2.ordinal())
+                        return -1;
+                    
+                    return 0;
+                }
+        });
+            setQualifiedPositions(positionString());
         }
-        setQualifiedPositions(positionString());
+        else{
+            
+        }
         
     }
     
@@ -188,8 +205,9 @@ public class Player implements Comparable {
     public void removePosition(Position ep){
         if(PositionList.contains(ep)){
             PositionList.remove(ep);
+            setQualifiedPositions(positionString());
         }
-        setQualifiedPositions(positionString());
+        
     }
            
     public String positionString(){
@@ -203,6 +221,17 @@ public class Player implements Comparable {
             return positions;
         }
 
+    public String getFantasyTeam(){
+        return fantasyTeam.get();
+    }
+    public void setFantasyTeam(String ft){
+        fantasyTeam.set(ft);
+    }
+    public StringProperty fantasyTeamProperty(){
+        return fantasyTeam;
+    }
+    
+    
 //    public void addPosition(ExplicitPosition position){
 //        
 //    }

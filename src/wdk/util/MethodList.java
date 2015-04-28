@@ -6,6 +6,7 @@
 package wdk.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -105,4 +106,12 @@ public class MethodList {
         toggle.getToggles().add(radio);
         return radio;
     }
+  
+  public static void loadComboBox(ComboBox comboBox, ArrayList<String> list) {
+            for(String s : list){
+                comboBox.getItems().add(s);
+            }
+        
+    }
+  
 }

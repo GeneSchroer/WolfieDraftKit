@@ -26,13 +26,27 @@ public class Hitter extends Player{
     IntegerProperty stolenBases;
     DoubleBinding battingAverage;
     public Hitter(){
+        this(null);
         
-        atBat           = new SimpleIntegerProperty();
-        runs            = new SimpleIntegerProperty();
-        hits            = new SimpleIntegerProperty();
-        homeRuns        = new SimpleIntegerProperty();
-        runsBattedIn    = new SimpleIntegerProperty();
-        stolenBases     = new SimpleIntegerProperty();
+    }
+    
+    public Hitter(Player h){
+        if(h!=null){
+            setLastName(h.getLastName());
+            setFirstName(h.getFirstName());
+            setProTeam(h.getProTeam());
+            for(int i = 0; i < h.getPositionList().size(); ++i){
+                addPosition((Position) h.getPositionList().get(i));
+            }
+            
+        }
+        
+        atBat           = new SimpleIntegerProperty(0);
+        runs            = new SimpleIntegerProperty(0);
+        hits            = new SimpleIntegerProperty(0);
+        homeRuns        = new SimpleIntegerProperty(0);
+        runsBattedIn    = new SimpleIntegerProperty(0);
+        stolenBases     = new SimpleIntegerProperty(0);
         battingAverage  = new DoubleBinding(){
             {
                 super.bind(hits, atBat);
@@ -119,15 +133,12 @@ public class Hitter extends Player{
         return new SimpleDoubleProperty(battingAverage.getValue());
     }
     
+    
+    
+    
     @Override
     public void setQualifiedPositions(String pos){
-        if(pos.contains("1B")||pos.contains("3B"))
-            pos += "_CI";
-        
-        if(pos.contains("2B")||pos.contains("SS"))
-            pos += "_MI";
-        
-        qualifiedPositions.set(pos + "_U");
+        qualifiedPositions.set(pos);
     }
     
 }

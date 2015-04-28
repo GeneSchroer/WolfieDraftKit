@@ -7,6 +7,7 @@ package wdk.gui.fantasy_teams_screen;
 
 import wdk.gui.MenuView;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
@@ -16,7 +17,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import wdk.GeneralPropertyType;
 import wdk.data.DraftDataManager;
 import wdk.gui.StyleSheet;
@@ -154,6 +154,9 @@ public class FantasyTeamsView implements MenuView{
     public void reset() {
         
     }
-
     
+    public void update(ArrayList<String> teamList){
+        MethodList.loadComboBox(selectTeamComboBox, teamList);
+    }
 }
+        

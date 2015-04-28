@@ -115,6 +115,10 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     DIALOG_TEAM_LABEL,
     DIALOG_POSITION_LABEL,
     DIALOG_CONTRACT_LABEL,
-    DIALOG_SALARY_LABEL
+    DIALOG_SALARY_LABEL,
     
+    
+    
+    
+    FREE_AGENT
 }

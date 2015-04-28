@@ -99,7 +99,10 @@
         <property name="DIALOG_SALARY_LABEL"                value="Salary"></property>
         
         
-        
+
+        <property name="FREE_DEAL"                value="Free Agent"></property>
+
+                        
     </property_list>
     <property_options_list>
     </property_options_list>

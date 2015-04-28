@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.gui;
+package wdk.gui.fantasy_teams_screen;
 
 import java.time.LocalDate;
 import javafx.event.ActionEvent;
@@ -19,6 +19,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import wdk.data.Draft;
 import wdk.data.Team;
+import wdk.gui.MessageDialog;
 import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
 import static wdk.gui.StyleSheet.CLASS_PROMPT_LABEL;
 import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
@@ -46,12 +47,11 @@ public class TeamDialog extends Stage {
     // CONSTANTS FOR OUR UI
     public static final String COMPLETE = "Complete";
     public static final String CANCEL = "Cancel";
-    public static final String DESCRIPTION_PROMPT = "Description: ";
-    public static final String DATE_PROMPT = "Date";
-    public static final String TEAMOWNER_PROMPT = "TEAMOWNER";
+    public static final String NAME_PROMPT = "Name: ";
+    public static final String OWNER_PROMPT = "Owner: ";
     public static final String SCHEDULE_ITEM_HEADING = "Schedule Item Details";
-    public static final String ADD_SCHEDULE_ITEM_TITLE = "Add New Schedule Item";
-    public static final String EDIT_SCHEDULE_ITEM_TITLE = "Edit Schedule Item";
+    public static final String ADD_TEAM_TITLE = "Add New Team";
+    public static final String EDIT_SCHEDULE_ITEM_TITLE = "Edit Team";
     private Team team;
     /**
      * Initializes this dialog so that it can be used for either adding
@@ -79,7 +79,7 @@ public class TeamDialog extends Stage {
         headingLabel.getStyleClass().add(CLASS_HEADING_LABEL);
     
         // NOW THE DESCRIPTION 
-        nameLabel = new Label(DESCRIPTION_PROMPT);
+        nameLabel = new Label(NAME_PROMPT);
         nameLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         teamNameTextField = new TextField();
         teamNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -88,7 +88,7 @@ public class TeamDialog extends Stage {
         
         
         // AND THE TEAMOWNER
-        teamownerLabel = new Label(TEAMOWNER_PROMPT);
+        teamownerLabel = new Label(OWNER_PROMPT);
         teamownerLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         teamOwnerTextField = new TextField();
         teamOwnerTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -101,6 +101,11 @@ public class TeamDialog extends Stage {
         
         // REGISTER EVENT HANDLERS FOR OUR BUTTONS
         EventHandler completeCancelHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
+            if(teamNameTextField==null
+                    || teamOwnerTextField == null){
+                messageDialog.show("You are not finished");
+            }
+            
             Button sourceButton = (Button)ae.getSource();
             TeamDialog.this.selection = sourceButton.getText();
             TeamDialog.this.hide();
@@ -143,9 +148,9 @@ public class TeamDialog extends Stage {
      * 
      * @param message Message to appear inside the dialog.
      */
-    public Team showAddScheduleItemDialog(LocalDate initDate) {
+    public Team showAddTeamDialog() {
         // SET THE DIALOG TITLE
-        setTitle(ADD_SCHEDULE_ITEM_TITLE);
+        setTitle(ADD_TEAM_TITLE);
         
         // RESET THE SCHEDULE ITEM OBJECT WITH DEFAULT VALUES
         team = new Team();
@@ -166,6 +171,10 @@ public class TeamDialog extends Stage {
 //        datePicker.setValue(scheduleItem.getDate());
 //        teamOwnerTextField.setText(scheduleItem.getLink());       
 //    }
+    
+    public Team getTeam(){
+        return team;
+    }
     
     public boolean wasCompleteSelected() {
         return selection.equals(COMPLETE);

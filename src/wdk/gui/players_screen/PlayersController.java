@@ -5,21 +5,21 @@
  */
 package wdk.gui.players_screen;
 
-import wdk.gui.TeamDialog;
+import wdk.gui.fantasy_teams_screen.TeamDialog;
 import javafx.stage.Stage;
 import wdk.gui.MessageDialog;
 import wdk.gui.WDK_GUI;
 import wdk.gui.YesNoCancelDialog;
 import wdk.data.Player;
 import java.util.ArrayList;
-import java.util.List;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import properties_manager.PropertiesManager;
 import static wdk.GeneralPropertyType.REMOVE_PLAYER_MESSAGE;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import wdk.data.Draft;
 import wdk.data.DraftDataManager;
-import wdk.gui.PlayerDialog;
+import wdk.data.Hitter;
+import wdk.data.Pitcher;
+import wdk.data.Position;
 
 
 
@@ -30,8 +30,8 @@ public class PlayersController {
     
     MessageDialog messageDialog;
     YesNoCancelDialog yesNoCancelDialog;
-    public PlayersController(Stage initPrimaryStage, Draft draft, MessageDialog initMessageDialog, YesNoCancelDialog initYesNoCancelDialog){
-        pd = new PlayerDialog(initPrimaryStage, draft, initMessageDialog);
+    public PlayersController(Stage initPrimaryStage, Draft draft, MessageDialog initMessageDialog, YesNoCancelDialog initYesNoCancelDialog, ArrayList<String> proTeams){
+        pd = new PlayerDialog(initPrimaryStage, draft, initMessageDialog, proTeams);
         td = new TeamDialog(initPrimaryStage, draft, initMessageDialog);
         this.messageDialog = initMessageDialog;
         this.yesNoCancelDialog = initYesNoCancelDialog;
@@ -55,8 +55,21 @@ public class PlayersController {
         draft = ddm.getDraft();
         pd.showAddPlayerDialog();
         if(pd.wasCompleteSelected()){
-            Player p = pd.getPlayer();
-            draft.addPlayer(p);
+            Player temp = pd.getPlayer();
+            
+            if(pd.getPlayer().getPositionList().contains(Position.P)){
+                Pitcher p = new Pitcher(temp);
+                p.setFantasyTeam(FREE_AGENT);
+                draft.addPlayer(p);
+            }
+            else{
+                Hitter p = new Hitter(temp);
+                p.setFantasyTeam(FREE_AGENT);
+                draft.addPlayer(p);
+            }
+            
+            
+            
             gui.updateGUI(false);
         }
         else{

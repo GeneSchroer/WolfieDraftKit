@@ -27,14 +27,28 @@ public class Pitcher extends Player{
     DoubleBinding   whip;
     private final DoubleBinding earnedRunAverage;
     public Pitcher(){
+       this(null);
+    }
+    public Pitcher(Player p){
         
-        inningsPitched  = new SimpleDoubleProperty();
-        earnedRuns      = new SimpleIntegerProperty();
-        wins            = new SimpleIntegerProperty();
-        saves           = new SimpleIntegerProperty();
-        hits            = new SimpleIntegerProperty();
-        basesOnBalls    = new SimpleIntegerProperty();
-        strikeouts      = new SimpleIntegerProperty();
+        if(p!=null){
+            setLastName(p.getLastName());
+            setFirstName(p.getFirstName());
+            setProTeam(p.getProTeam());
+            for(int i = 0; i < p.getPositionList().size(); ++i){
+                addPosition((Position) p.getPositionList().get(i));
+            }
+            
+        }
+        
+        
+        inningsPitched  = new SimpleDoubleProperty(0);
+        earnedRuns      = new SimpleIntegerProperty(0);
+        wins            = new SimpleIntegerProperty(0);
+        saves           = new SimpleIntegerProperty(0);
+        hits            = new SimpleIntegerProperty(0);
+        basesOnBalls    = new SimpleIntegerProperty(0);
+        strikeouts      = new SimpleIntegerProperty(0);
         
         earnedRunAverage             = new DoubleBinding(){
             {
@@ -50,6 +64,7 @@ public class Pitcher extends Player{
             }
             
         };
+      
         
         whip            = new DoubleBinding(){
             {
@@ -63,8 +78,8 @@ public class Pitcher extends Player{
                 return w;
             }
         };
+        
     }
-    
     public void setInningsPitched(double ip){
         inningsPitched.set(ip);
     }

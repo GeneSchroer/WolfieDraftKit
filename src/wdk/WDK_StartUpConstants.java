@@ -25,11 +25,14 @@ public class WDK_StartUpConstants {
     public static final String PATH_EMPTY = ".";
 
     // THESE ARE THE DATA FILES WE WILL LOAD AT STARTUP
-    
+    public static final String JSON_FILE_PATH_TEAMS = PATH_DATA + "teams.json";
+
     // ERRO MESSAGE ASSOCIATED WITH PROPERTIES FILE LOADING ERRORS
     public static String PROPERTIES_FILE_ERROR_MESSAGE = "Error Loading properties.xml";
 
     // ERROR DIALOG CONTROL
     public static String CLOSE_BUTTON_LABEL = "Close";
+    
+    public static final String FREE_AGENT = "Free Agent";
     
 }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wdk.gui;
+package wdk.gui.players_screen;
 
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -22,14 +23,15 @@ import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import wdk.GeneralPropertyType;
 import static wdk.WDK_StartUpConstants.PATH_FLAGS;
-import static wdk.WDK_StartUpConstants.PATH_IMAGES;
 import static wdk.WDK_StartUpConstants.PATH_PLAYERS;
 import wdk.data.Draft;
 import wdk.data.Player;
 import wdk.data.Position;
+import wdk.gui.MessageDialog;
 import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
 import static wdk.gui.StyleSheet.CLASS_PROMPT_LABEL;
 import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
+
 
 /**
  *
@@ -41,6 +43,8 @@ public class PlayerDialog extends Stage{
     
     EventHandler completeAddHandler;
     EventHandler completeEditHandler;
+
+    
     
 
     private enum screen { ADD, EDIT };
@@ -112,7 +116,7 @@ public class PlayerDialog extends Stage{
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
 
-    public PlayerDialog(Stage primaryStage, Draft draft, MessageDialog messageDialog) {
+    public PlayerDialog(Stage primaryStage, Draft draft, MessageDialog messageDialog, ArrayList<String> proTeam) {
         initModality(Modality.WINDOW_MODAL);
         initOwner(primaryStage);
         
@@ -147,6 +151,7 @@ public class PlayerDialog extends Stage{
         proTeamLabel = new Label(PRO_TEAM_PROMPT);
         proTeamLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         proTeamComboBox = new ComboBox();
+        loadComboBox(proTeamComboBox, proTeam);
 //        proTeamComboBox.textProperty().addListener((observable, oldValue, newValue) -> {
 //            player.setFirstName(newValue);
 //        });
@@ -315,14 +320,15 @@ public class PlayerDialog extends Stage{
             if(selection.equals(COMPLETE)
                 && (lastNameTextField.getText()==null
                     || firstNameTextField.getText()==null
-                    || (!catcherCheckBox.isSelected()
-                        && !firstBasemanCheckBox.isSelected()
-                            && !thirdBasemanCheckBox.isSelected()
-                                &&!firstBasemanCheckBox.isSelected()
-                                    &&!secondBasemanCheckBox.isSelected()
-                                        &&!shortstopCheckBox.isSelected()
-                                            &&!outFielderCheckBox.isSelected()
-                                                &&!pitcherCheckBox.isSelected())))
+                    || proTeamComboBox.getSelectionModel().isEmpty()
+                        || (!catcherCheckBox.isSelected()
+                            && !firstBasemanCheckBox.isSelected()
+                                && !thirdBasemanCheckBox.isSelected()
+                                    &&!firstBasemanCheckBox.isSelected()
+                                        &&!secondBasemanCheckBox.isSelected()
+                                            &&!shortstopCheckBox.isSelected()
+                                                &&!outFielderCheckBox.isSelected()
+                                                    &&!pitcherCheckBox.isSelected())))
                 messageDialog.show("You haven't finished adding stuff.");
             else{
             
@@ -479,5 +485,10 @@ public class PlayerDialog extends Stage{
     
     
     
-    
+    private void loadComboBox(ComboBox comboBox, ArrayList<String> list) {
+            for(String s : list){
+                comboBox.getItems().add(s);
+            }
+        
+    }
 }

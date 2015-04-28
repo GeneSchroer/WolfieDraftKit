@@ -5,8 +5,8 @@
  */
 package wdk.gui.players_screen;
 
+import java.util.ArrayList;
 import javafx.stage.Stage;
-import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
 import wdk.gui.MessageDialog;
 import wdk.gui.WDK_GUI;
@@ -22,11 +22,11 @@ public class PlayersScreen implements MenuScreen{
     PlayersView playersView;
     PlayersController playersController;
 
-    public PlayersScreen(Stage initPrimaryStage, WDK_GUI initGUI, MessageDialog mD, YesNoCancelDialog yNCD){
-        playersController = new PlayersController(initPrimaryStage, initGUI.getDraftDataManager().getDraft(), mD, yNCD);
+    public PlayersScreen(Stage initPrimaryStage, WDK_GUI initGUI, MessageDialog mD, YesNoCancelDialog yNCD, ArrayList<String> proTeams){
+        playersController = new PlayersController(initPrimaryStage, initGUI.getDraftDataManager().getDraft(), mD, yNCD, proTeams);
         playersView = new PlayersView(playersController, initGUI);
     }
-    public void initGUI(){
+    public void initGUI(ArrayList<String> proTeams){
         playersView.initGUI();
     }
     @Override

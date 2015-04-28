@@ -6,16 +6,14 @@
 package wdk.zzz;
 
 import java.io.IOException;
-import java.util.Locale;
+import java.util.ArrayList;
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import static wdk.GeneralPropertyType.PROP_APP_TITLE;
 import static wdk.WDK_StartUpConstants.PATH_DATA;
 import static wdk.WDK_StartUpConstants.PROPERTIES_FILE_NAME;
 import static wdk.WDK_StartUpConstants.PROPERTIES_SCHEMA_FILE_NAME;
-import wdk.data.DraftDataManager;
 import wdk.error.ErrorHandler;
 import wdk.file.JsonDraftFileManager;
 import wdk.gui.WDK_GUI;
@@ -69,8 +67,8 @@ public class WolfieDraftKit extends Application {
                 
                 // AND NOW GIVE ALL OF THIS STUFF TO THE GUI
                 // INITIALIZE THE USER INTERFACE COMPONENTS
-                gui = new WDK_GUI(primaryStage);
-                
+               // gui = new WDK_GUI(primaryStage, null);
+                ArrayList<String> proTeams = new ArrayList();
                 gui.setDraftFileManager(jsonFileManager);
                 //gui.setDraftExporter(exporter);
                 
@@ -80,7 +78,7 @@ public class WolfieDraftKit extends Application {
 
                 // FINALLY, START UP THE USER INTERFACE WINDOW AFTER ALL
                 // REMAINING INITIALIZATION
-                gui.initGUI(appTitle);                
+                gui.initGUI(appTitle, proTeams);                
             }
             catch(IOException ioe) {
                 eH = ErrorHandler.getErrorHandler();

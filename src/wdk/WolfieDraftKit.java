@@ -60,6 +60,7 @@ public class WolfieDraftKit extends Application {
                 
                 Draft startingDraft = jsonFileManager.loadStartingDraft(filePathList);
                 
+                ArrayList<String> proTeams = jsonFileManager.loadProTeams(JSON_FILE_PATH_TEAMS);
                 
                 // AND NOW GIVE ALL OF THIS STUFF TO THE GUI
                 // INITIALIZE THE USER INTERFACE COMPONENTS
@@ -74,7 +75,7 @@ public class WolfieDraftKit extends Application {
 
                 // FINALLY, START UP THE USER INTERFACE WINDOW AFTER ALL
                 // REMAINING INITIALIZATION
-                gui.initGUI(appTitle);                
+                gui.initGUI(appTitle, proTeams);                
             }
             catch(IOException ioe) {
                 eH = ErrorHandler.getErrorHandler();
