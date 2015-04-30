@@ -8,7 +8,6 @@ package wdk.gui.fantasy_teams_screen;
 import wdk.gui.MenuView;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
@@ -23,7 +22,6 @@ import wdk.GeneralPropertyType;
 import wdk.data.DraftDataManager;
 import wdk.data.DraftType;
 import wdk.data.Player;
-import wdk.data.Team;
 import wdk.gui.StyleSheet;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
 import wdk.gui.WDK_GUI;
@@ -87,7 +85,10 @@ public class FantasyTeamsView implements MenuView{
         initEventHandlers();
         mainWorkspacePane = new VBox();
         mainWorkspacePane.getChildren().add(topWorkspacePane);
+        mainWorkspacePane.getChildren().add(startingLineupTable.getTable());
+        mainWorkspacePane.getChildren().add(taxiSquadTable.getTable());
         mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
+        
         
         
     }
@@ -143,7 +144,9 @@ public class FantasyTeamsView implements MenuView{
         editTeamButton.setOnAction(e -> {
             //   fileController.handleExportDraftRequest(this);
         });
-        
+        selectTeamComboBox.setOnAction(e->{
+            update();
+        });
         
     }
     @Override
@@ -162,10 +165,9 @@ public class FantasyTeamsView implements MenuView{
     
     public void update(){
         updateTeamBox();
-        updateTable((String)selectTeamComboBox.getSelectionModel().getSelectedItem());
         
     }
-    private void updateTeamBox(){
+    private void updateTeamBox(){ 
         if(!selectTeamComboBox.getSelectionModel().isEmpty()){
             String current = (String) selectTeamComboBox.getSelectionModel().getSelectedItem();
         }
@@ -189,10 +191,11 @@ public class FantasyTeamsView implements MenuView{
     }
 
     private void updateTable(String selectedTeam) {
+        
         currentStartingLineup = buildFilteredTeam(selectedTeam, DraftType.STARTING);
         currentTaxiSquad = buildFilteredTeam(selectedTeam, DraftType.TAXI);
-        startingLineupTable.setTable(currentStartingLineup);
-        taxiSquadTable.setTable(currentTaxiSquad);
+        startingLineupTable.setTable(draftManager.getDraft().getAvailablePlayers(), selectedTeam, DraftType.STARTING);
+        taxiSquadTable.setTable(draftManager.getDraft().getAvailablePlayers(), selectedTeam, DraftType.TAXI);
         
     }
     

@@ -15,6 +15,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
+import wdk.data.DraftType;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
 import wdk.data.Player;
@@ -171,9 +172,12 @@ public class FantasyTeamTable {
         playerTable.getColumns().add(salaryColumn);
     }
     
-    public void setTable(List<Player> players){
-        ObservableList<Player> temp = FXCollections.observableArrayList(players);
-        playerTable.setItems(temp);
+    public void setTable(ObservableList<Player> playerList, String teamName, DraftType dT){
+        playerTable.getItems().clear();
+        for(int i = 0; i < playerList.size() ; ++i){
+            if(playerList.get(i).getFantasyTeam().equals(teamName)&&playerList.get(i).getDraftType().equals(dT))
+                    playerTable.getItems().add(playerList.get(i));
+        }
     }
     public TableView getTable(){
         return playerTable;

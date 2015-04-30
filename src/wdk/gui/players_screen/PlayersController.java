@@ -57,6 +57,9 @@ public class PlayersController {
         draft = ddm.getDraft();
         pd.showAddPlayerDialog();
         if(pd.wasCompleteSelected()){
+            
+            
+            
             Player temp = pd.getPlayer();
             
             if(pd.getPlayer().getPositionList().contains(Position.P)){
@@ -90,20 +93,30 @@ public class PlayersController {
         }        
     }
 
-    void handleEditPlayerRequest(WDK_GUI gui, Player playerToEdit) {
+    void handleEditPlayerRequest(WDK_GUI gui, Player playerToEdit) throws Exception {
         DraftDataManager ddm = gui.getDataManager();
         draft = ddm.getDraft();
         ArrayList<String> teamNames = getTeamNames(draft);
         
-        pd.showEditPlayerDialog(playerToEdit, teamNames);
+        pd.showEditPlayerDialog(playerToEdit, draft.getTeams());
+        
+        
+        
+        //More to do
+        
+        
+        
+        
+        
+        
         
         // DID THE USER CONFIRM?
         if (pd.wasCompleteSelected()) {
             // UPDATE THE SCHEDULE ITEM
             Player player = pd.getPlayer();
             
-            playerToEdit.setFantasyTeam(player.getFantasyTeam());
-            playerToEdit.setTeamPosition(player.getTeamPosition());
+            Team team = pd.getTeam();
+            team.addPlayer(playerToEdit, pd.getPosition());
             playerToEdit.setContract(player.getContract());
             playerToEdit.setSalary(player.getSalary());
             

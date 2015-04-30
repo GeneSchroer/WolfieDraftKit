@@ -6,6 +6,8 @@
 package wdk.gui.players_screen;
 
 import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -28,11 +30,11 @@ import static wdk.WDK_StartUpConstants.PATH_PLAYERS;
 import wdk.data.Draft;
 import wdk.data.Player;
 import wdk.data.Position;
+import wdk.data.Team;
 import wdk.gui.MessageDialog;
 import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
 import static wdk.gui.StyleSheet.CLASS_PROMPT_LABEL;
 import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
-import wdk.util.MethodList;
 
 
 /**
@@ -42,16 +44,28 @@ import wdk.util.MethodList;
 public class PlayerDialog extends Stage{
     private Object props;
     
+    ObservableList<Team> teamList;
     
     EventHandler completeAddHandler;
     EventHandler completeEditHandler;
     private boolean trigger;
 
+//    private void fillPositionBox(String teamName) {
+//        Team team = teamList.
+//    }
+    
+    private Team currentTeam;
+    private Position currentPosition;
+    private String teamName;
+    private final String positionString;
+
+  
     
     
 
     private enum screen { ADD, EDIT };
      Player player;
+     
     
     // GUI CONTROLS FOR OUR DIALOG
     GridPane gridPane;
@@ -93,6 +107,11 @@ public class PlayerDialog extends Stage{
     TextField salaryTextField;
             
             
+    
+    
+    
+    
+    
             
     Button completeButton;
     Button cancelButton;
@@ -120,6 +139,12 @@ public class PlayerDialog extends Stage{
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
 
     public PlayerDialog(Stage primaryStage, Draft draft, MessageDialog messageDialog, ArrayList<String> proTeam) {
+        
+        currentTeam = new Team();
+        currentPosition = null;
+        positionString = "";
+        
+        teamList = FXCollections.observableArrayList();
         initModality(Modality.WINDOW_MODAL);
         initOwner(primaryStage);
         
@@ -155,9 +180,9 @@ public class PlayerDialog extends Stage{
         proTeamLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         proTeamComboBox = new ComboBox();
         loadComboBox(proTeamComboBox, proTeam);
-//        proTeamComboBox.textProperty().addListener((observable, oldValue, newValue) -> {
-//            player.setFirstName(newValue);
-//        });
+        proTeamComboBox.setOnAction(e->{
+            player.setProTeam((String) proTeamComboBox.getSelectionModel().getSelectedItem());
+        });
         
         // AND THE DATE
 
@@ -306,16 +331,26 @@ public class PlayerDialog extends Stage{
         fantasyTeamComboBox.setOnAction(e->{
             if(trigger)
                 if(!fantasyTeamComboBox.getSelectionModel().isEmpty())
-                    player.setFantasyTeam((String) fantasyTeamComboBox.getSelectionModel().getSelectedItem());
+                    loadPositionsNeeded();
         });
         
         positionLabel = new Label(DIALOG_POSITION_LABEL);
         positionLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         positionComboBox = new ComboBox();
+        positionComboBox.setOnAction(e->{
+            if(trigger)
+                if(!fantasyTeamComboBox.getSelectionModel().isEmpty())
+                    convertToPosition(String.valueOf(positionComboBox.getSelectionModel().getSelectedItem()));
+                    
+        });
+        
+        
         contractLabel = new Label(DIALOG_CONTRACT_LABEL);
-        positionLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+        contractLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         contractComboBox = new ComboBox();
         salaryLabel = new Label(DIALOG_SALARY_LABEL);
+        salaryLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
+
         salaryTextField = new TextField();
         salaryTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!Character.isDigit(newValue.charAt(newValue.length()-1)))
@@ -425,19 +460,20 @@ public class PlayerDialog extends Stage{
         return selection.equals(COMPLETE);
     }
     
-    public void showEditPlayerDialog(Player playerToEdit, ArrayList<String> teamList) {
+    public void showEditPlayerDialog(Player playerToEdit, ObservableList<Team> list) {
         // SET THE DIALOG TITLE
-        
-        MethodList.loadComboBox(fantasyTeamComboBox, teamList);
-        fantasyTeamComboBox.getItems().add(0, FREE_AGENT);
-        trigger = false;
-        fantasyTeamComboBox.getSelectionModel().select(playerToEdit.getFantasyTeam());
-        trigger = true;
-        setScreen(screen.EDIT);
         setTitle(EDIT_PLAYER_TITLE);
+        setScreen(screen.EDIT);
         
+        this.teamList = list;
         
-        // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
+        trigger = false;
+        loadFantasyTeams(teamList);
+        fantasyTeamComboBox.getItems().add(0, FREE_AGENT);           
+        fantasyTeamComboBox.getSelectionModel().select(playerToEdit.getFantasyTeam());
+        loadPositionsNeeded();
+        trigger = true;
+        
         player = new Player();
         player.setLastName(playerToEdit.getLastName());
         player.setFirstName(playerToEdit.getFirstName());
@@ -448,7 +484,21 @@ public class PlayerDialog extends Stage{
         player.setQualifiedPositions(playerToEdit.getQualifiedPositions());
         player.setContract(playerToEdit.getContract());
         player.setSalary(playerToEdit.getSalary());
+        player.getPositionList().clear();
+        player.getPositionList().addAll(playerToEdit.getPositionList());
         
+        
+        
+        
+        
+        
+        //MethodList.loadComboBox(fantasyTeamComboBox, teamList);
+        
+        
+        
+        
+        
+        // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
         // AND THEN INTO OUR GUI
         loadGUIData();
                
@@ -456,8 +506,60 @@ public class PlayerDialog extends Stage{
         this.showAndWait();
     }
 
-    public void updatePlayerUsingCheckBox(CheckBox cB, Player player, Position ep){
+    public final void loadPositionsNeeded(){
+         teamName = (String)fantasyTeamComboBox.getSelectionModel().getSelectedItem();
+        if (teamName.equals(FREE_AGENT)){
+            positionComboBox.getItems().clear();
+            positionComboBox.getItems().add(0,"NONE");
+            positionComboBox.getSelectionModel().select(0);
+            positionComboBox.setDisable(true);
+        }
+        else{
+            
+            for(int i = 0; i < teamList.size(); ++i)
+                if(teamName.equals(teamList.get(i).getName()))
+                     currentTeam = teamList.get(i);
+            if(currentTeam.allPositonsFilled()){
+                positionComboBox.getItems().clear();
+                positionComboBox.getItems().add(0,"TAXI ONLY");
+                positionComboBox.getSelectionModel().select(0);
+                positionComboBox.setDisable(true);
+            }
+            else{
+                positionComboBox.setDisable(false);
+                if(!currentTeam.positionFilled(Position.C) && player.getPositionList().contains(Position.C))
+                    positionComboBox.getItems().add(Position.C);
+                if(!currentTeam.positionFilled(Position.B1) && player.getPositionList().contains(Position.B1))
+                    positionComboBox.getItems().add(Position.B1);
+                if(!currentTeam.positionFilled(Position.CI) && player.getPositionList().contains(Position.CI))
+                    positionComboBox.getItems().add(Position.CI);
+                if(!currentTeam.positionFilled(Position.B3) && player.getPositionList().contains(Position.B3))
+                    positionComboBox.getItems().add(Position.B3);
+                if(!currentTeam.positionFilled(Position.B2) && player.getPositionList().contains(Position.B2))
+                    positionComboBox.getItems().add(Position.B2);
+                if(!currentTeam.positionFilled(Position.MI) && player.getPositionList().contains(Position.MI))
+                    positionComboBox.getItems().add(Position.MI);
+                if(!currentTeam.positionFilled(Position.SS) && player.getPositionList().contains(Position.SS))
+                    positionComboBox.getItems().add(Position.SS);
+                if(!currentTeam.positionFilled(Position.OF) && player.getPositionList().contains(Position.OF))
+                    positionComboBox.getItems().add(Position.OF);
+                if(!currentTeam.positionFilled(Position.U) && player.getPositionList().contains(Position.U))
+                    positionComboBox.getItems().add(Position.U);
+                if(!currentTeam.positionFilled(Position.P) && player.getPositionList().contains(Position.P))
+                    positionComboBox.getItems().add(Position.P);
+                
+                
+            }
+               
+        }
         
+            
+    }
+    public Team getTeam(){
+        return currentTeam;
+    }
+    public Position getPosition(){
+        return currentPosition;
     }
     
     public Player getPlayer() {
@@ -522,8 +624,44 @@ public class PlayerDialog extends Stage{
     
     private void loadComboBox(ComboBox comboBox, ArrayList<String> list) {
             for(String s : list){
+                trigger = false;
                 comboBox.getItems().add(s);
+                trigger = true;
             }
         
     }
+    
+    public void loadFantasyTeams(ObservableList<Team> teamList){
+        fantasyTeamComboBox.getItems().clear();
+        for(int i = 0; i < teamList.size(); ++i){
+            Team team = teamList.get(i);
+            if(!team.allPositonsFilled() || !team.taxiSquadFilled()){
+                fantasyTeamComboBox.getItems().add(team.getName());
+            }
+        }
+    }
+    
+      private void convertToPosition(String string) {
+        if (string.equals("C"))
+            currentPosition = Position.C;
+        if (string.equals("1B"))
+            currentPosition = Position.B1;
+        if (string.equals("CI"))
+            currentPosition = Position.CI;
+        if (string.equals("3B"))
+            currentPosition = Position.B3;
+        if (string.equals("2B"))
+            currentPosition = Position.B2;
+        if (string.equals("MI"))
+            currentPosition = Position.MI;
+        if (string.equals("SS"))
+            currentPosition = Position.SS;
+        if (string.equals("OF"))
+            currentPosition = Position.OF;
+        if (string.equals("U"))
+            currentPosition = Position.U;
+        if (string.equals("P"))
+            currentPosition = Position.P;
+    }
+
 }
