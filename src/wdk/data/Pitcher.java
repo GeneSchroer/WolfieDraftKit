@@ -15,8 +15,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 /**
  *
  * @author Work
- */
-public class Pitcher extends Player{
+ */public class Pitcher extends Player{
     DoubleProperty inningsPitched;
     IntegerProperty earnedRuns;
     IntegerProperty wins;

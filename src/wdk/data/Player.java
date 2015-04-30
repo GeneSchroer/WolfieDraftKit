@@ -6,15 +6,14 @@
 package wdk.data;
 
 import java.awt.Image;
-import java.util.Collections;
 import java.util.Comparator;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
 
 /**
  *
@@ -30,30 +29,51 @@ public class Player implements Comparable {
     StringProperty yearOfBirth;
     StringProperty nationOfBirth;
     StringProperty fantasyTeam;
-
+    Contract contract;
+    DoubleProperty salary;
     ObservableList<Position> PositionList;
         
     //Position positions;
     
     
-    Contract contract;
-    DoubleProperty salary;
+    
     Image image;
    
+    DraftType draftType;
+    private Position teamPosition;
     
     public Player() {
+        
         proTeam             = new SimpleStringProperty();
         lastName            = new SimpleStringProperty();
         firstName           = new SimpleStringProperty();
-        fullName            = new SimpleStringProperty();
         qualifiedPositions  = new SimpleStringProperty();
         notes               = new SimpleStringProperty();
         yearOfBirth         = new SimpleStringProperty();
         nationOfBirth       = new SimpleStringProperty();
         fantasyTeam         = new SimpleStringProperty();
         
+        
        PositionList = FXCollections.observableArrayList();
        
+       
+       draftType = DraftType.NONE;
+       contract = Contract.NONE;
+       salary = new SimpleDoubleProperty(0);
+       
+       fantasyTeam = new SimpleStringProperty(FREE_AGENT);
+    }
+    
+    public Player(Player p){
+        this.setProTeam(p.getProTeam());
+        setLastName(p.getLastName());
+        setFirstName(p.getFirstName());
+        setProTeam(p.getProTeam());
+        setProTeam(p.getProTeam());
+        setProTeam(p.getProTeam());
+        setProTeam(p.getProTeam());
+        setProTeam(p.getProTeam());
+        setProTeam(p.getProTeam());
     }
     
     public void setLastName(String ln){
@@ -78,17 +98,7 @@ public class Player implements Comparable {
     public StringProperty firstNameProperty(){
         return firstName;
     }
-    public void setFullName(String fn){
-        fullName.set(fn);
-    }
-    
-    public String getFullName(){
-        return fullName.get();
-    }
-    
-    public StringProperty fullNameProperty(){
-        return fullName;
-    }
+
     public void setProTeam(String pt){
         proTeam.set(pt);
     }
@@ -232,9 +242,30 @@ public class Player implements Comparable {
     }
     
     
+    
+    public DraftType getDraftType(){
+        return draftType;
+    }
+    
+    public void setDraftType(DraftType dT){
+        draftType = dT;
+    }
+    public Position getTeamPosition(){
+        return teamPosition;
+    }
+    public void setTeamPosition(Position p){
+        teamPosition = p;
+    }
 //    public void addPosition(ExplicitPosition position){
 //        
 //    }
+    
+   // public Player copy(){
+     //   Player 
+   // }
+    
+    
+    
     public static class PlayerBuilder {
         private final StringProperty lastName;
         private final SimpleStringProperty firstName;

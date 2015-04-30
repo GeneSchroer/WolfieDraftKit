@@ -9,9 +9,9 @@ package wdk.data;
  *
  * @author Work
  */
-public enum Contract {
+public enum DraftType {
     NONE,
-    S1,
-    S2,
-    X
+    STARTING,
+    TAXI
+    
 }

@@ -5,13 +5,11 @@
  */
 package wdk.gui.fantasy_teams_screen;
 
-import java.time.LocalDate;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -51,7 +49,7 @@ public class TeamDialog extends Stage {
     public static final String OWNER_PROMPT = "Owner: ";
     public static final String SCHEDULE_ITEM_HEADING = "Schedule Item Details";
     public static final String ADD_TEAM_TITLE = "Add New Team";
-    public static final String EDIT_SCHEDULE_ITEM_TITLE = "Edit Team";
+    public static final String EDIT_TEAM_TITLE = "Edit Team";
     private Team team;
     /**
      * Initializes this dialog so that it can be used for either adding
@@ -83,7 +81,7 @@ public class TeamDialog extends Stage {
         nameLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         teamNameTextField = new TextField();
         teamNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-           // scheduleItem.setDescription(newValue);
+            team.setName(newValue);
         });
         
         
@@ -92,7 +90,7 @@ public class TeamDialog extends Stage {
         teamownerLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         teamOwnerTextField = new TextField();
         teamOwnerTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-          //  scheduleItem.setLink(newValue);
+          team.setOwner(newValue);
         });
         
         // AND FINALLY, THE BUTTONS
@@ -101,14 +99,17 @@ public class TeamDialog extends Stage {
         
         // REGISTER EVENT HANDLERS FOR OUR BUTTONS
         EventHandler completeCancelHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
-            if(teamNameTextField==null
-                    || teamOwnerTextField == null){
-                messageDialog.show("You are not finished");
-            }
-            
             Button sourceButton = (Button)ae.getSource();
             TeamDialog.this.selection = sourceButton.getText();
+            if(selection.equals(COMPLETE)
+                    && (teamNameTextField.getText() == null
+                        || teamOwnerTextField.getText()==null)){
+                messageDialog.show("You are not finished");
+            }
+            else{
+            
             TeamDialog.this.hide();
+            }
         };
         completeButton.setOnAction(completeCancelHandler);
         cancelButton.setOnAction(completeCancelHandler);
@@ -138,15 +139,15 @@ public class TeamDialog extends Stage {
         return selection;
     }
     
-//    public ScheduleItem getScheduleItem() { 
-//        return scheduleItem;
-//    }
+    public Team getTeam() { 
+        return team;
+    }
     
     /**
      * This method loads a custom message into the label and
      * then pops open the dialog.
      * 
-     * @param message Message to appear inside the dialog.
+     * @return 
      */
     public Team showAddTeamDialog() {
         // SET THE DIALOG TITLE
@@ -165,35 +166,30 @@ public class TeamDialog extends Stage {
         return team;
     }
     
-//    public void loadGUIData() {
-//        // LOAD THE UI STUFF
-//        teamNameTextField.setText(scheduleItem.getDescription());
-//        datePicker.setValue(scheduleItem.getDate());
-//        teamOwnerTextField.setText(scheduleItem.getLink());       
-//    }
-    
-    public Team getTeam(){
-        return team;
+    public void loadGUIData() {
+        // LOAD THE UI STUFF
+        teamNameTextField.setText(team.getName());
+        teamOwnerTextField.setText(team.getOwner());
     }
+    
     
     public boolean wasCompleteSelected() {
         return selection.equals(COMPLETE);
     }
     
-//    public void showEditScheduleItemDialog(ScheduleItem itemToEdit) {
-//        // SET THE DIALOG TITLE
-//        setTitle(EDIT_SCHEDULE_ITEM_TITLE);
-//        
-//        // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
-//        scheduleItem = new ScheduleItem();
-//        scheduleItem.setDescription(itemToEdit.getDescription());
-//        scheduleItem.setDate(itemToEdit.getDate());
-//        scheduleItem.setLink(itemToEdit.getLink());
-//        
-//        // AND THEN INTO OUR GUI
-//        loadGUIData();
-//               
-//        // AND OPEN IT UP
-//        this.showAndWait();
-//    }
+    public void showEditTeamDialog(Team teamToEdit) {
+        // SET THE DIALOG TITLE
+        setTitle(EDIT_TEAM_TITLE);
+        
+        // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
+        team = new Team();
+        team.setName(teamToEdit.getName());
+        team.setOwner(teamToEdit.getOwner());
+        
+        // AND THEN INTO OUR GUI
+        loadGUIData();
+               
+        // AND OPEN IT UP
+        this.showAndWait();
+    }
 }

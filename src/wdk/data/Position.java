@@ -69,7 +69,8 @@ public enum Position {
         public String toString(){
             return "P";
         }
-    }
+    }, 
+    ALL
     
     
     

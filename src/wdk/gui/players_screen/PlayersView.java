@@ -21,6 +21,7 @@ import  wdk.GeneralPropertyType;
 import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import wdk.data.DraftDataManager;
 import wdk.data.Player;
+import wdk.data.Position;
 import wdk.gui.MenuView;
 import wdk.gui.MessageDialog;
 import wdk.gui.StyleSheet;
@@ -35,11 +36,9 @@ import wdk.util.MethodList;
  */
 public class PlayersView implements MenuView {
     
-   private enum sortPosition  { ALL, C, B1, B3, CI, B2, SS, MI, OF, U, P};
-   private String sortPosition;
    private String sortPlayer;
    
-   
+   Position p;
     /* Our list of available players, will be fed into the mixed table*/
     ArrayList<Player> availablePlayers;
     
@@ -97,8 +96,8 @@ public class PlayersView implements MenuView {
         draftManager = initGUI.getDataManager();
         availablePlayers = new ArrayList();
         availablePlayers.addAll( draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
-        sortPosition = "";
         sortPlayer = "";
+        p = null;
     }
     
     @Override
@@ -190,57 +189,57 @@ public class PlayersView implements MenuView {
         
         registerTextFieldController(playerSearchTextField);
         selectAllRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "");
+            playersController.handleSelectPlayerTypeRequest(this, null);
             playersTable.statsSorted(false);
             playersTable.setColumnLabels(PSColumnLabel.ALL);
         });
         selectCatcherRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "C");
+            playersController.handleSelectPlayerTypeRequest(this, Position.C);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         select1stBasemanRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "1B");
+            playersController.handleSelectPlayerTypeRequest(this, Position.B1);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         selectCornerInfielderRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "CI");
+            playersController.handleSelectPlayerTypeRequest(this, Position.CI);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         select3rdBasemanRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "3B");
+            playersController.handleSelectPlayerTypeRequest(this, Position.B3);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         select2ndBasemanRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "2B");
+            playersController.handleSelectPlayerTypeRequest(this, Position.B2);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         selectMiddleInfielderRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "MI");
+            playersController.handleSelectPlayerTypeRequest(this, Position.MI);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         selectShortstopRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "SS");
+            playersController.handleSelectPlayerTypeRequest(this, Position.SS);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         selectOutfielderRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "OF");
+            playersController.handleSelectPlayerTypeRequest(this, Position.OF);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         selectUtilityRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "U");
+            playersController.handleSelectPlayerTypeRequest(this, Position.U);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.HITTER);
         });
         selectPitcherRadioButton.setOnAction(e->{
-            playersController.handleSelectPlayerTypeRequest(this, "P");
+            playersController.handleSelectPlayerTypeRequest(this, Position.P);
             playersTable.statsSorted(true);
             playersTable.setColumnLabels(PSColumnLabel.PITCHER);
         });
@@ -272,19 +271,17 @@ public class PlayersView implements MenuView {
         ArrayList <Player> filteredList = new ArrayList();
         return filteredList;
     }
-    public void setSortPosition(String sp){
-        sortPosition = sp;
-    }
+    
     
     public void reset() {
         sortCriteriaToggleGroup.selectToggle(selectAllRadioButton);
         playerSearchTextField.clear();
         playersTable.statsSorted(false);
         playersTable.setColumnLabels(PSColumnLabel.ALL);
-        playersController.handleSelectPlayerTypeRequest(this, "");
+        playersController.handleSelectPlayerTypeRequest(this, null);
     }
-    
-     public ArrayList<Player> getAvailablePlayers() {
+     
+    public ArrayList<Player> getAvailablePlayers() {
         return availablePlayers;
     }
      public DraftDataManager getDraftManager(){
@@ -293,9 +290,10 @@ public class PlayersView implements MenuView {
 
     public void update() {
         availablePlayers.clear();
-        ArrayList<Player> temp = buildFilteredList(draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
-        availablePlayers.addAll(temp);
-        playersTable.setTable(availablePlayers);
+       // ArrayList<Player> temp = buildFilteredList(draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
+        //availablePlayers.addAll(temp);
+       // playersTable.setTable(availablePlayers);
+        playersTable.setTable(draftManager.getDraft().getAvailablePlayers(), sortPlayer, p);
     }
     
     
@@ -306,21 +304,28 @@ public class PlayersView implements MenuView {
             String ln = playerList.get(i).getLastName();
             String fn = playerList.get(i).getFirstName();
             
-  
-            if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+            if(p == null){
+                if( (ln.toLowerCase().startsWith(sp.toLowerCase())
                     ||fn.toLowerCase().startsWith(sp.toLowerCase()))
-                    && playerList.get(i).getQualifiedPositions().contains(sortPosition)
                         && playerList.get(i).getFantasyTeam().equals(FREE_AGENT)){
                     filteredList.add(playerList.get(i));
+                }
             }
+            else
+                if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+                        ||fn.toLowerCase().startsWith(sp.toLowerCase()))
+                        && playerList.get(i).getPositionList().contains(p)
+                            && playerList.get(i).getFantasyTeam().equals(FREE_AGENT)){
+                        filteredList.add(playerList.get(i));
+                }
         }
-        //}
-        
         return filteredList;
-        
     }
-    
+    public void setSortPosition(Position sp){
+        p = sp;
+    }
     public void setSortPlayer(String p){
         sortPlayer = p;
     }
+    
 }

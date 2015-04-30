@@ -245,6 +245,10 @@ public class WDK_GUI implements DraftDataView {
     }
     public void updateMenuControls(){
         playersScreen.update();
+        fantasyTeamsScreen.update();
+        fantasyStandingsScreen.update();
+        draftScreen.update();
+        sportScreen.update();
     }
     public void updateToolbarControls(boolean saved) {
         // THIS TOGGLES WITH WHETHER THE CURRENT draft
@@ -388,7 +392,7 @@ public class WDK_GUI implements DraftDataView {
 
     private void initMenuScreens(ArrayList<String> proTeams) {
         playersScreen = new PlayersScreen(primaryStage, this, messageDialog, yesNoCancelDialog, proTeams);
-        fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage, draftDataManager, messageDialog, yesNoCancelDialog);
+        fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage, this, messageDialog, yesNoCancelDialog);
         fantasyStandingsScreen = new FantasyStandingsScreen(draftDataManager);
         draftScreen = new DraftScreen(draftDataManager);
         sportScreen = new SportScreen(draftDataManager);

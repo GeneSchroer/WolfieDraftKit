@@ -5,9 +5,13 @@
  */
 package wdk.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import javafx.collections.ObservableList;
 import wdk.file.DraftFileManager;
+import wdk.file.JsonDraftFileManager;
+import static wdk.sports.baseball.WDK_BaseballStartUpConstants.JSON_FILE_PATH_HITTERS;
+import static wdk.sports.baseball.WDK_BaseballStartUpConstants.JSON_FILE_PATH_PITCHERS;
 
 /**
  *
@@ -26,17 +30,22 @@ public class DraftDataManager {
     static int    DEFAULT_AGE = 2015-1937;
     static String DEFAULT_TEAM_NAME = " ";
     static String DEFAULT_TEAM_OWNER = " ";
-    private final Draft startingDraft;
+    private Draft startingDraft;
     
+    private final ArrayList<Player> startingPlayers;
     
-    
+    Player p;
+    private ObservableList<Player> Player;
     public DraftDataManager(DraftDataView initView, Draft startingDraft) {
+        
+        startingPlayers = new ArrayList(startingDraft.getAvailablePlayers().subList(0, startingDraft.getAvailablePlayers().size()));
+        
+        
+        
         view = initView;
         this.startingDraft = startingDraft;
-        ArrayList<Player> temp = new ArrayList();
-        temp.addAll(startingDraft.getAvailablePlayers());
         draft = new Draft();
-        draft.getAvailablePlayers().addAll(temp);
+        draft.setAvailablePlayers(startingDraft.getAvailablePlayers());
     }
     
     public Draft getDraft(){
@@ -45,13 +54,20 @@ public class DraftDataManager {
     public DraftFileManager getFileManager(){
         return draftFileManager;
     }
-    public void reset() {
-        ArrayList<Player> temp = new ArrayList();
-        temp.addAll(startingDraft.getAvailablePlayers().subList(0, startingDraft.getAvailablePlayers().size()));
-        draft.getAvailablePlayers().clear();
-        draft.getAvailablePlayers().addAll(temp.subList(0, temp.size()));
+    public void reset() throws IOException {
         
         draft.getTeams().clear();
+        
+        
+        ArrayList<String> filePathList = new ArrayList();
+                filePathList.add(JSON_FILE_PATH_HITTERS);
+                filePathList.add(JSON_FILE_PATH_PITCHERS);
+        JsonDraftFileManager temp = JsonDraftFileManager.getPropertiesManager();
+        startingDraft = temp.loadStartingDraft(filePathList);
+        
+        draft.setAvailablePlayers(startingDraft.getAvailablePlayers());
+
+        
         view.reloadDraft(draft);
     }
 

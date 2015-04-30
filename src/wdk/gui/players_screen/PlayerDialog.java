@@ -22,6 +22,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import wdk.GeneralPropertyType;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import static wdk.WDK_StartUpConstants.PATH_FLAGS;
 import static wdk.WDK_StartUpConstants.PATH_PLAYERS;
 import wdk.data.Draft;
@@ -31,6 +32,7 @@ import wdk.gui.MessageDialog;
 import static wdk.gui.StyleSheet.CLASS_HEADING_LABEL;
 import static wdk.gui.StyleSheet.CLASS_PROMPT_LABEL;
 import static wdk.gui.StyleSheet.PRIMARY_STYLE_SHEET;
+import wdk.util.MethodList;
 
 
 /**
@@ -43,6 +45,7 @@ public class PlayerDialog extends Stage{
     
     EventHandler completeAddHandler;
     EventHandler completeEditHandler;
+    private boolean trigger;
 
     
     
@@ -87,7 +90,7 @@ public class PlayerDialog extends Stage{
     Label contractLabel;
     ComboBox contractComboBox;
     Label salaryLabel;
-    ComboBox salaryComboBox;
+    TextField salaryTextField;
             
             
             
@@ -283,6 +286,9 @@ public class PlayerDialog extends Stage{
                 
         });
         
+        
+        
+        
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String imagePath = "file:" + PATH_PLAYERS + props.getProperty(GeneralPropertyType.BLANK_IMAGE);
         playerImage = new Image(imagePath);
@@ -297,6 +303,12 @@ public class PlayerDialog extends Stage{
         fantasyTeamLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         
         fantasyTeamComboBox = new ComboBox();
+        fantasyTeamComboBox.setOnAction(e->{
+            if(trigger)
+                if(!fantasyTeamComboBox.getSelectionModel().isEmpty())
+                    player.setFantasyTeam((String) fantasyTeamComboBox.getSelectionModel().getSelectedItem());
+        });
+        
         positionLabel = new Label(DIALOG_POSITION_LABEL);
         positionLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         positionComboBox = new ComboBox();
@@ -304,8 +316,16 @@ public class PlayerDialog extends Stage{
         positionLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         contractComboBox = new ComboBox();
         salaryLabel = new Label(DIALOG_SALARY_LABEL);
-        salaryComboBox = new ComboBox();
-        
+        salaryTextField = new TextField();
+        salaryTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!Character.isDigit(newValue.charAt(newValue.length()-1)))
+            {
+                messageDialog.show("This is not a number!");
+                salaryTextField.setText(oldValue);
+            }
+            else
+                player.setFirstName(newValue);
+        });
         
         
         
@@ -394,25 +414,40 @@ public class PlayerDialog extends Stage{
     
     public void loadGUIData() {
 //        // LOAD THE UI STUFF
-//        nameTextField.setText(player.getFirstName());
-//        datePicker.setValue(player.getDate());
-//        teamownerTextField.setText(player.getLink());       
+        playerNameLabel.setText(player.getFirstName() + " " + player.getLastName());
+        qualifiedPositionLabel.setText(player.getQualifiedPositions());
+        fantasyTeamComboBox.getSelectionModel().select(player.getFantasyTeam());
+        contractComboBox.getSelectionModel().select(player.getContract());
+        salaryTextField.setText(String.valueOf(player.getSalary()));
     }
     
     public boolean wasCompleteSelected() {
         return selection.equals(COMPLETE);
     }
     
-    public void showEditPlayerDialog(Player playerToEdit) {
+    public void showEditPlayerDialog(Player playerToEdit, ArrayList<String> teamList) {
         // SET THE DIALOG TITLE
+        
+        MethodList.loadComboBox(fantasyTeamComboBox, teamList);
+        fantasyTeamComboBox.getItems().add(0, FREE_AGENT);
+        trigger = false;
+        fantasyTeamComboBox.getSelectionModel().select(playerToEdit.getFantasyTeam());
+        trigger = true;
         setScreen(screen.EDIT);
         setTitle(EDIT_PLAYER_TITLE);
         
+        
         // LOAD THE SCHEDULE ITEM INTO OUR LOCAL OBJECT
         player = new Player();
+        player.setLastName(playerToEdit.getLastName());
         player.setFirstName(playerToEdit.getFirstName());
-//        player.setDate(playerToEdit.getDate());
-//        player.setLink(playerToEdit.getLink());
+        
+        
+        
+        player.setFantasyTeam(playerToEdit.getFantasyTeam());
+        player.setQualifiedPositions(playerToEdit.getQualifiedPositions());
+        player.setContract(playerToEdit.getContract());
+        player.setSalary(playerToEdit.getSalary());
         
         // AND THEN INTO OUR GUI
         loadGUIData();
@@ -474,7 +509,7 @@ public class PlayerDialog extends Stage{
         gridPane.add(contractLabel, 0, 6, 1, 1);
         gridPane.add(contractComboBox, 1, 6, 1, 1);
         gridPane.add(salaryLabel, 0, 7, 1, 1);
-        gridPane.add(salaryComboBox, 1, 7, 1, 1);
+        gridPane.add(salaryTextField, 1, 7, 1, 1);
         gridPane.add(completeButton, 0, 10, 1, 1);
         gridPane.add(cancelButton, 1, 10, 1, 1);
         

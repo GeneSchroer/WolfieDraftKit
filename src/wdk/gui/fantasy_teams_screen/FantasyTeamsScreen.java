@@ -10,6 +10,7 @@ import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
 import wdk.gui.MenuView;
 import wdk.gui.MessageDialog;
+import wdk.gui.WDK_GUI;
 import wdk.gui.YesNoCancelDialog;
 
 /**
@@ -22,9 +23,9 @@ public class FantasyTeamsScreen implements MenuScreen{
 
     
     
-    public FantasyTeamsScreen(Stage initPrimaryStage, DraftDataManager draftManager, MessageDialog mD, YesNoCancelDialog yNCD){
-        fantasyTeamsController = new FantasyTeamsController(initPrimaryStage, draftManager.getDraft(), mD, yNCD);
-        fantasyTeamsView = new FantasyTeamsView(fantasyTeamsController, draftManager);
+    public FantasyTeamsScreen(Stage initPrimaryStage, WDK_GUI gui, MessageDialog mD, YesNoCancelDialog yNCD){
+        fantasyTeamsController = new FantasyTeamsController(initPrimaryStage, gui.getDataManager().getDraft(), mD, yNCD);
+        fantasyTeamsView = new FantasyTeamsView(fantasyTeamsController, gui);
     }
     @Override
     public void setVisible(boolean b) {
@@ -43,6 +44,10 @@ public class FantasyTeamsScreen implements MenuScreen{
 
     public void initGUI() {
         fantasyTeamsView.initGUI();
+    }
+
+    public void update() {
+        fantasyTeamsView.update();
     }
     
 }

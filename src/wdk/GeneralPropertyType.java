@@ -120,5 +120,4 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     
     
     
-    FREE_AGENT
 }

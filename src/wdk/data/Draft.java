@@ -5,9 +5,10 @@
  */
 package wdk.data;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
 
 /**
  *
@@ -19,6 +20,7 @@ public class Draft {
     
     
    // private ObservableList<Log> draftLog;
+    private String draftName;
     private int numTeams;
     public Draft(){
         teams = FXCollections.observableArrayList();
@@ -32,8 +34,13 @@ public class Draft {
         teams.add(t);
         ++numTeams;
     }
-    public DraftedTeam removeTeam(DraftedTeam team){
-        return team;
+    public void removeTeam(String teamToRemove){
+     //   Team draft = teams.c
+       // teams.remove(team);
+        for(int i = 0; i < availablePlayers.size() ; ++i){
+           // if(availablePlayers.get(i).getFantasyTeam().equals(team.getName()))
+                availablePlayers.get(i).setFantasyTeam(FREE_AGENT);
+        }
     }
     public void addPlayer(Player playerToAdd){
         availablePlayers.add(playerToAdd);
@@ -43,10 +50,10 @@ public class Draft {
         availablePlayers.remove(playerToRemove);
         return playerToRemove;
     }
-    public void addPlayerToTeam(Player player, DraftedTeam team){
+    public void addPlayerToTeam(Player player, Team team){
         
     }
-    public void removePlayerFromTeam(Player player, DraftedTeam team){
+    public void removePlayerFromTeam(Player player, Team team){
         
     }
     
@@ -59,12 +66,24 @@ public class Draft {
         teams.clear();
     }
 
-    public ObservableList<DraftedTeam> getTeams() { 
+    public ObservableList<Team> getTeams() { 
         return teams;
     }
     
     public int getNumTeams(){
         return numTeams;
+    }
+    
+    public String getDraftName(){
+        return draftName;
+    }
+    public void setDraftName(String dn){
+        draftName = dn;
+    }
+    
+    
+    public void setAvailablePlayers(ObservableList<Player> players){
+        availablePlayers = FXCollections.observableArrayList(players);
     }
     
 }

@@ -32,9 +32,6 @@ public class Hitter extends Player{
     
     public Hitter(Player h){
         if(h!=null){
-            setLastName(h.getLastName());
-            setFirstName(h.getFirstName());
-            setProTeam(h.getProTeam());
             for(int i = 0; i < h.getPositionList().size(); ++i){
                 addPosition((Position) h.getPositionList().get(i));
             }
@@ -134,7 +131,16 @@ public class Hitter extends Player{
     }
     
     
-    
+    public Hitter copy(Hitter h){
+        Hitter hitter = new Hitter();
+        setProTeam(h.getProTeam());
+        setLastName(h.getLastName());
+        setFirstName(h.getFirstName());
+        getPositionList().addAll(h.getPositionList());
+        
+        
+        return hitter;
+    }
     
     @Override
     public void setQualifiedPositions(String pos){

@@ -5,32 +5,50 @@
  */
 package wdk.file;
 
+import static com.sun.corba.se.impl.ior.iiop.JavaSerializationComponent.singleton;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import static java.util.Collections.singleton;
+import javafx.collections.ObservableList;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
+import properties_manager.PropertiesManager;
 import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import static wdk.WDK_StartUpConstants.JSON_FILE_PATH_TEAMS;
+import static wdk.WDK_StartUpConstants.PATH_DRAFTS;
 import wdk.data.Draft;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
+import wdk.data.Player;
 import wdk.data.Position;
+import wdk.data.Team;
 
 /**
  *
  * @author Work
  */
 public class JsonDraftFileManager implements DraftFileManager {
+        private static JsonDraftFileManager singleton = null;
+
+    
+    
+    
     private String JSON_PRO_TEAMS = "teams";
     String JSON_PLAYERS             = "Players";
+    String JSON_TEAMS               = "Teams";
+    
+    
+    
     String JSON_HITTERS             = "Hitters";
     String JSON_PITCHERS            = "Pitchers";
     String JSON_PRO_TEAM                = "TEAM";
@@ -61,7 +79,9 @@ public class JsonDraftFileManager implements DraftFileManager {
     
     
     //File Strings
-    
+    String JSON_PLAYER_LAST_NAME = "lastName";
+    String JSON_PLAYER_FIRST_NAME = "firstName";
+    String JSON_EXT = ".json";
     String SLASH = "/";
     
     
@@ -70,35 +90,30 @@ public class JsonDraftFileManager implements DraftFileManager {
     
     @Override
     public void saveDraft(Draft draftToSave) throws IOException {
-        String courseListing = "" + draftToSave.getDraftName();
-        String jsonFilePath = PATH_DRAFTS + SLASH + courseListing + JSON_EXT;
+        String draftListing = "" + draftToSave.getDraftName();
+        String jsonFilePath = PATH_DRAFTS + SLASH + draftListing + JSON_EXT;
         
         // INIT THE WRITER
         OutputStream os = new FileOutputStream(jsonFilePath);
         JsonWriter jsonWriter = Json.createWriter(os);  
         
         // MAKE A JSON ARRAY FOR THE PAGES ARRAY
-        JsonArray pagesJsonArray = makePagesJsonArray(courseToSave.getPages());
+        JsonArray playersJsonArray = makePlayersJsonArray(draftToSave.getAvailablePlayers());
         
-        // AND AN OBJECT FOR THE INSTRUCTOR
-        JsonObject instructorJsonObject = makeInstructorJsonObject(courseToSave.getInstructor());
+        // AND AN OBJECT FOR THE TEAM NAMES
+        JsonObject teamsJsonArray = makeTeamsJsonArray(draftToSave.getTeams());
         
-        // ONE FOR EACH OF OUR DATES
-        JsonObject startingMondayJsonObject = makeLocalDateJsonObject(courseToSave.getStartingMonday());
-        JsonObject endingFridayJsonObject = makeLocalDateJsonObject(courseToSave.getEndingFriday());
         
-        // THE LECTURE DAYS ARRAY
-        JsonArray lectureDaysJsonArray = makeLectureDaysJsonArray(courseToSave.getLectureDays());
+        // THE DRAFT LOGS ARRAY
+  //      JsonArray draftLogsJsonArray = makeScheduleItemsJsonArray(draftToSave.getDraftLogs());
         
-        // THE SCHEDULE ITEMS ARRAY
-        JsonArray scheduleItemsJsonArray = makeScheduleItemsJsonArray(courseToSave.getScheduleItems());
+        JsonObject draftJsonObject = Json.createObjectBuilder()
+                                    .add(JSON_PLAYERS, playersJsonArray)
+                                    .add(JSON_TEAMS, teamsJsonArray)
+                                //    .add(JSON_LECTURE_DAYS, lectureDaysJsonArray)
+                .build();
         
-        // THE LECTURES ARRAY
-        JsonArray lecturesJsonArray = makeLecturesJsonArray(courseToSave.getLectures());
-        
-        // THE HWS ARRAY
-        JsonArray hwsJsonArray = makeHWsJsonArray(courseToSave.getAssignments());
-        
+        jsonWriter.writeObject(draftJsonObject);
     }
 
     @Override
@@ -239,5 +254,71 @@ public class JsonDraftFileManager implements DraftFileManager {
     
     private void addImage(String lastName, String firstName){
         
+    }
+
+    private JsonArray makePlayersJsonArray(ObservableList<Player> availablePlayers) {
+        JsonArrayBuilder jsb = Json.createArrayBuilder();
+        for(Player p: availablePlayers){
+            jsb.add(makePlayerJsonObject(p));
+        }
+        JsonArray jA = jsb.build();
+        return jA;
+    }
+
+    private JsonObject makeTeamsJsonArray(ObservableList<Team> teams) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private JsonValue makePlayerJsonObject(Player p) {
+        JsonObject jso = null;
+        
+        if(p instanceof Hitter){
+            Hitter hitter = (Hitter) p;
+             jso  = Json.createObjectBuilder().add(JSON_PLAYER_LAST_NAME, hitter.getLastName())
+                                                    .add(JSON_PLAYER_FIRST_NAME, hitter.getFirstName())
+                                                    .add(JSON_QP, hitter.getQualifiedPositions())
+                                                    .add(JSON_AB, hitter.getAtBat())
+                                                    .add(JSON_R, hitter.getRuns())
+                                                    .add(JSON_H, hitter.getHits())
+                                                    .add(JSON_HR, hitter.getHomeRuns())
+                                                    .add(JSON_RBI, hitter.getRunsBattedIn())
+                                                    .add(JSON_SB, hitter.getStolenBases())
+                                                    .add(JSON_NOTES, hitter.getNotes())
+                                                    .add(JSON_YEAR_OF_BIRTH, hitter.getYearOfBirth())
+                                                    .add(JSON_NATION_OF_BIRTH, hitter.getNationOfBirth())
+                                                    .build();
+        }
+        else{
+            Pitcher pitcher = (Pitcher) p;
+            jso  = Json.createObjectBuilder().add(JSON_PLAYER_LAST_NAME, pitcher.getLastName())
+                                                    .add(JSON_PLAYER_FIRST_NAME, pitcher.getFirstName())
+                                                    .add(JSON_QP, pitcher.getQualifiedPositions())
+                                                    .add(JSON_IP, pitcher.getInningsPitched())
+                                                    .add(JSON_ER, pitcher.getEarnedRuns())
+                                                    .add(JSON_W, pitcher.getWins())
+                                                    .add(JSON_SV, pitcher.getSaves())
+                                                    .add(JSON_H, pitcher.getHits())
+                                                    .add(JSON_BB, pitcher.getBasesOnBalls())
+                                                    .add(JSON_K, pitcher.getStrikeouts())
+                                                    .add(JSON_NOTES, pitcher.getNotes())
+                                                    .add(JSON_YEAR_OF_BIRTH, pitcher.getYearOfBirth())
+                                                    .add(JSON_NATION_OF_BIRTH, pitcher.getNationOfBirth())
+                                                    .build();
+        }
+     
+        return jso;
+    }
+    
+    public static JsonDraftFileManager getPropertiesManager()
+    {
+        // IF IT'S NEVER BEEN RETRIEVED BEFORE THEN
+        // FIRST WE MUST CONSTRUCT IT
+        if (singleton == null)
+        {
+            // WE CAN CALL THE PRIVATE CONSTRCTOR FROM WITHIN THE CLASS
+            singleton = new JsonDraftFileManager();
+        }
+        // RETURN THE SINGLETON
+        return singleton;
     }
 }

@@ -36,5 +36,8 @@ public class DraftScreen implements MenuScreen{
     public void setVisible(boolean isVisible) {
         draftView.getScreen().setVisible(isVisible);
     }
+
+    public void update() {
+    }
     
 }

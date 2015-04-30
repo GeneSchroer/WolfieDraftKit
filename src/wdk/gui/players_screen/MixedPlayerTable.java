@@ -5,7 +5,6 @@
  */
 package wdk.gui.players_screen;
 
-import java.util.Collections;
 import java.util.List;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -19,9 +18,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
 import wdk.data.Player;
+import wdk.data.Position;
 
 /**
  *
@@ -189,7 +190,32 @@ public class MixedPlayerTable {
 
     }
     
-    public void setTable(List<Player> players){
+    public void setTable(ObservableList<Player> playerList, String sp, Position p){
+        playerTable.getItems().clear();
+        for(int i = 0; i < playerList.size(); ++i){
+            String ln = playerList.get(i).getLastName();
+            String fn = playerList.get(i).getFirstName();
+            
+            if(p == null){
+                if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+                    ||fn.toLowerCase().startsWith(sp.toLowerCase()))
+                        && playerList.get(i).getFantasyTeam().equals(FREE_AGENT)){
+                    playerTable.getItems().add(playerList.get(i));
+                }
+            }
+            else
+                if( (ln.toLowerCase().startsWith(sp.toLowerCase())
+                        ||fn.toLowerCase().startsWith(sp.toLowerCase()))
+                        && playerList.get(i).getPositionList().contains(p)
+                            && playerList.get(i).getFantasyTeam().equals(FREE_AGENT)){
+                        playerTable.getItems().add(playerList.get(i));
+                }
+        }
+    }
+    
+    public void setTable(List<Player> players){       
+        
+        playerTable.getItems().clear();
         ObservableList<Player> temp = FXCollections.observableArrayList(players);
         playerTable.setItems(temp);
     }

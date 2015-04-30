@@ -35,9 +35,12 @@ public class SportScreen implements MenuScreen{
     public void reset(){
         sportView.reset();
     }
-
-    @Override
+ 
+   @Override
     public void setVisible(boolean isVisible) {
         sportView.getScreen().setVisible(isVisible);
+    }
+
+    public void update() {
     }
 }

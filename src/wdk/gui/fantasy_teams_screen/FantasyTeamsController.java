@@ -6,6 +6,9 @@
 package wdk.gui.fantasy_teams_screen;
 
 import javafx.stage.Stage;
+import properties_manager.PropertiesManager;
+import static wdk.GeneralPropertyType.REMOVE_PLAYER_MESSAGE;
+import static wdk.GeneralPropertyType.REMOVE_TEAM_MESSAGE;
 import wdk.data.Draft;
 import wdk.data.DraftDataManager;
 import wdk.data.Team;
@@ -30,13 +33,6 @@ public class FantasyTeamsController {
         this.yesNoCancelDialog = initYesNoCancelDialog;
     }
 
-    public void handleOwnerChangeRequest(FantasyTeamsView aThis) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void handleNameChangeRequest(FantasyTeamsView aThis) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     public void handleAddTeamRequest(WDK_GUI gui) {
         DraftDataManager ddm = gui.getDataManager();
         Draft draft = ddm.getDraft();
@@ -47,16 +43,29 @@ public class FantasyTeamsController {
             td.showAddTeamDialog();
             Team team = td.getTeam();
             draft.addTeam(team);
+       
+            gui.updateGUI(false);
         }
 
-
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    public void handleRemoveTeamRequest(FantasyTeamsView aThis) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void handleRemoveTeamRequest(WDK_GUI gui, String teamToRemove) {
+        yesNoCancelDialog.show(PropertiesManager.getPropertiesManager().getProperty(REMOVE_TEAM_MESSAGE));
+         yesNoCancelDialog.show(PropertiesManager.getPropertiesManager().getProperty(REMOVE_PLAYER_MESSAGE));
+        
+        String selection = yesNoCancelDialog.getSelection();
+        
+        if (selection.equals(YesNoCancelDialog.YES)) { 
+            Draft draft = gui.getDataManager().getDraft();
+            draft.removeTeam(teamToRemove);
+            
+            gui.updateGUI(false);
+        }        
     }
+    
     public void handleEditTeamRequest(FantasyTeamsView aThis, Team teamToEdit){
+        
     
     }
+    
     
 }

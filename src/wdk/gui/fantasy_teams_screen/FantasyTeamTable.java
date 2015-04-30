@@ -5,11 +5,11 @@
  */
 package wdk.gui.fantasy_teams_screen;
 
-import java.util.Collections;
 import java.util.List;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -40,11 +40,11 @@ public class FantasyTeamTable {
     private TableColumn<Player, String> contractColumn;
     private TableColumn<Player, String> salaryColumn;
     
-    public FantasyTeamTable(List<Player> playerList){
+    public FantasyTeamTable(){
         initTable();
-        playerTable.setItems((ObservableList) playerList);
-        Collections.sort(playerList);
     }
+
+
 // NOW SETUP THE TABLE COLUMNS
     private void initTable() {    
         playerTable                         = new TableView();
@@ -151,9 +151,6 @@ public class FantasyTeamTable {
             }
         });
         
-        
-        
-        
         estimatedValueColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("estimatedValue"));
         contractColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("contract"));
         salaryColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("salary"));
@@ -172,14 +169,11 @@ public class FantasyTeamTable {
         playerTable.getColumns().add(estimatedValueColumn);
         playerTable.getColumns().add(contractColumn);
         playerTable.getColumns().add(salaryColumn);
-        
-        
-        
-
     }
     
-    public void setTable(ObservableList<Player> players){
-        playerTable.setItems(players);
+    public void setTable(List<Player> players){
+        ObservableList<Player> temp = FXCollections.observableArrayList(players);
+        playerTable.setItems(temp);
     }
     public TableView getTable(){
         return playerTable;

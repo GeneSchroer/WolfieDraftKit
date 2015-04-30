@@ -12,6 +12,7 @@ import wdk.gui.WDK_GUI;
 import wdk.gui.YesNoCancelDialog;
 import wdk.data.Player;
 import java.util.ArrayList;
+import javafx.collections.ObservableList;
 import properties_manager.PropertiesManager;
 import static wdk.GeneralPropertyType.REMOVE_PLAYER_MESSAGE;
 import static wdk.WDK_StartUpConstants.FREE_AGENT;
@@ -20,6 +21,7 @@ import wdk.data.DraftDataManager;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
 import wdk.data.Position;
+import wdk.data.Team;
 
 
 
@@ -38,12 +40,12 @@ public class PlayersController {
         this.draft = draft;
     }
 
-    public void handleSelectPlayerTypeRequest(PlayersView playersView, String position){
+    public void handleSelectPlayerTypeRequest(PlayersView playersView, Position position){
             
-            if(!playersView.getAvailablePlayers().isEmpty()){
+         //   if(!playersView.getAvailablePlayers().isEmpty()){
                 playersView.setSortPosition(position);
                 playersView.update();
-            }
+         //   }
     }
         
     public void handleSearchForPlayerRequest(PlayersView playersView, String name){
@@ -90,27 +92,38 @@ public class PlayersController {
 
     void handleEditPlayerRequest(WDK_GUI gui, Player playerToEdit) {
         DraftDataManager ddm = gui.getDataManager();
-        Draft draft = ddm.getDraft();
-        pd.showEditPlayerDialog(playerToEdit);
+        draft = ddm.getDraft();
+        ArrayList<String> teamNames = getTeamNames(draft);
+        
+        pd.showEditPlayerDialog(playerToEdit, teamNames);
         
         // DID THE USER CONFIRM?
         if (pd.wasCompleteSelected()) {
             // UPDATE THE SCHEDULE ITEM
             Player player = pd.getPlayer();
             
-            //playerToEdit.setFantasyTeam(player.getFantasyTeam());
-            //playerToEdit.setTeamPosition(player.getTeamPosition());
-            //player.setContract(player.getContract());
-           // playerToEdit.setSalary(player.getSalary());
+            playerToEdit.setFantasyTeam(player.getFantasyTeam());
+            playerToEdit.setTeamPosition(player.getTeamPosition());
+            playerToEdit.setContract(player.getContract());
+            playerToEdit.setSalary(player.getSalary());
             
             
             //Update the Toolbar, because this is not saved.
-            gui.updateToolbarControls(false);
+            gui.updateGUI(false);
         }
         else {
             // THE USER MUST HAVE PRESSED CANCEL, SO
             // WE DO NOTHING
         }   
+    }
+    
+    
+    public ArrayList<String> getTeamNames(Draft d){
+        ObservableList<Team> temp = d.getTeams();
+        ArrayList<String> nameList = new ArrayList();
+        for(int i = 0; i < temp.size() ; ++i)
+            nameList.add(temp.get(i).getName());
+        return nameList;
     }
     
 }

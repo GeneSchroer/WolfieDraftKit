@@ -46,5 +46,8 @@ public class FantasyStandingsScreen implements MenuScreen {
     public void initGUI() {
         fantasyStandingsView.initGUI();
     }
+
+    public void update() {
+    }
     
 }

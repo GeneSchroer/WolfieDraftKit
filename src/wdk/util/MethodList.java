@@ -7,6 +7,7 @@ package wdk.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -108,10 +109,19 @@ public class MethodList {
     }
   
   public static void loadComboBox(ComboBox comboBox, ArrayList<String> list) {
-            for(String s : list){
+      comboBox.getItems().clear();
+      
+      for(String s : list){
                 comboBox.getItems().add(s);
             }
-        
+        comboBox.getItems().sort(new Comparator<String>(){
+
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareTo(s2);
+                }
+            
+        });
     }
   
 }

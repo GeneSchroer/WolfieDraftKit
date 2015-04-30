@@ -8,8 +8,10 @@ package wdk.gui.fantasy_teams_screen;
 import wdk.gui.MenuView;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -19,8 +21,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import wdk.GeneralPropertyType;
 import wdk.data.DraftDataManager;
+import wdk.data.DraftType;
+import wdk.data.Player;
+import wdk.data.Team;
 import wdk.gui.StyleSheet;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
+import wdk.gui.WDK_GUI;
 import wdk.util.MethodList;
 
 /**
@@ -50,20 +56,23 @@ public class FantasyTeamsView implements MenuView{
     
     /* Hitter and pitcher tables */
     private VBox teamTableBox;
-    private PitcherTable hitterTable;
-    private HitterTable pitcherTable;
     private FantasyTeamTable startingLineupTable;
-    
+    private FantasyTeamTable taxiSquadTable;
     private VBox taxiSquadBox;
-    
-    
     
     
     private FantasyTeamsController fantasyTeamsController;
     private HBox draftNameBox;
     private HBox teamBox;
-    FantasyTeamsView(FantasyTeamsController initFantasyTeamsController, DraftDataManager draftManager) {
+    private  WDK_GUI gui;
+    private DraftDataManager draftManager;
+    private ArrayList<Player> currentStartingLineup;
+    private ArrayList<Player> currentTaxiSquad;
+    FantasyTeamsView(FantasyTeamsController initFantasyTeamsController, WDK_GUI initGUI) {
         fantasyTeamsController = initFantasyTeamsController;
+        this.gui = initGUI;
+        draftManager = initGUI.getDataManager();
+        
     }
     public void updateTeamList(){
         
@@ -74,8 +83,7 @@ public class FantasyTeamsView implements MenuView{
         
         
         initTopWorkspace();
-        initStartingLineup();
-        initTaxiSquad();
+        initTables();
         initEventHandlers();
         mainWorkspacePane = new VBox();
         mainWorkspacePane.getChildren().add(topWorkspacePane);
@@ -88,16 +96,12 @@ public class FantasyTeamsView implements MenuView{
     public Pane getScreen() {
         return mainWorkspacePane;
     }
-    private void initStartingLineup() {
-    //startingLineupTable = new FantasyTeamTable(players);
-    
+    private void initTables() {
+        startingLineupTable = new FantasyTeamTable();
+        taxiSquadTable = new FantasyTeamTable();
     }
     
-    
-    
-    private void initTaxiSquad() {
-    }
-
+ 
     
 
     private void initTopWorkspace() throws IOException {
@@ -129,11 +133,12 @@ public class FantasyTeamsView implements MenuView{
     public void initEventHandlers() {
         
         addTeamButton.setOnAction(e -> {
-            //   fileController.handleExportDraftRequest(this);
+            fantasyTeamsController.handleAddTeamRequest(gui);
         });
         
         removeTeamButton.setOnAction(e -> {
-            //   fileController.handleExportDraftRequest(this);
+            //if(!selectTeamComboBox.getSelectionModel().isEmpty())
+         //       fantasyTeamsController.handleRemoveTeamRequest(gui, (String) selectTeamComboBox.getSelectionModel().getSelectedItem());
         });
         editTeamButton.setOnAction(e -> {
             //   fileController.handleExportDraftRequest(this);
@@ -155,8 +160,57 @@ public class FantasyTeamsView implements MenuView{
         
     }
     
-    public void update(ArrayList<String> teamList){
-        MethodList.loadComboBox(selectTeamComboBox, teamList);
+    public void update(){
+        updateTeamBox();
+        updateTable((String)selectTeamComboBox.getSelectionModel().getSelectedItem());
+        
     }
+    private void updateTeamBox(){
+        if(!selectTeamComboBox.getSelectionModel().isEmpty()){
+            String current = (String) selectTeamComboBox.getSelectionModel().getSelectedItem();
+        }
+        
+        
+        selectTeamComboBox.getItems().clear();
+        
+        ArrayList<String> temp = new ArrayList();
+        for(int i = 0 ; i< draftManager.getDraft().getTeams().size() ; ++i){
+                temp.add(draftManager.getDraft().getTeams().get(i).getName());
+            }
+            MethodList.loadComboBox(selectTeamComboBox, temp);
+        
+//        selectTeamComboBox.getItems().sort(new Comparator<String>(){
+//
+//            @Override
+//            public int compare(String s1, String s2) {
+//                return s1.compareTo(s2);
+//            }
+//        });
+    }
+
+    private void updateTable(String selectedTeam) {
+        currentStartingLineup = buildFilteredTeam(selectedTeam, DraftType.STARTING);
+        currentTaxiSquad = buildFilteredTeam(selectedTeam, DraftType.TAXI);
+        startingLineupTable.setTable(currentStartingLineup);
+        taxiSquadTable.setTable(currentTaxiSquad);
+        
+    }
+    
+    
+    private ArrayList<Player> buildFilteredTeam(String teamName, DraftType d){
+        ArrayList<Player> aL = new ArrayList();
+        ObservableList<Player> startList = draftManager.getDraft().getAvailablePlayers();
+        for(int i = 0 ; i < startList.size() ; ++i){
+            if(startList.get(i).getFantasyTeam().equals(teamName)
+                    && startList.get(i).getDraftType() == d)
+                aL.add(startList.get(i));
+        }
+        return aL;
+        
+        
+    }
+    
+    
+    
 }
         
