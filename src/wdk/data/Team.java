@@ -21,23 +21,50 @@ public class Team {
     private IntegerProperty playersNeeded;
     private StringProperty name;
     private StringProperty owner;
-    private ObservableList<Position> positionsFilled;
+    private ObservableList<Position> positionsList;
     private IntegerProperty salaryLeft;
     private DoubleProperty moneyPerPlayer;
-    private int catchersNeeded;
-    private int outFieldersNeeded;
-    private int pitchersNeeded;
+    private int catchers;
+    private int outFielders;
+    private int pitchers;
     private int taxiNeeded;
     
     public Team(){
         name = new SimpleStringProperty();
         owner = new SimpleStringProperty();
-        positionsFilled = FXCollections.observableArrayList();
-        catchersNeeded = 2;
-        outFieldersNeeded = 5;
-        pitchersNeeded = 9;
-        taxiNeeded = 11;
+        positionsList = FXCollections.observableArrayList();
+        catchers = 0;
+        outFielders = 0;
+        pitchers = 0;
+        taxiNeeded = 0;
     }
+    public Team(String name, String owner, int c, int b1, int ci, int b3, int b2, int mi, int ss, int of, int u, int p){
+        this.name = new SimpleStringProperty(name);
+        this.owner = new SimpleStringProperty(owner);
+        positionsList = FXCollections.observableArrayList();
+        
+        catchers = c;
+        
+        if (b1 == 1)
+            positionsList.add(Position.B1);
+        if (ci == 1)
+            positionsList.add(Position.CI);
+        if (b3 == 1)
+            positionsList.add(Position.B3);
+        if (b2 == 1)
+            positionsList.add(Position.B2);
+        if (mi == 1)
+            positionsList.add(Position.MI);
+        if (ss == 1)
+            positionsList.add(Position.SS);
+        if (u ==1)
+            positionsList.add(Position.U);
+        outFielders = of;
+        pitchers = p;
+            
+    }
+    
+    
     public Team(String name, String owner){
         this.name.set(name);
         this.owner.set(owner);
@@ -45,16 +72,16 @@ public class Team {
     }
     
     public boolean taxiSquadFilled(){
-        return taxiNeeded == 0;
+        return taxiNeeded == 11;
     }
     public boolean pitchersFilled(){
-        return pitchersNeeded == 0;
+        return pitchers  == 9;
     }
     public boolean catchersFilled(){
-        return catchersNeeded == 0;
+        return catchers == 2;
     }
     public boolean outFieldersFilled(){
-        return outFieldersNeeded == 0;
+        return outFielders == 5;
     }
     
     
@@ -108,7 +135,7 @@ public class Team {
             return pitchersFilled();
         }
         else{
-            return positionsFilled.contains(pos);
+            return positionsList.contains(pos);
         }
         
         
@@ -123,13 +150,13 @@ public class Team {
             p.setTeamPosition(pos);
             p.setDraftType(DraftType.STARTING);
             if(pos.equals(Position.C))
-                --catchersNeeded;
+                ++catchers;
             else if(pos.equals(Position.OF))
-                --outFieldersNeeded;
+                ++outFielders;
             else if(pos.equals(Position.P))
-                --pitchersNeeded;
+                ++pitchers ;
             else
-                positionsFilled.add(pos);
+                positionsList.add(pos);
         }
         
         
@@ -142,15 +169,15 @@ public class Team {
             p.setFantasyTeam(FREE_AGENT);
             p.setDraftType(DraftType.NONE);
             if(p.getTeamPosition().equals(Position.C))
-                ++catchersNeeded;
+                --catchers;
             else if(p.getTeamPosition().equals(Position.OF))
-                ++outFieldersNeeded;
+                --outFielders;
             else if(p.getTeamPosition().equals(Position.P))
-                ++pitchersNeeded;
+                --pitchers ;
             
 //        }
            else
-             positionsFilled.remove(p.getTeamPosition());
+             positionsList.remove(p.getTeamPosition());
             
             p.setTeamPosition(null);
         
@@ -178,6 +205,23 @@ public class Team {
     
     
     
-    
+    public int getPosition(Position pos){
+        if(pos.equals(Position.C)){
+            return catchers;
+        }
+        else if(pos.equals(Position.OF)){
+            return outFielders;
+        }
+        else if(pos.equals(Position.P)){
+            return pitchers;
+        }
+        else
+            if(positionsList.contains(pos))
+                return 1;
+        
+        return 0;
+        
+        
+    }
     
 }

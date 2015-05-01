@@ -27,6 +27,7 @@ import wdk.GeneralPropertyType;
 import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import static wdk.WDK_StartUpConstants.PATH_FLAGS;
 import static wdk.WDK_StartUpConstants.PATH_PLAYERS;
+import wdk.data.Contract;
 import wdk.data.Draft;
 import wdk.data.Player;
 import wdk.data.Position;
@@ -58,6 +59,8 @@ public class PlayerDialog extends Stage{
     private Position currentPosition;
     private String teamName;
     private final String positionString;
+    private Contract contract;
+    private Double salary;
 
   
     
@@ -348,6 +351,15 @@ public class PlayerDialog extends Stage{
         contractLabel = new Label(DIALOG_CONTRACT_LABEL);
         contractLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
         contractComboBox = new ComboBox();
+        contractComboBox.getItems().add(Contract.NONE);
+        contractComboBox.getItems().add(Contract.S1);
+        contractComboBox.getItems().add(Contract.S2);
+        contractComboBox.getItems().add(Contract.X);
+        contractComboBox.setOnAction(e->{
+            if(trigger){
+                contract = (Contract)contractComboBox.getSelectionModel().getSelectedItem();
+            }
+        });
         salaryLabel = new Label(DIALOG_SALARY_LABEL);
         salaryLabel.getStyleClass().add(CLASS_PROMPT_LABEL);
 
@@ -359,7 +371,7 @@ public class PlayerDialog extends Stage{
                 salaryTextField.setText(oldValue);
             }
             else
-                player.setFirstName(newValue);
+                salary = Double.parseDouble(newValue);
         });
         
         
@@ -449,11 +461,13 @@ public class PlayerDialog extends Stage{
     
     public void loadGUIData() {
 //        // LOAD THE UI STUFF
+        trigger = false;
         playerNameLabel.setText(player.getFirstName() + " " + player.getLastName());
         qualifiedPositionLabel.setText(player.getQualifiedPositions());
         fantasyTeamComboBox.getSelectionModel().select(player.getFantasyTeam());
         contractComboBox.getSelectionModel().select(player.getContract());
         salaryTextField.setText(String.valueOf(player.getSalary()));
+        trigger = true;
     }
     
     public boolean wasCompleteSelected() {

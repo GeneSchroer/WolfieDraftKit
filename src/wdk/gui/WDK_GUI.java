@@ -327,10 +327,10 @@ public class WDK_GUI implements DraftDataView {
             fileController.handleNewDraftRequest(this);
         });
         loadDraftButton.setOnAction(e -> {
-            //   fileController.handleLoadDraftRequest(this);
+            fileController.handleLoadDraftRequest(this);
         });
         saveDraftButton.setOnAction(e -> {
-            //    fileController.handleSaveDraftRequest(this, draftDataManager.getDraft());
+            fileController.handleSaveDraftRequest(this, draftDataManager.getDraft());
         });
         exportDraftButton.setOnAction(e -> {
             //   fileController.handleExportDraftRequest(this);

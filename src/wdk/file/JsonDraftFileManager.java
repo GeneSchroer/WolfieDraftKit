@@ -5,7 +5,6 @@
  */
 package wdk.file;
 
-import static com.sun.corba.se.impl.ior.iiop.JavaSerializationComponent.singleton;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import static java.util.Collections.singleton;
 import javafx.collections.ObservableList;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -22,9 +20,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
-import properties_manager.PropertiesManager;
 import static wdk.WDK_StartUpConstants.FREE_AGENT;
-import static wdk.WDK_StartUpConstants.JSON_FILE_PATH_TEAMS;
 import static wdk.WDK_StartUpConstants.PATH_DRAFTS;
 import wdk.data.Draft;
 import wdk.data.Hitter;
@@ -58,6 +54,13 @@ public class JsonDraftFileManager implements DraftFileManager {
     String JSON_YEAR_OF_BIRTH       = "YEAR_OF_BIRTH";
     String JSON_NATION_OF_BIRTH     = "NATION_OF_BIRTH";
     String JSON_QP                  = "QP";
+    
+    
+    
+    String JSON_P = "P";
+    
+    
+    
     /* Hitter specific */ 
     
     String JSON_AB      = "AB";
@@ -84,7 +87,13 @@ public class JsonDraftFileManager implements DraftFileManager {
     String JSON_EXT = ".json";
     String SLASH = "/";
     
-    
+    String JSON_TEAM_NAME = "Name";
+    String JSON_TEAM_OWNER = "Owner";
+    private String JSON_TEAM_POSITIONS = "Team Position";
+    private String JSON_CONTRACT = "Contract";
+    private String JSON_FANTASY_TEAM = "Fantasy Team";
+    private String JSON_TEAM_POSITION = "Team Position";
+    private String JSON_SALARY = "Salary";
     
     
     
@@ -101,8 +110,9 @@ public class JsonDraftFileManager implements DraftFileManager {
         JsonArray playersJsonArray = makePlayersJsonArray(draftToSave.getAvailablePlayers());
         
         // AND AN OBJECT FOR THE TEAM NAMES
-        JsonObject teamsJsonArray = makeTeamsJsonArray(draftToSave.getTeams());
+        JsonArray teamsJsonArray = makeTeamsJsonArray(draftToSave.getTeams());
         
+//        JsonArray logsJsonArray = makeLogsJsonArray(draftToSave.getLogs());
         
         // THE DRAFT LOGS ARRAY
   //      JsonArray draftLogsJsonArray = makeScheduleItemsJsonArray(draftToSave.getDraftLogs());
@@ -117,8 +127,87 @@ public class JsonDraftFileManager implements DraftFileManager {
     }
 
     @Override
-    public void loadDraft(Draft draftToLoad, String draftPath) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void loadDraft(Draft draftToLoad, String jsonFilePath) throws IOException {
+        //Load the JsonFile withh all the data
+        JsonObject json = loadJSONFile(jsonFilePath);
+        
+        JsonArray jsonPlayersArray = json.getJsonArray(JSON_PLAYERS);
+        for (int i = 0; i < jsonPlayersArray.size(); i++){
+            JsonObject jso = jsonPlayersArray.getJsonObject(i);
+            Player player = new Player();
+            player.setLastName(jso.getString(JSON_LAST_NAME));
+            player.setFirstName(jso.getString(JSON_FIRST_NAME));
+            player.setNotes(jso.getString(JSON_NOTES));
+            player.setYearOfBirth(jso.getString(JSON_YEAR_OF_BIRTH));
+            player.setNationOfBirth(jso.getString(JSON_NATION_OF_BIRTH));
+            player.setContract(jso.getString(JSON_CONTRACT));
+            player.setFantasyTeam(jso.getString(JSON_FANTASY_TEAM));
+            player.setTeamPosition(Position.parse(jso.getString(JSON_TEAM_POSITION)));
+            String qp = jso.getString(JSON_QP);
+            
+            
+            
+            if(qp.contains((CharSequence) Position.P.toString())){
+                Pitcher pitcher = new Pitcher(player);
+                pitcher.addPosition(Position.P);
+                pitcher .setInningsPitched(jso.getJsonNumber(JSON_IP).doubleValue());
+                pitcher     .setEarnedRuns(jso.getInt(JSON_ER));
+                pitcher .setWins(jso.getInt(JSON_W));
+                pitcher.setSaves(jso.getInt(JSON_SV));
+                pitcher.setHits(jso.getInt(JSON_H));
+                pitcher.setBasesOnBalls(jso.getInt(JSON_BB));
+                pitcher.setStrikeouts(jso.getInt(JSON_K));
+                draftToLoad.addPlayer(pitcher);
+            }
+            else{
+                Hitter hitter = new Hitter(player);
+                if(qp.contains((CharSequence) Position.C.toString())){
+                    hitter.addPosition(Position.C);
+                    hitter.addPosition(Position.U);
+                }
+                if(qp.contains((CharSequence) Position.B1.toString())){
+                    hitter.addPosition(Position.B1);
+                    hitter.addPosition(Position.CI);
+                    hitter.addPosition(Position.U);
+                }
+                if(qp.contains((CharSequence) Position.B3.toString())){
+                    hitter.addPosition(Position.B3);
+                    hitter.addPosition(Position.CI);
+                    hitter.addPosition(Position.U);
+                }
+                if(qp.contains((CharSequence) Position.B2.toString())){
+                    hitter.addPosition(Position.B2);
+                    hitter.addPosition(Position.MI);
+                    hitter.addPosition(Position.U);
+                }
+                if(qp.contains((CharSequence) Position.SS.toString())){
+                    hitter.addPosition(Position.SS);
+                    hitter.addPosition(Position.MI);
+                    hitter.addPosition(Position.U);
+                }
+                if(qp.contains((CharSequence) Position.OF.toString())){
+                    hitter.addPosition(Position.OF);
+                    hitter.addPosition(Position.U);
+                }
+                hitter.setAtBat(jso.getInt(JSON_AB));
+                hitter.setRuns(jso.getInt(JSON_R));
+                hitter.setHits(jso.getInt(JSON_H));
+                hitter.setHomeRuns(jso.getInt(JSON_HR));
+                hitter.setRunsBattedIn(jso.getInt(JSON_RBI));
+                hitter.setAtBat(jso.getInt(JSON_SB));
+                draftToLoad.addPlayer(hitter);
+            }
+            
+        }
+        
+        JsonArray jsonTeamsArray = json.getJsonArray(JSON_TEAMS);
+        for (int i = 0; i < jsonTeamsArray.size(); i++){
+            JsonObject jso = jsonTeamsArray.getJsonObject(i);
+            JsonObject pos = jso.getJsonObject(JSON_TEAM_POSITION);
+            Team t = new Team(jso.getString(JSON_TEAM_NAME), jso.getString(JSON_TEAM_OWNER), pos.getInt("C"), pos.getInt("1B"), pos.getInt("CI"), pos.getInt("3B"), pos.getInt("2B"), pos.getInt("MI"), pos.getInt("SS"), pos.getInt("OF"), pos.getInt("U"), pos.getInt("P"));
+            draftToLoad.addTeam(t);
+
+        }
     }
 
     /**
@@ -265,8 +354,20 @@ public class JsonDraftFileManager implements DraftFileManager {
         return jA;
     }
 
-    private JsonObject makeTeamsJsonArray(ObservableList<Team> teams) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private JsonArray makeTeamsJsonArray(ObservableList<Team> teams) {
+        JsonArrayBuilder jsb = Json.createArrayBuilder();
+        for(Team t: teams){
+            jsb.add(makeTeamJsonObject(t));
+        }
+        JsonArray jA = jsb.build();
+        return jA;
+    }
+    private JsonArray makePositionsJsonArray(Player p){
+        JsonArrayBuilder jsb = Json.createArrayBuilder();
+        for(int i = 0; i< p.getPositionList().size();++i)
+            jsb.add(p.getPositionList().get(i).toString());
+        JsonArray ja =  jsb.build();
+        return ja;
     }
 
     private JsonValue makePlayerJsonObject(Player p) {
@@ -274,8 +375,8 @@ public class JsonDraftFileManager implements DraftFileManager {
         
         if(p instanceof Hitter){
             Hitter hitter = (Hitter) p;
-             jso  = Json.createObjectBuilder().add(JSON_PLAYER_LAST_NAME, hitter.getLastName())
-                                                    .add(JSON_PLAYER_FIRST_NAME, hitter.getFirstName())
+             jso  = Json.createObjectBuilder().add(JSON_LAST_NAME, hitter.getLastName())
+                                                    .add(JSON_FIRST_NAME, hitter.getFirstName())
                                                     .add(JSON_QP, hitter.getQualifiedPositions())
                                                     .add(JSON_AB, hitter.getAtBat())
                                                     .add(JSON_R, hitter.getRuns())
@@ -286,12 +387,16 @@ public class JsonDraftFileManager implements DraftFileManager {
                                                     .add(JSON_NOTES, hitter.getNotes())
                                                     .add(JSON_YEAR_OF_BIRTH, hitter.getYearOfBirth())
                                                     .add(JSON_NATION_OF_BIRTH, hitter.getNationOfBirth())
+                                                    .add(JSON_FANTASY_TEAM, hitter.getFantasyTeam())
+                                                    .add(JSON_TEAM_POSITION, hitter.getTeamPosition().toString())
+                                                    .add(JSON_CONTRACT, hitter.getContract().toString())
+                                                    .add(JSON_SALARY, hitter.getSalary())
                                                     .build();
         }
         else{
             Pitcher pitcher = (Pitcher) p;
-            jso  = Json.createObjectBuilder().add(JSON_PLAYER_LAST_NAME, pitcher.getLastName())
-                                                    .add(JSON_PLAYER_FIRST_NAME, pitcher.getFirstName())
+            jso  = Json.createObjectBuilder().add(JSON_LAST_NAME, pitcher.getLastName())
+                                                    .add(JSON_FIRST_NAME, pitcher.getFirstName())
                                                     .add(JSON_QP, pitcher.getQualifiedPositions())
                                                     .add(JSON_IP, pitcher.getInningsPitched())
                                                     .add(JSON_ER, pitcher.getEarnedRuns())
@@ -303,6 +408,10 @@ public class JsonDraftFileManager implements DraftFileManager {
                                                     .add(JSON_NOTES, pitcher.getNotes())
                                                     .add(JSON_YEAR_OF_BIRTH, pitcher.getYearOfBirth())
                                                     .add(JSON_NATION_OF_BIRTH, pitcher.getNationOfBirth())
+                                                    .add(JSON_FANTASY_TEAM, pitcher.getFantasyTeam())
+                                                    .add(JSON_TEAM_POSITION, pitcher.getTeamPosition().toString())
+                                                    .add(JSON_CONTRACT, pitcher.getContract().toString())
+                                                    .add(JSON_SALARY, pitcher.getSalary())
                                                     .build();
         }
      
@@ -321,4 +430,34 @@ public class JsonDraftFileManager implements DraftFileManager {
         // RETURN THE SINGLETON
         return singleton;
     }
+
+    private JsonValue makeTeamJsonObject(Team t) {
+        JsonObject jso = Json.createObjectBuilder().add(JSON_TEAM_NAME, t.getName())
+                                                                .add(JSON_TEAM_OWNER, t.getOwner())
+                                                                .add(JSON_TEAM_POSITIONS, makeJsonTeamPositionsObject(t))
+                                                                .build();
+        return jso;
+    }
+    
+    
+    
+    public JsonObject makeJsonTeamPositionsObject(Team t){
+        JsonObject jso = Json.createObjectBuilder() .add(Position.C.toString(), t.getPosition(Position.C))
+                                                    .add(Position.B1.toString(), t.getPosition(Position.B1))
+                                                    .add(Position.CI.toString(), t.getPosition(Position.CI))
+                                                    .add(Position.B3.toString(), t.getPosition(Position.B3))
+                                                    .add(Position.B2.toString(), t.getPosition(Position.B2))
+                                                    .add(Position.MI.toString(), t.getPosition(Position.MI))
+                                                    .add(Position.SS.toString(), t.getPosition(Position.SS))
+                                                    .add(Position.OF.toString(), t.getPosition(Position.OF))
+                                                    .add(Position.U.toString(), t.getPosition(Position.U))
+                                                    .add(Position.P.toString(), t.getPosition(Position.P))
+                                                    .build();
+       return jso;
+    }
+   
+    
+    
+   
+    
 }

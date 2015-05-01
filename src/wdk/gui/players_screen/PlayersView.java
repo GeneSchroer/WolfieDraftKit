@@ -7,6 +7,8 @@ package wdk.gui.players_screen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -247,7 +249,11 @@ public class PlayersView implements MenuView {
             if(e.getClickCount() == 2){
             //Open up the lecture editor
             Player player = playersTable.getTable().getSelectionModel().getSelectedItem();
-            playersController.handleEditPlayerRequest(this.gui, player);
+                try {
+                    playersController.handleEditPlayerRequest(this.gui, player);
+                } catch (Exception ex) {
+                    Logger.getLogger(PlayersView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

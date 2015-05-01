@@ -62,19 +62,20 @@ public class Player implements Comparable {
        salary = new SimpleDoubleProperty(0);
        
        fantasyTeam = new SimpleStringProperty(FREE_AGENT);
+       teamPosition = Position.NONE;
     }
     
-    public Player(Player p){
-        this.setProTeam(p.getProTeam());
-        setLastName(p.getLastName());
-        setFirstName(p.getFirstName());
-        setProTeam(p.getProTeam());
-        setProTeam(p.getProTeam());
-        setProTeam(p.getProTeam());
-        setProTeam(p.getProTeam());
-        setProTeam(p.getProTeam());
-        setProTeam(p.getProTeam());
-    }
+//    public Player(Player p){
+//        this.setProTeam(p.getProTeam());
+//        setLastName(p.getLastName());
+//        setFirstName(p.getFirstName());
+//        setProTeam(p.getProTeam());
+//        setProTeam(p.getProTeam());
+//        setProTeam(p.getProTeam());
+//        setProTeam(p.getProTeam());
+//        setProTeam(p.getProTeam());
+//        setProTeam(p.getProTeam());
+//    }
     
     public void setLastName(String ln){
         lastName.set(ln);
@@ -168,6 +169,16 @@ public class Player implements Comparable {
     }
     public void setContract(Contract c){
         contract = c;
+    }
+    public void setContract(String c){
+        if (c.equals("S1"))
+                contract = Contract.S1;
+        if (c.equals("S2"))
+                contract = Contract.S2;
+        if (c.equals("X"))
+                contract = Contract.X;
+        if (c.equalsIgnoreCase("NONE"))
+                contract = Contract.NONE;
     }
     
     public Contract getContract(){

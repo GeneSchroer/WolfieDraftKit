@@ -81,24 +81,24 @@ public class FileController {
         }
     }
 
-//    public void handleLoadDraftRequest(WDK_GUI gui) {
-//     try {
-//            // WE MAY HAVE TO SAVE CURRENT WORK
-//            boolean continueToOpen = true;
-//            if (!saved) {
-//                // THE USER CAN OPT OUT HERE WITH A CANCEL
-//                continueToOpen = promptToSave(gui);
-//            }
-//
-//            // IF THE USER REALLY WANTS TO OPEN A draft
-//            if (continueToOpen) {
-//                // GO AHEAD AND PROCEED LOADING A draft
-//                promptToOpen(gui);
-//            }
-//        } catch (IOException ioe) {
-//            // SOMETHING WENT WRONG
-//            errorHandler.handleLoaddraftError();
-//        }}
+    public void handleLoadDraftRequest(WDK_GUI gui) {
+     try {
+            // WE MAY HAVE TO SAVE CURRENT WORK
+            boolean continueToOpen = true;
+            if (!saved) {
+                // THE USER CAN OPT OUT HERE WITH A CANCEL
+                continueToOpen = promptToSave(gui);
+            }
+
+            // IF THE USER REALLY WANTS TO OPEN A draft
+            if (continueToOpen) {
+                // GO AHEAD AND PROCEED LOADING A draft
+                promptToOpen(gui);
+            }
+        } catch (IOException ioe) {
+            // SOMETHING WENT WRONG
+            errorHandler.handleLoaddraftError();
+        }}
 
 //    public void handleExportDraftRequest(WDK_GUI gui) {
 //        // EXPORT THE draft
@@ -149,24 +149,27 @@ public class FileController {
         }
     }
 
-//    public void handleSaveDraftRequest(WDK_GUI gui, Draft draftToSave) {
-//   try {
-//            // SAVE IT TO A FILE
-//            draftFileManager.saveDraft(draftToSave);
-//
-//            // MARK IT AS SAVED
-//            saved = true;
-//
-//            // TELL THE USER THE FILE HAS BEEN SAVED
-//            messageDialog.show(properties.getProperty(DRAFT_SAVED_MESSAGE));
-//
-//            // AND REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
-//            // THE APPROPRIATE CONTROLS
-//            gui.updateToolbarControls(saved);
-//        } catch (IOException ioe) {
-//            errorHandler.handleSavedraftError();
-//        }
-//    }
+    public void handleSaveDraftRequest(WDK_GUI gui, Draft draftToSave) {
+        if(draftToSave.getDraftName().isEmpty())
+            messageDialog.show("This draft needs a name");
+        else
+            try {
+                     // SAVE IT TO A FILE
+                     draftFileManager.saveDraft(draftToSave);
+
+                     // MARK IT AS SAVED
+                     saved = true;
+
+                     // TELL THE USER THE FILE HAS BEEN SAVED
+                     messageDialog.show(properties.getProperty(DRAFT_SAVED_MESSAGE));
+
+                     // AND REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
+                     // THE APPROPRIATE CONTROLS
+                     gui.updateToolbarControls(saved);
+                 } catch (IOException ioe) {
+                     errorHandler.handleSavedraftError();
+                 }
+             }
     
      /**
      * This helper method verifies that the user really wants to save their
@@ -222,7 +225,7 @@ public class FileController {
                 draftFileManager.loadDraft(draftToLoad, selectedFile.getAbsolutePath());
                 gui.reloadDraft(draftToLoad);
                 saved = true;
-                gui.updateToolbarControls(saved);
+                gui.updateGUI(saved);
             } catch (Exception e) {
                 ErrorHandler eH = ErrorHandler.getErrorHandler();
                 eH.handleLoaddraftError();

@@ -119,5 +119,7 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     
     
     
+    STARTING_LINEUP_LABEL,
+    TAXI_SQUAD_LABEL
     
 }

@@ -66,11 +66,16 @@ public class FantasyTeamsView implements MenuView{
     private DraftDataManager draftManager;
     private ArrayList<Player> currentStartingLineup;
     private ArrayList<Player> currentTaxiSquad;
+    private boolean trigger;
+    private VBox lineupBox;
+    private VBox taxiBox;
+    private Label lineupLabel;
+    private Label taxiLabel;
     FantasyTeamsView(FantasyTeamsController initFantasyTeamsController, WDK_GUI initGUI) {
         fantasyTeamsController = initFantasyTeamsController;
         this.gui = initGUI;
         draftManager = initGUI.getDataManager();
-        
+        trigger = true;
     }
     public void updateTeamList(){
         
@@ -85,8 +90,8 @@ public class FantasyTeamsView implements MenuView{
         initEventHandlers();
         mainWorkspacePane = new VBox();
         mainWorkspacePane.getChildren().add(topWorkspacePane);
-        mainWorkspacePane.getChildren().add(startingLineupTable.getTable());
-        mainWorkspacePane.getChildren().add(taxiSquadTable.getTable());
+        mainWorkspacePane.getChildren().add(lineupBox);
+        mainWorkspacePane.getChildren().add(taxiBox);
         mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
         
         
@@ -98,8 +103,15 @@ public class FantasyTeamsView implements MenuView{
         return mainWorkspacePane;
     }
     private void initTables() {
+        lineupBox = new VBox();
+        lineupLabel = MethodList.initChildLabel(lineupBox, GeneralPropertyType.STARTING_LINEUP_LABEL, StyleSheet.CLASS_HEADING_LABEL);
         startingLineupTable = new FantasyTeamTable();
+        lineupBox.getChildren().add(startingLineupTable.getTable());
+        
+        taxiBox = new VBox();
+        taxiLabel = MethodList.initChildLabel(taxiBox, GeneralPropertyType.TAXI_SQUAD_LABEL, StyleSheet.CLASS_HEADING_LABEL);
         taxiSquadTable = new FantasyTeamTable();
+        taxiBox.getChildren().add(taxiSquadTable.getTable());
     }
     
  
@@ -145,9 +157,12 @@ public class FantasyTeamsView implements MenuView{
             //   fileController.handleExportDraftRequest(this);
         });
         selectTeamComboBox.setOnAction(e->{
-            update();
+            if(trigger)
+                update();
         });
-        
+        draftNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            fantasyTeamsController.handleEditDraftNameRequest(this.gui, newValue);
+        });
     }
     @Override
     public void initGUI() {
@@ -164,23 +179,40 @@ public class FantasyTeamsView implements MenuView{
     }
     
     public void update(){
-        updateTeamBox();
+        if(draftManager.getDraft().getTeams().isEmpty())
+        {
+            trigger = false;
+            selectTeamComboBox.getItems().clear();
+            trigger = true;
+            // lineup and taxi tables cleared as well
+            //
+            
+        }
+        else{   //when you have teams in the draft
+            updateTeamBox();
+         updateTable((String)selectTeamComboBox.getSelectionModel().getSelectedItem());
         
-    }
-    private void updateTeamBox(){ 
-        if(!selectTeamComboBox.getSelectionModel().isEmpty()){
-            String current = (String) selectTeamComboBox.getSelectionModel().getSelectedItem();
         }
         
-        
-        selectTeamComboBox.getItems().clear();
+    }
+    private void updateTeamBox(){
+       String current = (String) selectTeamComboBox.getSelectionModel().getSelectedItem();
+              
+       selectTeamComboBox.getItems().clear();
         
         ArrayList<String> temp = new ArrayList();
         for(int i = 0 ; i< draftManager.getDraft().getTeams().size() ; ++i){
                 temp.add(draftManager.getDraft().getTeams().get(i).getName());
             }
+            trigger = false;
             MethodList.loadComboBox(selectTeamComboBox, temp);
-        
+            
+        selectTeamComboBox.getSelectionModel().selectFirst();
+            
+        for(int i = 0 ; i< temp.size() ; ++i){
+            if(temp.get(i).equals(current))
+                selectTeamComboBox.getSelectionModel().select(i);
+        }
 //        selectTeamComboBox.getItems().sort(new Comparator<String>(){
 //
 //            @Override
@@ -188,6 +220,7 @@ public class FantasyTeamsView implements MenuView{
 //                return s1.compareTo(s2);
 //            }
 //        });
+        trigger = true;
     }
 
     private void updateTable(String selectedTeam) {

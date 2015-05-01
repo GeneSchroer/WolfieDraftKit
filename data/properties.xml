@@ -102,6 +102,9 @@
 
         <property name="FREE_DEAL"                value="Free Agent"></property>
 
+
+        <property name="STARTING_LINEUP_LABEL"                value="Starting Lineup"></property>
+        <property name="TAXI_SQUAD_LABEL"                value="Taxi Squad"></property>
                         
     </property_list>
     <property_options_list>

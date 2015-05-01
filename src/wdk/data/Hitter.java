@@ -31,12 +31,7 @@ public class Hitter extends Player{
     }
     
     public Hitter(Player h){
-        if(h!=null){
-            for(int i = 0; i < h.getPositionList().size(); ++i){
-                addPosition((Position) h.getPositionList().get(i));
-            }
-            
-        }
+        
         
         atBat           = new SimpleIntegerProperty(0);
         runs            = new SimpleIntegerProperty(0);
@@ -57,6 +52,22 @@ public class Hitter extends Player{
                 return ba;
             }
         };
+        if(h!=null){
+            setLastName(h.getLastName());
+            setFirstName(h.getFirstName());
+            setProTeam(h.getProTeam());
+            setNotes(h.getNotes());
+            setYearOfBirth(h.getYearOfBirth());
+            setNationOfBirth(h.getNationOfBirth());
+            setFantasyTeam(h.getFantasyTeam());
+            setTeamPosition(h.getTeamPosition());
+            setContract(h.getContract());
+            
+            for(int i = 0; i < h.getPositionList().size(); ++i){
+                addPosition((Position) h.getPositionList().get(i));
+            }
+            
+        }
     }
     
     public void setAtBat(int ab){

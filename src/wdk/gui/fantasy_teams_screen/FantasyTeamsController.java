@@ -21,6 +21,11 @@ import wdk.gui.YesNoCancelDialog;
  * @author Work
  */
 public class FantasyTeamsController {
+
+    public void handleEditDraftNameRequest(WDK_GUI gui, String newValue) {
+        gui.getDataManager().getDraft().setDraftName(newValue);
+        gui.updateToolbarControls(false);
+    }
     private final MessageDialog messageDialog;
     private final YesNoCancelDialog yesNoCancelDialog;
     private final TeamDialog td;

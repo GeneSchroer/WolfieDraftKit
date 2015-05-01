@@ -61,10 +61,10 @@ public class FantasyTeamTable {
         battingAverageWhipColumn            = new TableColumn("BA/WHIP");
         estimatedValueColumn                = new TableColumn("Estimated Value");
         contractColumn                      = new TableColumn("Contract");
-        salaryColumn                      = new TableColumn("Salary");
+        salaryColumn                        = new TableColumn("Salary");
         
         
-        positionColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("position"));
+        positionColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("teamPosition"));
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("firstName"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("lastName"));
         proTeamColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("proTeam"));

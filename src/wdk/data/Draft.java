@@ -26,6 +26,7 @@ public class Draft {
         teams = FXCollections.observableArrayList();
         availablePlayers = FXCollections.observableArrayList();
         numTeams=0;
+        draftName = "bob";
     }
     private void updatePoints(){
         
@@ -38,8 +39,13 @@ public class Draft {
      //   Team draft = teams.c
        // teams.remove(team);
         for(int i = 0; i < availablePlayers.size() ; ++i){
-           // if(availablePlayers.get(i).getFantasyTeam().equals(team.getName()))
+            if(availablePlayers.get(i).getFantasyTeam().equals(teamToRemove)){
                 availablePlayers.get(i).setFantasyTeam(FREE_AGENT);
+                availablePlayers.get(i).setContract(Contract.NONE);
+                availablePlayers.get(i).setSalary(0);
+                availablePlayers.get(i).setTeamPosition(Position.NONE);
+                
+            }
         }
     }
     public void addPlayer(Player playerToAdd){

@@ -30,17 +30,6 @@ import javafx.beans.property.SimpleIntegerProperty;
     }
     public Pitcher(Player p){
         
-        if(p!=null){
-            setLastName(p.getLastName());
-            setFirstName(p.getFirstName());
-            setProTeam(p.getProTeam());
-            for(int i = 0; i < p.getPositionList().size(); ++i){
-                addPosition((Position) p.getPositionList().get(i));
-            }
-            
-        }
-        
-        
         inningsPitched  = new SimpleDoubleProperty(0);
         earnedRuns      = new SimpleIntegerProperty(0);
         wins            = new SimpleIntegerProperty(0);
@@ -77,6 +66,23 @@ import javafx.beans.property.SimpleIntegerProperty;
                 return w;
             }
         };
+        
+        if(p!=null){
+            setLastName(p.getLastName());
+            setFirstName(p.getFirstName());
+            setProTeam(p.getProTeam());
+            setNotes(p.getNotes());
+            setYearOfBirth(p.getYearOfBirth());
+            setNationOfBirth(p.getNationOfBirth());
+            setFantasyTeam(p.getFantasyTeam());
+            setTeamPosition(p.getTeamPosition());
+            setContract(p.getContract());
+            
+            for(int i = 0; i < p.getPositionList().size(); ++i){
+                addPosition((Position) p.getPositionList().get(i));
+            }
+            
+        }
         
     }
     public void setInningsPitched(double ip){
