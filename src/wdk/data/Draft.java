@@ -26,7 +26,7 @@ public class Draft {
         teams = FXCollections.observableArrayList();
         availablePlayers = FXCollections.observableArrayList();
         numTeams=0;
-        draftName = "bob";
+        draftName = "";
     }
     private void updatePoints(){
         
@@ -46,6 +46,10 @@ public class Draft {
                 availablePlayers.get(i).setTeamPosition(Position.NONE);
                 
             }
+        }
+        for(int i = 0; i < teams.size() ; ++i){
+            if(teams.get(i).getName().equals(teamToRemove))
+                teams.remove(i);
         }
     }
     public void addPlayer(Player playerToAdd){
@@ -87,6 +91,13 @@ public class Draft {
         draftName = dn;
     }
     
+    public Team getTeam(String name){
+        for(int i = 0; i< teams.size(); ++i){
+            if(teams.get(i).getName().equals(name))
+                return teams.get(i);
+        }
+        return null;
+    }
     
     public void setAvailablePlayers(ObservableList<Player> players){
         availablePlayers = FXCollections.observableArrayList(players);

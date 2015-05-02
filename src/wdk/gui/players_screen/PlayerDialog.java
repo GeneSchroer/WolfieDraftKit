@@ -29,6 +29,7 @@ import static wdk.WDK_StartUpConstants.PATH_FLAGS;
 import static wdk.WDK_StartUpConstants.PATH_PLAYERS;
 import wdk.data.Contract;
 import wdk.data.Draft;
+import wdk.data.DraftType;
 import wdk.data.Player;
 import wdk.data.Position;
 import wdk.data.Team;
@@ -61,6 +62,9 @@ public class PlayerDialog extends Stage{
     private final String positionString;
     private Contract contract;
     private Double salary;
+    private DraftType draftType;
+
+    
 
   
     
@@ -140,6 +144,11 @@ public class PlayerDialog extends Stage{
     public static final String CANCEL = "Cancel";
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
 //    private static final String PLAYER_DETAILS_HEADING = "Player Details";
+    
+    public PlayerDialog(Stage initPrimaryStage, Draft draft, MessageDialog initMessageDialog) {
+       this(initPrimaryStage, draft, initMessageDialog, new ArrayList());
+        
+    }
 
     public PlayerDialog(Stage primaryStage, Draft draft, MessageDialog messageDialog, ArrayList<String> proTeam) {
         
@@ -333,8 +342,10 @@ public class PlayerDialog extends Stage{
         fantasyTeamComboBox = new ComboBox();
         fantasyTeamComboBox.setOnAction(e->{
             if(trigger)
-                if(!fantasyTeamComboBox.getSelectionModel().isEmpty())
+                if(!fantasyTeamComboBox.getSelectionModel().isEmpty()){
                     loadPositionsNeeded();
+                    teamName = (String) fantasyTeamComboBox.getSelectionModel().getSelectedItem();
+                }
         });
         
         positionLabel = new Label(DIALOG_POSITION_LABEL);
@@ -407,7 +418,12 @@ public class PlayerDialog extends Stage{
         completeEditHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
             Button sourceButton = (Button)ae.getSource();
             PlayerDialog.this.selection = sourceButton.getText();
-            PlayerDialog.this.hide();
+            if(selection.equals(COMPLETE) && !fantasyTeamComboBox.getSelectionModel().isSelected(0) 
+                    && ((positionComboBox.getSelectionModel().isSelected(0) && !positionComboBox.isDisable())
+                        || contractComboBox.getSelectionModel().isSelected(0)))
+                messageDialog.show("You haven't finished adding stuff.");
+            else
+                PlayerDialog.this.hide();
         };
 
         // NOW LET'S ARRANGE THEM ALL AT ONCE
@@ -483,7 +499,8 @@ public class PlayerDialog extends Stage{
         
         trigger = false;
         loadFantasyTeams(teamList);
-        fantasyTeamComboBox.getItems().add(0, FREE_AGENT);           
+        fantasyTeamComboBox.getItems().add(0, FREE_AGENT);     
+        teamName = FREE_AGENT;
         fantasyTeamComboBox.getSelectionModel().select(playerToEdit.getFantasyTeam());
         loadPositionsNeeded();
         trigger = true;
@@ -521,12 +538,14 @@ public class PlayerDialog extends Stage{
     }
 
     public final void loadPositionsNeeded(){
+        trigger = false;
          teamName = (String)fantasyTeamComboBox.getSelectionModel().getSelectedItem();
         if (teamName.equals(FREE_AGENT)){
             positionComboBox.getItems().clear();
             positionComboBox.getItems().add(0,"NONE");
             positionComboBox.getSelectionModel().select(0);
             positionComboBox.setDisable(true);
+            contractComboBox.setDisable(true);
         }
         else{
             
@@ -538,9 +557,14 @@ public class PlayerDialog extends Stage{
                 positionComboBox.getItems().add(0,"TAXI ONLY");
                 positionComboBox.getSelectionModel().select(0);
                 positionComboBox.setDisable(true);
+                contractComboBox.setDisable(true);
+                contract = Contract.X;
+                draftType = DraftType.TAXI;
             }
             else{
                 positionComboBox.setDisable(false);
+                contractComboBox.setDisable(false);
+                draftType = DraftType.STARTING;
                 if(!currentTeam.positionFilled(Position.C) && player.getPositionList().contains(Position.C))
                     positionComboBox.getItems().add(Position.C);
                 if(!currentTeam.positionFilled(Position.B1) && player.getPositionList().contains(Position.B1))
@@ -564,7 +588,7 @@ public class PlayerDialog extends Stage{
                 
                 
             }
-               
+               trigger = true;
         }
         
             
@@ -678,4 +702,13 @@ public class PlayerDialog extends Stage{
             currentPosition = Position.P;
     }
 
+      public DraftType getDraftType(){
+          return draftType;
+      }
+      public Contract getContract(){
+          return contract;
+      }
+      public String getTeamName(){
+          return teamName;
+      }
 }

@@ -88,7 +88,7 @@ public enum GeneralPropertyType implements WDK_PropertyType {
     
     //FANTASY TEAMS TAG
     FANTASY_TEAMS_LABEL,
-    TEAM_SELECT_LABEL,
+    DRAFT_NAME_LABEL,
   //TEAM_NAME_LABEL  
   //TEAM_OWNER_LABEL  
     

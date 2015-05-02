@@ -61,7 +61,9 @@ public class Hitter extends Player{
             setNationOfBirth(h.getNationOfBirth());
             setFantasyTeam(h.getFantasyTeam());
             setTeamPosition(h.getTeamPosition());
+            setDraftType(h.getDraftType());
             setContract(h.getContract());
+            setSalary(h.getSalary());
             
             for(int i = 0; i < h.getPositionList().size(); ++i){
                 addPosition((Position) h.getPositionList().get(i));

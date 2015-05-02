@@ -27,7 +27,7 @@ public class Team {
     private int catchers;
     private int outFielders;
     private int pitchers;
-    private int taxiNeeded;
+    private int taxi;
     
     public Team(){
         name = new SimpleStringProperty();
@@ -36,9 +36,9 @@ public class Team {
         catchers = 0;
         outFielders = 0;
         pitchers = 0;
-        taxiNeeded = 0;
+        taxi = 0;
     }
-    public Team(String name, String owner, int c, int b1, int ci, int b3, int b2, int mi, int ss, int of, int u, int p){
+    public Team(String name, String owner, int c, int b1, int ci, int b3, int b2, int mi, int ss, int of, int u, int p, int t){
         this.name = new SimpleStringProperty(name);
         this.owner = new SimpleStringProperty(owner);
         positionsList = FXCollections.observableArrayList();
@@ -61,7 +61,7 @@ public class Team {
             positionsList.add(Position.U);
         outFielders = of;
         pitchers = p;
-            
+        taxi = t;    
     }
     
     
@@ -72,7 +72,7 @@ public class Team {
     }
     
     public boolean taxiSquadFilled(){
-        return taxiNeeded == 11;
+        return taxi == 11;
     }
     public boolean pitchersFilled(){
         return pitchers  == 9;
@@ -143,8 +143,17 @@ public class Team {
     
     public void addPlayer(Player p, Position pos) throws Exception{
         
+        
         if(positionFilled(pos))
-            throw new Exception("This position is full ");
+            if(!taxiSquadFilled()){
+                p.setDraftType(DraftType.TAXI);
+                p.setFantasyTeam(getName());
+                p.setTeamPosition(pos);
+                ++taxi;
+            
+            }
+            else
+                throw new Exception("This position is full ");
         else{
             p.setFantasyTeam(getName());
             p.setTeamPosition(pos);
@@ -166,30 +175,33 @@ public class Team {
 //        if(positionFilled(pos))
 //            throw new Exception("This position is full ");
 //        else{
-            p.setFantasyTeam(FREE_AGENT);
-            p.setDraftType(DraftType.NONE);
-            if(p.getTeamPosition().equals(Position.C))
-                --catchers;
-            else if(p.getTeamPosition().equals(Position.OF))
-                --outFielders;
-            else if(p.getTeamPosition().equals(Position.P))
-                --pitchers ;
+            if(p.getDraftType().equals(DraftType.TAXI)){
+                --taxi;
+                p.setFantasyTeam(FREE_AGENT);
+                p.setDraftType(DraftType.NONE);
+                p.setTeamPosition(Position.NONE);
+                p.setContract(Contract.NONE);
+                p.setSalary(0);
+            }
+            else if(p.getDraftType().equals(DraftType.STARTING)){
             
-//        }
-           else
-             positionsList.remove(p.getTeamPosition());
-            
-            p.setTeamPosition(null);
-        
+                if(p.getTeamPosition().equals(Position.C))
+                    --catchers;
+                else if(p.getTeamPosition().equals(Position.OF))
+                    --outFielders;
+                else if(p.getTeamPosition().equals(Position.P))
+                    --pitchers ;
+                else
+                    positionsList.remove(p.getTeamPosition());
+                p.setFantasyTeam(FREE_AGENT);
+                p.setDraftType(DraftType.NONE);
+                p.setTeamPosition(Position.NONE);
+                p.setContract(Contract.NONE);
+                p.setSalary(0);
+            }
         
     }
-    public void addPlayerToTaxi(Player p, Position pos){
-        if(!taxiSquadFilled()){
-            p.setFantasyTeam(getName());
-            p.setTeamPosition(pos);
-            --taxiNeeded;
-        }
-    }
+   
     public boolean allPositonsFilled(){
         return positionFilled(Position.C)
                 && positionFilled(Position.B1)
@@ -222,6 +234,9 @@ public class Team {
         return 0;
         
         
+    }
+    public int getTaxi(){
+        return taxi;
     }
     
 }

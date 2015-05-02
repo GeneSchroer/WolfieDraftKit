@@ -93,7 +93,7 @@ public class PlayersController {
         }        
     }
 
-    void handleEditPlayerRequest(WDK_GUI gui, Player playerToEdit) throws Exception {
+    public void handleEditPlayerRequest(WDK_GUI gui, Player playerToEdit) throws Exception {
         DraftDataManager ddm = gui.getDataManager();
         draft = ddm.getDraft();
         ArrayList<String> teamNames = getTeamNames(draft);
@@ -105,24 +105,35 @@ public class PlayersController {
         //More to do
         
         
-        
-        
-        
-        
-        
         // DID THE USER CONFIRM?
         if (pd.wasCompleteSelected()) {
+            Team team;
+            if(pd.getTeamName().equals(FREE_AGENT)){
+                if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
+                    team = draft.getTeam(playerToEdit.getFantasyTeam());
+                    team.removePlayer(playerToEdit);
+                }
+            }
+            else{
             // UPDATE THE SCHEDULE ITEM
-            Player player = pd.getPlayer();
+                if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
+                    team = draft.getTeam(playerToEdit.getFantasyTeam());
+                    team.removePlayer(playerToEdit);
+                } 
+                Player player = pd.getPlayer();
+                    team = pd.getTeam();
+                    team.addPlayer(playerToEdit, pd.getPosition());
+                    playerToEdit.setContract(pd.getContract());
+                    playerToEdit.setSalary(player.getSalary());
+                    
+                
+                
             
-            Team team = pd.getTeam();
-            team.addPlayer(playerToEdit, pd.getPosition());
-            playerToEdit.setContract(player.getContract());
-            playerToEdit.setSalary(player.getSalary());
             
             
             //Update the Toolbar, because this is not saved.
             gui.updateGUI(false);
+            }
         }
         else {
             // THE USER MUST HAVE PRESSED CANCEL, SO

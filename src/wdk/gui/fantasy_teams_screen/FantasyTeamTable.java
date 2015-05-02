@@ -5,7 +5,7 @@
  */
 package wdk.gui.fantasy_teams_screen;
 
-import java.util.List;
+import java.util.Comparator;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
@@ -19,6 +19,7 @@ import wdk.data.DraftType;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
 import wdk.data.Player;
+import wdk.data.Position;
 
 /**
  *
@@ -178,8 +179,19 @@ public class FantasyTeamTable {
             if(playerList.get(i).getFantasyTeam().equals(teamName)&&playerList.get(i).getDraftType().equals(dT))
                     playerTable.getItems().add(playerList.get(i));
         }
+        playerTable.getItems().sort(new Comparator<Player>(){
+                @Override
+                public int compare(Player p1, Player p2){
+                    if(p1.getTeamPosition().ordinal() > p2.getTeamPosition().ordinal())
+                        return 1;
+                    if(p1.getTeamPosition().ordinal() < p2.getTeamPosition().ordinal())
+                        return -1;
+                    
+                    return 0;
+                }
+        });
     }
-    public TableView getTable(){
+    public TableView<Player> getTable(){
         return playerTable;
     }
     public void statsSorted(boolean isSorted){

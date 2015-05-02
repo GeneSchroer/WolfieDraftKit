@@ -56,6 +56,9 @@ public class DraftDataManager {
     }
     public void reset() throws IOException {
         
+        
+        draft.setDraftName("");
+        draft.getAvailablePlayers().clear();
         draft.getTeams().clear();
         
         

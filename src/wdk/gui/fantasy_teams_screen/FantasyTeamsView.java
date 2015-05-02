@@ -25,6 +25,7 @@ import wdk.data.Player;
 import wdk.gui.StyleSheet;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
 import wdk.gui.WDK_GUI;
+import wdk.gui.players_screen.PlayersView;
 import wdk.util.MethodList;
 
 /**
@@ -125,7 +126,7 @@ public class FantasyTeamsView implements MenuView{
         
         headingLabel        = MethodList.initChildLabel(topWorkspacePane, GeneralPropertyType.FANTASY_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL); 
         draftNameBox = new HBox();
-        draftNameLabel     = MethodList.initChildLabel(draftNameBox, GeneralPropertyType.TEAM_SELECT_LABEL, StyleSheet.CLASS_SUBHEADING_LABEL); 
+        draftNameLabel     = MethodList.initChildLabel(draftNameBox, GeneralPropertyType.DRAFT_NAME_LABEL, StyleSheet.CLASS_SUBHEADING_LABEL); 
         draftNameTextField   = MethodList.initChildTextField(draftNameBox, 25, null, true);
         topWorkspacePane.getChildren().add(draftNameBox);
         
@@ -150,8 +151,11 @@ public class FantasyTeamsView implements MenuView{
         });
         
         removeTeamButton.setOnAction(e -> {
-            //if(!selectTeamComboBox.getSelectionModel().isEmpty())
-         //       fantasyTeamsController.handleRemoveTeamRequest(gui, (String) selectTeamComboBox.getSelectionModel().getSelectedItem());
+            if(!selectTeamComboBox.getSelectionModel().isEmpty())
+                trigger = false;
+                fantasyTeamsController.handleRemoveTeamRequest(gui, (String) selectTeamComboBox.getSelectionModel().getSelectedItem());
+                trigger = true;
+                update();
         });
         editTeamButton.setOnAction(e -> {
             //   fileController.handleExportDraftRequest(this);
@@ -162,6 +166,18 @@ public class FantasyTeamsView implements MenuView{
         });
         draftNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             fantasyTeamsController.handleEditDraftNameRequest(this.gui, newValue);
+        });
+        
+        startingLineupTable.getTable().setOnMouseClicked(e -> {
+            if(e.getClickCount() == 2){
+            //Open up the lecture editor
+            Player player = startingLineupTable.getTable().getSelectionModel().getSelectedItem();
+                try {
+                    fantasyTeamsController.handleEditPlayerRequest(this.gui, player);
+                } catch (Exception ex) {
+                    Logger.getLogger(PlayersView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         });
     }
     @Override
@@ -175,14 +191,21 @@ public class FantasyTeamsView implements MenuView{
     }
 
     public void reset() {
-        
+        update();
     }
     
     public void update(){
+        draftNameTextField.setText(draftManager.getDraft().getDraftName());
+        
         if(draftManager.getDraft().getTeams().isEmpty())
         {
             trigger = false;
             selectTeamComboBox.getItems().clear();
+            selectTeamComboBox.getItems().add("NONE");
+            selectTeamComboBox.getSelectionModel().selectFirst();
+            selectTeamComboBox.setDisable(true);
+            startingLineupTable.getTable().getItems().clear();
+            taxiSquadTable.getTable().getItems().clear();
             trigger = true;
             // lineup and taxi tables cleared as well
             //
@@ -190,13 +213,16 @@ public class FantasyTeamsView implements MenuView{
         }
         else{   //when you have teams in the draft
             updateTeamBox();
+            trigger = false;
          updateTable((String)selectTeamComboBox.getSelectionModel().getSelectedItem());
-        
+        trigger = true;
         }
         
     }
     private void updateTeamBox(){
-       String current = (String) selectTeamComboBox.getSelectionModel().getSelectedItem();
+       trigger = false;
+       selectTeamComboBox.setDisable(false);
+       String current = (String)selectTeamComboBox.getSelectionModel().getSelectedItem();
               
        selectTeamComboBox.getItems().clear();
         
@@ -204,7 +230,7 @@ public class FantasyTeamsView implements MenuView{
         for(int i = 0 ; i< draftManager.getDraft().getTeams().size() ; ++i){
                 temp.add(draftManager.getDraft().getTeams().get(i).getName());
             }
-            trigger = false;
+            
             MethodList.loadComboBox(selectTeamComboBox, temp);
             
         selectTeamComboBox.getSelectionModel().selectFirst();
@@ -223,12 +249,10 @@ public class FantasyTeamsView implements MenuView{
         trigger = true;
     }
 
-    private void updateTable(String selectedTeam) {
+    private void updateTable(String teamName) {
         
-        currentStartingLineup = buildFilteredTeam(selectedTeam, DraftType.STARTING);
-        currentTaxiSquad = buildFilteredTeam(selectedTeam, DraftType.TAXI);
-        startingLineupTable.setTable(draftManager.getDraft().getAvailablePlayers(), selectedTeam, DraftType.STARTING);
-        taxiSquadTable.setTable(draftManager.getDraft().getAvailablePlayers(), selectedTeam, DraftType.TAXI);
+        startingLineupTable.setTable(draftManager.getDraft().getAvailablePlayers(), teamName, DraftType.STARTING);
+        taxiSquadTable.setTable(draftManager.getDraft().getAvailablePlayers(), teamName, DraftType.TAXI);
         
     }
     

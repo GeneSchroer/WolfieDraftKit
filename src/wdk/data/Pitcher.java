@@ -76,7 +76,9 @@ import javafx.beans.property.SimpleIntegerProperty;
             setNationOfBirth(p.getNationOfBirth());
             setFantasyTeam(p.getFantasyTeam());
             setTeamPosition(p.getTeamPosition());
+            setDraftType(p.getDraftType());
             setContract(p.getContract());
+            setSalary(p.getSalary());
             
             for(int i = 0; i < p.getPositionList().size(); ++i){
                 addPosition((Position) p.getPositionList().get(i));

@@ -65,7 +65,7 @@
         <property name="PLAYER_NOTES_LABEL"             value="Notes:"></property>
         <property name="TEAM_NAME_LABEL"                value="Name:"></property>
         <property name="TEAM_OWNER_LABEL"               value="Owner:"></property>
-        <property name="TEAM_SELECT_LABEL"              value="Select Team:"></property>
+        <property name="DRAFT_NAME_LABEL"              value="Draft Name:"></property>
         <property name="DRAFT_BEST_PLAYER_TOOLTIP"      value="Draft the best player"></property>
         <property name="START_AUTOMATED_DRAFT_TOOLTIP"  value="Start an automated draft"></property>
         <property name="PAUSE_AUTOMATED_DRAFT_TOOLTIP"  value="Pause an automated draft"></property>
