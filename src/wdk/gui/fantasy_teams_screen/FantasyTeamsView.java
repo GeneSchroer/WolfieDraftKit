@@ -158,7 +158,8 @@ public class FantasyTeamsView implements MenuView{
                 update();
         });
         editTeamButton.setOnAction(e -> {
-            //   fileController.handleExportDraftRequest(this);
+            if(!selectTeamComboBox.getSelectionModel().isEmpty())
+               fantasyTeamsController.handleEditTeamRequest(this.gui, (String) selectTeamComboBox.getSelectionModel().getSelectedItem());
         });
         selectTeamComboBox.setOnAction(e->{
             if(trigger)
@@ -234,10 +235,12 @@ public class FantasyTeamsView implements MenuView{
             MethodList.loadComboBox(selectTeamComboBox, temp);
             
         selectTeamComboBox.getSelectionModel().selectFirst();
-            
+        if(current!=null)    
         for(int i = 0 ; i< temp.size() ; ++i){
-            if(temp.get(i).equals(current))
-                selectTeamComboBox.getSelectionModel().select(i);
+            if(temp.get(i).equals(current)){
+                selectTeamComboBox.getSelectionModel().select(current);
+                break;
+            }
         }
 //        selectTeamComboBox.getItems().sort(new Comparator<String>(){
 //

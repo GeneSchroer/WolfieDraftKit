@@ -59,7 +59,7 @@ public class PlayerDialog extends Stage{
     private Team currentTeam;
     private Position currentPosition;
     private String teamName;
-    private final String positionString;
+    private String positionString;
     private Contract contract;
     private Double salary;
     private DraftType draftType;
@@ -407,7 +407,7 @@ public class PlayerDialog extends Stage{
                                             &&!shortstopCheckBox.isSelected()
                                                 &&!outFielderCheckBox.isSelected()
                                                     &&!pitcherCheckBox.isSelected())))
-                messageDialog.show("You haven't finished adding stuff.");
+                messageDialog.show("You have not filled in all the needed information");
             else{
             
 
@@ -418,10 +418,10 @@ public class PlayerDialog extends Stage{
         completeEditHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
             Button sourceButton = (Button)ae.getSource();
             PlayerDialog.this.selection = sourceButton.getText();
-            if(selection.equals(COMPLETE) && !fantasyTeamComboBox.getSelectionModel().isSelected(0) 
-                    && ((positionComboBox.getSelectionModel().isSelected(0) && !positionComboBox.isDisable())
-                        || contractComboBox.getSelectionModel().isSelected(0)))
-                messageDialog.show("You haven't finished adding stuff.");
+            if(selection.equals(COMPLETE) && !fantasyTeamComboBox.getSelectionModel().getSelectedItem().equals(FREE_AGENT) 
+                    && ((positionComboBox.getSelectionModel().getSelectedItem().equals(Position.NONE.toString()) && !positionComboBox.isDisable())
+                        || contractComboBox.getSelectionModel().getSelectedItem().equals(Contract.NONE.toString())))
+                messageDialog.show("You have not filled in all the needed information.");
             else
                 PlayerDialog.this.hide();
         };
@@ -502,7 +502,7 @@ public class PlayerDialog extends Stage{
         fantasyTeamComboBox.getItems().add(0, FREE_AGENT);     
         teamName = FREE_AGENT;
         fantasyTeamComboBox.getSelectionModel().select(playerToEdit.getFantasyTeam());
-        loadPositionsNeeded();
+        
         trigger = true;
         
         player = new Player();
@@ -512,12 +512,13 @@ public class PlayerDialog extends Stage{
         
         
         player.setFantasyTeam(playerToEdit.getFantasyTeam());
+        player.setTeamPosition(playerToEdit.getTeamPosition());
         player.setQualifiedPositions(playerToEdit.getQualifiedPositions());
         player.setContract(playerToEdit.getContract());
         player.setSalary(playerToEdit.getSalary());
         player.getPositionList().clear();
         player.getPositionList().addAll(playerToEdit.getPositionList());
-        
+        loadPositionsNeeded();
         
         
         
@@ -557,6 +558,8 @@ public class PlayerDialog extends Stage{
                 positionComboBox.getItems().add(0,"TAXI ONLY");
                 positionComboBox.getSelectionModel().select(0);
                 positionComboBox.setDisable(true);
+                currentPosition = player.getTeamPosition();
+                contractComboBox.getSelectionModel().select(Contract.X.toString());
                 contractComboBox.setDisable(true);
                 contract = Contract.X;
                 draftType = DraftType.TAXI;
@@ -564,6 +567,7 @@ public class PlayerDialog extends Stage{
             else{
                 positionComboBox.setDisable(false);
                 contractComboBox.setDisable(false);
+                positionComboBox.getItems().clear();
                 draftType = DraftType.STARTING;
                 if(!currentTeam.positionFilled(Position.C) && player.getPositionList().contains(Position.C))
                     positionComboBox.getItems().add(Position.C);
@@ -585,6 +589,12 @@ public class PlayerDialog extends Stage{
                     positionComboBox.getItems().add(Position.U);
                 if(!currentTeam.positionFilled(Position.P) && player.getPositionList().contains(Position.P))
                     positionComboBox.getItems().add(Position.P);
+                positionComboBox.getItems().add(0, Position.NONE);
+                currentPosition = player.getTeamPosition();
+                positionComboBox.getSelectionModel().select(currentPosition.toString());
+                
+                contract = player.getContract();
+                contractComboBox.getSelectionModel().select(contract.toString());
                 
                 
             }

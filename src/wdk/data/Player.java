@@ -23,7 +23,7 @@ public class Player implements Comparable {
     StringProperty proTeam;
     StringProperty lastName;
     StringProperty firstName;
-    StringProperty fullName;
+    String fullName;
     StringProperty qualifiedPositions;
     StringProperty notes;
     StringProperty yearOfBirth;
@@ -43,7 +43,7 @@ public class Player implements Comparable {
     private Position teamPosition;
     
     public Player() {
-        
+        image = null;
         proTeam             = new SimpleStringProperty();
         lastName            = new SimpleStringProperty();
         firstName           = new SimpleStringProperty();
@@ -52,7 +52,7 @@ public class Player implements Comparable {
         yearOfBirth         = new SimpleStringProperty();
         nationOfBirth       = new SimpleStringProperty();
         fantasyTeam         = new SimpleStringProperty();
-        
+        fullName = "";
         
        PositionList = FXCollections.observableArrayList();
        
@@ -143,7 +143,7 @@ public class Player implements Comparable {
     }
     
     public StringProperty nationOfBirthProperty(){
-        return fullName;
+        return nationOfBirth;
     }
      public void setQualifiedPositions(String qp){
         qualifiedPositions.set(qp);
@@ -275,7 +275,18 @@ public class Player implements Comparable {
      //   Player 
    // }
     
+    /**
+     *
+     * @return
+     */
+        
+//    public void setImage(String s){
+//        image = new Image(s+"jpg") {};
+//    }
     
+    public String getFullName(){
+        return lastName + "" + firstName;
+    }
     
     public static class PlayerBuilder {
         private final StringProperty lastName;

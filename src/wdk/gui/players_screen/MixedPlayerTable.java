@@ -161,6 +161,14 @@ public class MixedPlayerTable {
         notesColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("notes"));
         notesColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         notesColumn.setEditable(true);
+        notesColumn.setOnEditCommit(new EventHandler<CellEditEvent<Player,String>>(){
+
+            @Override
+            public void handle(CellEditEvent<Player, String> event) {
+                event.getRowValue().setNotes(event.getNewValue());
+            }
+            
+        });
         
         notesColumn.setOnEditCommit(new EventHandler<CellEditEvent<Player, String>>() {
         @Override

@@ -6,7 +6,6 @@
 package wdk.gui.fantasy_teams_screen;
 
 import javafx.stage.Stage;
-import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
 import wdk.gui.MenuView;
 import wdk.gui.MessageDialog;

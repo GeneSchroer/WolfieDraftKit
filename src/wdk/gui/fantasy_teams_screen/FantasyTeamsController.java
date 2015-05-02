@@ -73,8 +73,24 @@ public class FantasyTeamsController {
         }        
     }
     
-    public void handleEditTeamRequest(FantasyTeamsView aThis, Team teamToEdit){
-        
+    public void handleEditTeamRequest(WDK_GUI gui, String teamName){
+         DraftDataManager ddm = gui.getDataManager();
+        Draft draft = ddm.getDraft();
+        Team team = draft.getTeam(teamName);
+        if(draft.getNumTeams()>=10){
+            messageDialog.show("Too Many Teams");
+        }
+        else{
+            td.showEditTeamDialog(team);
+            team.setName(td.getTeam().getName());
+            team.setOwner(td.getTeam().getOwner());
+            for(int i = 0; i<draft.getAvailablePlayers().size(); ++i){
+                if (draft.getAvailablePlayers().get(i).getFantasyTeam().equals(teamName))
+                    draft.getAvailablePlayers().get(i).setFantasyTeam(team.getName());
+            }
+       
+            gui.updateGUI(false);
+        }
     
     }
     public void handleEditPlayerRequest(WDK_GUI gui, Player playerToEdit) throws Exception{

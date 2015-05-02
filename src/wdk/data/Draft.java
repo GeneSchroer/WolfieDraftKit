@@ -51,6 +51,7 @@ public class Draft {
             if(teams.get(i).getName().equals(teamToRemove))
                 teams.remove(i);
         }
+        --numTeams;
     }
     public void addPlayer(Player playerToAdd){
         availablePlayers.add(playerToAdd);

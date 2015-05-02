@@ -18,6 +18,7 @@
         <property name="EXIT_ICON"                  value="Exit.png"></property>        
         <property name="ADD_ICON"                   value="Add.png"></property>
         <property name="MINUS_ICON"                 value="Minus.png"></property>
+        <property name="EDIT_ICON"                 value="Edit.png"></property>
         
         <property name="BLANK_IMAGE"                 value="AAA_PhotoMissing.jpg"></property>
         <property name="DEFAULT_FLAG"                 value="USA.png"></property>

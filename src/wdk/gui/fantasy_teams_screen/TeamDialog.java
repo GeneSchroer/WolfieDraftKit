@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import wdk.data.Draft;
 import wdk.data.Team;
 import wdk.gui.MessageDialog;
@@ -104,11 +105,13 @@ public class TeamDialog extends Stage {
             if(selection.equals(COMPLETE)
                     && (teamNameTextField.getText() == null
                         || teamOwnerTextField.getText()==null)){
-                messageDialog.show("You are not finished");
+                messageDialog.show("You have not filled in all the needed information");
             }
             else{
-            
-            TeamDialog.this.hide();
+                if(teamNameTextField.getText().equalsIgnoreCase(FREE_AGENT))
+                    messageDialog.show("You can not name your team Free Agent.");
+                else
+                    TeamDialog.this.hide();
             }
         };
         completeButton.setOnAction(completeCancelHandler);
