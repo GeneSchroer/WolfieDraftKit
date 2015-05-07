@@ -33,7 +33,6 @@ public class FantasyStandingsView implements MenuView {
     
     private GridPane    topWorkspacePane;
     private Label       headingLabel;
-    private ComboBox    selectTeamComboBox;
     
     
     private TeamStatsTable teamStatsTable;
@@ -57,6 +56,7 @@ public class FantasyStandingsView implements MenuView {
         }
         initBottomTable();
         mainWorkspacePane.getChildren().add(topWorkspacePane);
+        mainWorkspacePane.getChildren().add(teamStatsTable.getTable());
         mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
     }
 
@@ -68,15 +68,17 @@ public class FantasyStandingsView implements MenuView {
     private void initTopWorkspace() throws IOException {
         topWorkspacePane = new GridPane();
         headingLabel = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.FANTASY_STANDINGS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
-        selectTeamComboBox = MethodList.initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
         
     }
 
     private void initBottomTable() {
+        teamStatsTable = new TeamStatsTable(draftManager.getDraft());
+//        teamStatsTable.initGUI();
     }
     
 
     public void reset() {
+        update();
     }
 
     @Override
@@ -87,6 +89,9 @@ public class FantasyStandingsView implements MenuView {
 
     @Override
     public void initEventHandlers() {
+    }
+    public void update(){
+        teamStatsTable.setTable();
     }
 
 }

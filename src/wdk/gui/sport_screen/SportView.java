@@ -6,8 +6,11 @@
 package wdk.gui.sport_screen;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -17,11 +20,10 @@ import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
 import wdk.GeneralPropertyType;
 import wdk.data.DraftDataManager;
-import wdk.gui.MenuScreen;
+import wdk.data.Team;
 import wdk.gui.MenuView;
 import wdk.gui.StyleSheet;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
-import wdk.gui.players_screen.MixedPlayerTable;
 
 /**
  *
@@ -36,20 +38,18 @@ public class SportView implements MenuView {
     
     private GridPane    topWorkspacePane;
     private Label       headingLabel;
-    private ComboBox    selectLeagueComboBox;
+    private ComboBox    selectTeamComboBox;
     
     
-    private MixedPlayerTable teamStatsTable;
+    private ProTeamTable proTeamTable;
     private SportController sportController;
     private DraftDataManager draftManager;
-    
-    public SportView(Stage initPrimaryStage){
-        
-    }
+    ArrayList<String> proTeams;
 
-    SportView(SportController initSportController, DraftDataManager initDraftManager) {
+    SportView(SportController initSportController, DraftDataManager initDraftManager, ArrayList<String> proTeams) {
         this.sportController = initSportController;
-       this.draftManager = initDraftManager;  
+        this.draftManager = initDraftManager;  
+        this.proTeams = proTeams;
     }
 
     @Override
@@ -62,6 +62,7 @@ public class SportView implements MenuView {
         }
         initBottomTable();
         mainWorkspacePane.getChildren().add(topWorkspacePane);
+        mainWorkspacePane.getChildren().add(proTeamTable.getTable());
         mainWorkspacePane.getStyleClass().add(CLASS_SCREEN_BACKGROUND_PANE);
     }
 
@@ -73,11 +74,13 @@ public class SportView implements MenuView {
     private void initTopWorkspace() throws IOException {
         topWorkspacePane = new GridPane();
         headingLabel = initGridLabel(topWorkspacePane, GeneralPropertyType.MLB_TEAMS_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
-        selectLeagueComboBox = initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
-        
+        selectTeamComboBox = initGridComboBox(topWorkspacePane, 0, 1, 1, 1);
+        selectTeamComboBox.setItems(FXCollections.observableArrayList( proTeams));
     }
 
     private void initBottomTable() {
+        proTeamTable = new ProTeamTable();
+        proTeamTable.setTable(draftManager.getDraft().getAllPlayers(), null);
     }
     
     private Label initGridLabel(GridPane container, GeneralPropertyType labelProperty, String styleClass, int col, int row, int colSpan, int rowSpan) {
@@ -106,13 +109,23 @@ public class SportView implements MenuView {
         initWorkspace();
         initEventHandlers();
     }
+    
+    public void update(){
+        String s = "";
+        if(!selectTeamComboBox.getSelectionModel().isEmpty())
+            s = String.valueOf( selectTeamComboBox.getSelectionModel().getSelectedItem());
+        proTeamTable.setTable(draftManager.getDraft().getAllPlayers(), s);
+    }
 
     @Override
     public void initEventHandlers() {
+        selectTeamComboBox.setOnAction(e->{
+            update();
+        });
     }
 
     public Object getView() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return mainWorkspacePane;
     }
 
 }

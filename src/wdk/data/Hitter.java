@@ -47,9 +47,10 @@ public class Hitter extends Player{
             protected double computeValue() {
                 if(atBat.getValue() == 0)
                     return 0;
-                
-                Double ba = Double.parseDouble(DecimalFormat.getInstance().format((double)hits.getValue()/atBat.getValue())); 
-                return ba;
+                else{
+                    Double ba = Double.parseDouble(new DecimalFormat("#.###").format((double)hits.getValue()/(double)atBat.getValue())); 
+                    return ba;
+                }
             }
         };
         if(h!=null){
@@ -140,7 +141,7 @@ public class Hitter extends Player{
         return stolenBases;
     }
     public DoubleProperty battingAverageProperty(){
-        return new SimpleDoubleProperty(battingAverage.getValue());
+        return new SimpleDoubleProperty(battingAverage.get());
     }
     
     

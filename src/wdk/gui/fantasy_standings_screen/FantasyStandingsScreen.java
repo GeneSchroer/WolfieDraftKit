@@ -5,12 +5,9 @@
  */
 package wdk.gui.fantasy_standings_screen;
 
-import javafx.stage.Stage;
 import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
 import wdk.gui.MenuView;
-import wdk.gui.MessageDialog;
-import wdk.gui.YesNoCancelDialog;
 
 /**
  *
@@ -48,6 +45,7 @@ public class FantasyStandingsScreen implements MenuScreen {
     }
 
     public void update() {
+        fantasyStandingsView.update();
     }
     
 }

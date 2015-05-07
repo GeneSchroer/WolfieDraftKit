@@ -84,9 +84,9 @@ public class FantasyTeamsController {
             td.showEditTeamDialog(team);
             team.setName(td.getTeam().getName());
             team.setOwner(td.getTeam().getOwner());
-            for(int i = 0; i<draft.getAvailablePlayers().size(); ++i){
-                if (draft.getAvailablePlayers().get(i).getFantasyTeam().equals(teamName))
-                    draft.getAvailablePlayers().get(i).setFantasyTeam(team.getName());
+            for(int i = 0; i<draft.getAllPlayers().size(); ++i){
+                if (draft.getAllPlayers().get(i).getFantasyTeam().equals(teamName))
+                    draft.getAllPlayers().get(i).setFantasyTeam(team.getName());
             }
        
             gui.updateGUI(false);

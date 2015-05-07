@@ -113,6 +113,7 @@ public class TeamDialog extends Stage {
                 else
                     TeamDialog.this.hide();
             }
+            TeamDialog.this.hide();
         };
         completeButton.setOnAction(completeCancelHandler);
         cancelButton.setOnAction(completeCancelHandler);

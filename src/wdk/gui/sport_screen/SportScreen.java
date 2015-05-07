@@ -5,6 +5,7 @@
  */
 package wdk.gui.sport_screen;
 
+import java.util.ArrayList;
 import javafx.stage.Stage;
 import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
@@ -19,10 +20,11 @@ import wdk.gui.YesNoCancelDialog;
 public class SportScreen implements MenuScreen{
     SportView sportView;
     SportController sportController;
-    
-   public SportScreen(DraftDataManager draftManager){
-        sportController = new SportController(draftManager.getDraft());
-        sportView = new SportView(sportController, draftManager);
+    ArrayList<String> proTeams;
+   public SportScreen(DraftDataManager draftManager, ArrayList<String> teamsList){
+       proTeams = teamsList; 
+       sportController = new SportController(draftManager.getDraft());
+        sportView = new SportView(sportController, draftManager, proTeams);
     }
     public void initGUI(){
         sportView.initGUI();

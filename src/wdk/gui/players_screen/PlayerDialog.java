@@ -553,7 +553,7 @@ public class PlayerDialog extends Stage{
             for(int i = 0; i < teamList.size(); ++i)
                 if(teamName.equals(teamList.get(i).getName()))
                      currentTeam = teamList.get(i);
-            if(currentTeam.allPositonsFilled()){
+            if(currentTeam.startingLineupFilled()){
                 positionComboBox.getItems().clear();
                 positionComboBox.getItems().add(0,"TAXI ONLY");
                 positionComboBox.getSelectionModel().select(0);
@@ -683,7 +683,7 @@ public class PlayerDialog extends Stage{
         fantasyTeamComboBox.getItems().clear();
         for(int i = 0; i < teamList.size(); ++i){
             Team team = teamList.get(i);
-            if(!team.allPositonsFilled() || !team.taxiSquadFilled()){
+            if(!team.startingLineupFilled() || !team.taxiSquadFilled()){
                 fantasyTeamComboBox.getItems().add(team.getName());
             }
         }

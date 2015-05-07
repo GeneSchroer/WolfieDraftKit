@@ -46,6 +46,9 @@ public class DraftView implements MenuView {
     private final DraftController draftController;
     private final DraftDataManager draftManager;
     
+    
+    public DraftTable draftTable;
+    
     //private TeamStatsTable teamStatsTable;
     
    public DraftView(DraftController initDraftController, DraftDataManager initDraftManager){

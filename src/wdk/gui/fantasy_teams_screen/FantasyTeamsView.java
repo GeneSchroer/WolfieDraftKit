@@ -192,7 +192,7 @@ public class FantasyTeamsView implements MenuView{
     }
 
     public void reset() {
-        update();
+        
     }
     
     public void update(){
@@ -254,15 +254,17 @@ public class FantasyTeamsView implements MenuView{
 
     private void updateTable(String teamName) {
         
-        startingLineupTable.setTable(draftManager.getDraft().getAvailablePlayers(), teamName, DraftType.STARTING);
-        taxiSquadTable.setTable(draftManager.getDraft().getAvailablePlayers(), teamName, DraftType.TAXI);
+       
+        
+        startingLineupTable.setTable(draftManager.getDraft().getAllPlayers(), teamName, DraftType.STARTING);
+        taxiSquadTable.setTable(draftManager.getDraft().getAllPlayers(), teamName, DraftType.TAXI);
         
     }
     
     
     private ArrayList<Player> buildFilteredTeam(String teamName, DraftType d){
         ArrayList<Player> aL = new ArrayList();
-        ObservableList<Player> startList = draftManager.getDraft().getAvailablePlayers();
+        ObservableList<Player> startList = draftManager.getDraft().getAllPlayers();
         for(int i = 0 ; i < startList.size() ; ++i){
             if(startList.get(i).getFantasyTeam().equals(teamName)
                     && startList.get(i).getDraftType() == d)

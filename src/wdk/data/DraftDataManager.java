@@ -38,14 +38,14 @@ public class DraftDataManager {
     private ObservableList<Player> Player;
     public DraftDataManager(DraftDataView initView, Draft startingDraft) {
         
-        startingPlayers = new ArrayList(startingDraft.getAvailablePlayers().subList(0, startingDraft.getAvailablePlayers().size()));
+        startingPlayers = new ArrayList(startingDraft.getAllPlayers().subList(0, startingDraft.getAllPlayers().size()));
         
         
         
         view = initView;
         this.startingDraft = startingDraft;
         draft = new Draft();
-        draft.setAvailablePlayers(startingDraft.getAvailablePlayers());
+        draft.setAvailablePlayers(startingDraft.getAllPlayers());
     }
     
     public Draft getDraft(){
@@ -58,7 +58,7 @@ public class DraftDataManager {
         
         
         draft.setDraftName("");
-        draft.getAvailablePlayers().clear();
+        draft.getAllPlayers().clear();
         draft.getTeams().clear();
         
         
@@ -68,7 +68,7 @@ public class DraftDataManager {
         JsonDraftFileManager temp = JsonDraftFileManager.getPropertiesManager();
         startingDraft = temp.loadStartingDraft(filePathList);
         
-        draft.setAvailablePlayers(startingDraft.getAvailablePlayers());
+        draft.setAvailablePlayers(startingDraft.getAllPlayers());
 
         
         view.reloadDraft(draft);

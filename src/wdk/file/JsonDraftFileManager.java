@@ -110,7 +110,7 @@ public class JsonDraftFileManager implements DraftFileManager {
         JsonWriter jsonWriter = Json.createWriter(os);  
         
         // MAKE A JSON ARRAY FOR THE PAGES ARRAY
-        JsonArray playersJsonArray = makePlayersJsonArray(draftToSave.getAvailablePlayers());
+        JsonArray playersJsonArray = makePlayersJsonArray(draftToSave.getAllPlayers());
         
         // AND AN OBJECT FOR THE TEAM NAMES
         JsonArray teamsJsonArray = makeTeamsJsonArray(draftToSave.getTeams());
@@ -134,7 +134,7 @@ public class JsonDraftFileManager implements DraftFileManager {
     public void loadDraft(Draft draftToLoad, String jsonFilePath) throws IOException {
         //Load the JsonFile withh all the data
         
-        draftToLoad.getAvailablePlayers().clear();
+        draftToLoad.getAllPlayers().clear();
         draftToLoad.getTeams().clear();
         //draftToLoad.getLogs().clear();
         JsonObject json = loadJSONFile(jsonFilePath);
@@ -206,7 +206,7 @@ public class JsonDraftFileManager implements DraftFileManager {
                 hitter.setHits(jso.getInt(JSON_H));
                 hitter.setHomeRuns(jso.getInt(JSON_HR));
                 hitter.setRunsBattedIn(jso.getInt(JSON_RBI));
-                hitter.setAtBat(jso.getInt(JSON_SB));
+                hitter.setStolenBases(jso.getInt(JSON_SB));
                 draftToLoad.addPlayer(hitter);
             }
             

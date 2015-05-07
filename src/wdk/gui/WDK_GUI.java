@@ -395,7 +395,7 @@ public class WDK_GUI implements DraftDataView {
         fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage, this, messageDialog, yesNoCancelDialog);
         fantasyStandingsScreen = new FantasyStandingsScreen(draftDataManager);
         draftScreen = new DraftScreen(draftDataManager);
-        sportScreen = new SportScreen(draftDataManager);
+        sportScreen = new SportScreen(draftDataManager, proTeams);
         
         playersScreen.initGUI(proTeams);
         fantasyTeamsScreen.initGUI();
@@ -495,15 +495,6 @@ public class WDK_GUI implements DraftDataView {
         sportScreen.setVisible(false);
         
         menuScreen.setVisible(true);
-        
-        
-//        ObservableList<Node>screenList = workspacePane.getChildren();
-//        
-//        for(int i = 0; i< screenList.size(); ++i){
-//            workspacePane.getChildren().get(i).setDisable(true);
-//        }
-//        
-//        workspacePane.getChildren().get(0).setDisable(false);
         
     }
 

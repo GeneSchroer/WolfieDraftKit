@@ -97,7 +97,7 @@ public class PlayersView implements MenuView {
         this.gui = initGUI;
         draftManager = initGUI.getDataManager();
         availablePlayers = new ArrayList();
-        availablePlayers.addAll( draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
+        availablePlayers.addAll( draftManager.getDraft().getAllPlayers().subList(0, draftManager.getDraft().getAllPlayers().size()));
         sortPlayer = "";
         p = null;
     }
@@ -299,7 +299,7 @@ public class PlayersView implements MenuView {
        // ArrayList<Player> temp = buildFilteredList(draftManager.getDraft().getAvailablePlayers().subList(0, draftManager.getDraft().getAvailablePlayers().size()));
         //availablePlayers.addAll(temp);
        // playersTable.setTable(availablePlayers);
-        playersTable.setTable(draftManager.getDraft().getAvailablePlayers(), sortPlayer, p);
+        playersTable.setTable(draftManager.getDraft().getAllPlayers(), sortPlayer, p);
     }
     
     
