@@ -32,12 +32,10 @@ public class Hitter extends Player{
     private IntegerProperty baRank;
     public Hitter(){
         this(null);
-        
     }
     
     public Hitter(Player h){
-        
-        
+        super();
         atBat           = new SimpleIntegerProperty(0);
         runs            = new SimpleIntegerProperty(0);
         hits            = new SimpleIntegerProperty(0);
@@ -45,9 +43,7 @@ public class Hitter extends Player{
         runsBattedIn    = new SimpleIntegerProperty(0);
         stolenBases     = new SimpleIntegerProperty(0);
         battingAverage  = new DoubleBinding(){
-            {
-                super.bind(hits, atBat);
-            }
+            {super.bind(hits, atBat);}
             @Override
             protected double computeValue() {
                 if(atBat.getValue() == 0)
@@ -55,9 +51,7 @@ public class Hitter extends Player{
                 else{
                     Double ba = Double.parseDouble(new DecimalFormat("#.###").format((double)hits.getValue()/(double)atBat.getValue())); 
                     return ba;
-                }
-            }
-        };
+                }}};
         if(h!=null){
             setLastName(h.getLastName());
             setFirstName(h.getFirstName());
@@ -73,8 +67,7 @@ public class Hitter extends Player{
             
             for(int i = 0; i < h.getPositionList().size(); ++i){
                 addPosition((Position) h.getPositionList().get(i));
-            }
-            
+            }            
         }
         rRank = new SimpleIntegerProperty();
         hrRank= new SimpleIntegerProperty();
@@ -82,27 +75,17 @@ public class Hitter extends Player{
         sbRank= new SimpleIntegerProperty();
         baRank= new SimpleIntegerProperty();
         averageRank.bind(new DoubleBinding(){
-            {
-                super.bind(rRank,hrRank,rbiRank,sbRank,baRank);
-            }
+            {super.bind(rRank,hrRank,rbiRank,sbRank,baRank);}
 
             @Override
             protected double computeValue() {
-                return (rRank.get() + hrRank.get() + rbiRank.get() + sbRank.get() + baRank.get())/5;
-            }
-            
-            
-        });
-        
+                return (double)(rRank.get() + hrRank.get() + rbiRank.get() + sbRank.get() + baRank.get())/5;
+            }});
     }
     
-    public void setAtBat(int ab){
-        atBat.set(ab);
-    }
+    public void setAtBat(int ab){ atBat.set(ab);}
     
-    public int getAtBat(){
-        return atBat.get();
-    }
+    public int getAtBat(){return atBat.get();}
     
     public IntegerProperty atBatProperty(){
         return atBat;
@@ -167,17 +150,7 @@ public class Hitter extends Player{
         return new SimpleDoubleProperty(battingAverage.get());
     }
     
-    
-    public Hitter copy(Hitter h){
-        Hitter hitter = new Hitter();
-        setProTeam(h.getProTeam());
-        setLastName(h.getLastName());
-        setFirstName(h.getFirstName());
-        getPositionList().addAll(h.getPositionList());
-        
-        
-        return hitter;
-    }
+   
     
     @Override
     public void setQualifiedPositions(String pos){
@@ -214,6 +187,6 @@ public class Hitter extends Player{
     public void setBARank(int i){
         baRank .set(i);
     }
-    
+   
     
 }    

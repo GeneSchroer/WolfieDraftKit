@@ -7,6 +7,7 @@ package wdk.gui.draft_screen;
 
 import wdk.data.DraftDataManager;
 import wdk.gui.MenuScreen;
+import wdk.gui.WDK_GUI;
 
 /**
  *
@@ -16,9 +17,9 @@ public class DraftScreen implements MenuScreen{
     DraftView draftView;
     DraftController draftController;
 
-    public DraftScreen(DraftDataManager draftManager){
-        draftController = new DraftController(draftManager.getDraft());
-        draftView = new DraftView(draftController, draftManager);
+    public DraftScreen(WDK_GUI gui){
+        draftController = new DraftController(gui.getDataManager().getDraft());
+        draftView = new DraftView(draftController, gui);
     }
     public void initGUI(){
         draftView.initGUI();
@@ -38,6 +39,7 @@ public class DraftScreen implements MenuScreen{
     }
 
     public void update() {
+        draftView.update();
     }
     
 }

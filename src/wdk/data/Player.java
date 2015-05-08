@@ -7,7 +7,6 @@ package wdk.data;
 
 import java.awt.Image;
 import java.util.Comparator;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -70,19 +69,14 @@ public class Player implements Comparable {
        teamPosition = Position.NONE;
        averageRank = new SimpleDoubleProperty(0);
        estimatedValue = new SimpleDoubleProperty();
-//       estimatedValue.bind(new DoubleBinding(){
-//           
-//           {
-//               super.bind(averageRank);
-//           }
-//            @Override
-//            protected double computeValue() {
-//                return averageRank.get();
-//            }
-//        
-//    });
        
-       
+        firstName           = new SimpleStringProperty();
+        qualifiedPositions  = new SimpleStringProperty();
+        notes               = new SimpleStringProperty();
+        yearOfBirth         = new SimpleStringProperty();
+        nationOfBirth       = new SimpleStringProperty();
+        fantasyTeam         = new SimpleStringProperty();
+        fullName = "";
     }
     
 //    public Player(Player p){
@@ -345,5 +339,10 @@ public class Player implements Comparable {
     public DoubleProperty averageRankProperty(){
         return averageRank;
     }
+    
+    public double getEV(){
+        return estimatedValue.get();
+    }
+    
 }
 

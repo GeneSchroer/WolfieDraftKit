@@ -5,10 +5,32 @@
  */
 package wdk.data;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+
 /**
  *
  * @author Work
  */
+
+
+
 public class Log {
+    Player player;
+    String teamName;
+    Contract contract;
+    DoubleProperty salary;
+    
+    Log(){
+        player = new Player();
+        teamName = "";
+        contract = Contract.NONE;
+        salary = new SimpleDoubleProperty(0);
+    }
+    
+    Log(Player p, String tN, Contract c, double s){
+        this();
+        
+    }
     
 }

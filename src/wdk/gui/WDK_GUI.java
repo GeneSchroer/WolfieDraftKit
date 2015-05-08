@@ -394,7 +394,7 @@ public class WDK_GUI implements DraftDataView {
         playersScreen = new PlayersScreen(primaryStage, this, messageDialog, yesNoCancelDialog, proTeams);
         fantasyTeamsScreen = new FantasyTeamsScreen(primaryStage, this, messageDialog, yesNoCancelDialog);
         fantasyStandingsScreen = new FantasyStandingsScreen(draftDataManager);
-        draftScreen = new DraftScreen(draftDataManager);
+        draftScreen = new DraftScreen(this);
         sportScreen = new SportScreen(draftDataManager, proTeams);
         
         playersScreen.initGUI(proTeams);

@@ -21,6 +21,7 @@ import wdk.data.DraftDataManager;
 import wdk.gui.MenuView;
 import wdk.gui.StyleSheet;
 import static wdk.gui.StyleSheet.CLASS_SCREEN_BACKGROUND_PANE;
+import wdk.gui.WDK_GUI;
 import wdk.gui.draft_screen.DraftController;
 import wdk.util.MethodList;
 
@@ -42,18 +43,20 @@ public class DraftView implements MenuView {
     private Button draftBestPlayerButton;
     private Button startAutomatedDraftButton;
     private Button pauseAutomatedDraftButton;
-    private DraftController draftScreenController;
-    private final DraftController draftController;
+    private DraftController draftController;
     private final DraftDataManager draftManager;
     
     
     public DraftTable draftTable;
+    private final WDK_GUI gui;
     
     //private TeamStatsTable teamStatsTable;
     
-   public DraftView(DraftController initDraftController, DraftDataManager initDraftManager){
+   public DraftView(DraftController initDraftController, WDK_GUI gui){
+       this.gui = gui;
+       
        this.draftController = initDraftController;
-       this.draftManager = initDraftManager;        
+       this.draftManager = gui.getDataManager();
     }
 
     @Override
@@ -80,7 +83,7 @@ public class DraftView implements MenuView {
         headingLabel = MethodList.initGridLabel(topWorkspacePane, GeneralPropertyType.DRAFT_SUMMARY_LABEL, StyleSheet.CLASS_HEADING_LABEL, 0, 0, 1, 1); 
         automatedDraftBox = new FlowPane();
         draftBestPlayerButton = MethodList.initChildButton(automatedDraftBox, GeneralPropertyType.ADD_ICON, GeneralPropertyType.DRAFT_BEST_PLAYER_TOOLTIP, true);
-        startAutomatedDraftButton = MethodList.initChildButton(automatedDraftBox, GeneralPropertyType.START_ICON, GeneralPropertyType.START_AUTOMATED_DRAFT_TOOLTIP, false);
+        startAutomatedDraftButton = MethodList.initChildButton(automatedDraftBox, GeneralPropertyType.START_ICON, GeneralPropertyType.START_AUTOMATED_DRAFT_TOOLTIP, true);
         pauseAutomatedDraftButton = MethodList.initChildButton(automatedDraftBox, GeneralPropertyType.PAUSE_ICON, GeneralPropertyType.PAUSE_AUTOMATED_DRAFT_TOOLTIP, true);
         topWorkspacePane.add(automatedDraftBox, 0, 1);
     
@@ -90,6 +93,7 @@ public class DraftView implements MenuView {
     }
     
     public void reset() {
+        update();
     }
     @Override
     public void initGUI() {
@@ -100,18 +104,31 @@ public class DraftView implements MenuView {
     @Override
     public void initEventHandlers() {
         draftBestPlayerButton.setOnAction(e->{
-            draftScreenController.handleDraftBestPlayerRequest(this);
+            try {
+                draftController.handleDraftBestPlayerRequest(this.gui);
+            } catch (Exception ex) {
+                Logger.getLogger(DraftView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         startAutomatedDraftButton.setOnAction(e->{
-            draftScreenController.handleStartAutomatedDraftRequest(this);
+            draftController.handleStartAutomatedDraftRequest(this);
         });
         pauseAutomatedDraftButton.setOnAction(e->{
-            draftScreenController.handlepauseAutomatedDraftRequest(this);
+            draftController.handlepauseAutomatedDraftRequest(this);
         });
         
     }
 
-    public Object getView() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(){
+        if (draftManager.getDraft().getTeams().isEmpty()){
+            draftBestPlayerButton.setDisable(true);
+            startAutomatedDraftButton.setDisable(true);
+            pauseAutomatedDraftButton.setDisable(true);
+        }
+        else{
+            draftBestPlayerButton.setDisable(false);
+            startAutomatedDraftButton.setDisable(false);
+            pauseAutomatedDraftButton.setDisable(false);
+        }
     }
 }

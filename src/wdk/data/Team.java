@@ -57,6 +57,7 @@ public class Team {
     private int pitchers;
     private int taxi;
     private SimpleIntegerProperty totalBB;
+    private SimpleDoubleProperty totalPoints;
    
     
     public Team(){
@@ -80,7 +81,7 @@ public class Team {
         outFielders = 0;
         pitchers = 0;
         taxi = 0;
-        
+        totalPoints = new SimpleDoubleProperty();
       
     totalR = new SimpleIntegerProperty(0);
     totalHR = new SimpleIntegerProperty(0);
@@ -149,33 +150,6 @@ public class Team {
         }
         
     }
-    
-    public Team(String name, String owner, int c, int b1, int ci, int b3, int b2, int mi, int ss, int of, int u, int p, int t){
-        this.name = new SimpleStringProperty(name);
-        this.owner = new SimpleStringProperty(owner);
-        positionsList = FXCollections.observableArrayList();
-        
-        catchers = c;
-        
-        if (b1 == 1)
-            positionsList.add(Position.B1);
-        if (ci == 1)
-            positionsList.add(Position.CI);
-        if (b3 == 1)
-            positionsList.add(Position.B3);
-        if (b2 == 1)
-            positionsList.add(Position.B2);
-        if (mi == 1)
-            positionsList.add(Position.MI);
-        if (ss == 1)
-            positionsList.add(Position.SS);
-        if (u ==1)
-            positionsList.add(Position.U);
-        outFielders = of;
-        pitchers = p;
-        taxi = t;    
-    }
-    
     
     public Team(String name, String owner){
         this();
@@ -246,9 +220,7 @@ public class Team {
             return positionsList.contains(pos);
         }
         
-        
     }
-    
     private void addStartPlayer(Player p, Position pos){
          p.setFantasyTeam(getName());
             p.setTeamPosition(pos);
@@ -289,9 +261,6 @@ public class Team {
     }
     public void removePlayer(Player p) throws Exception{
         
-//        if(positionFilled(pos))
-//            throw new Exception("This position is full ");
-//        else{
             if(p.getDraftType().equals(DraftType.TAXI)){
                 --taxi;
                 p.setFantasyTeam(FREE_AGENT);
@@ -372,9 +341,6 @@ public class Team {
         totalSB.set(totalSB.get() + h.getStolenBases());
         totalHH.set(totalHH.get() + h.getHits());
         totalAB.set(totalAB.get() + h.getAtBat());
-                salaryLeft.set(salaryLeft.get() - h.getSalary());
-                
-
         }
         
         else if(p instanceof Pitcher){
@@ -386,10 +352,10 @@ public class Team {
             totalHP.set(totalHP.get() + pi.getHits());
             totalBB.set(totalBB.get() + pi.getBasesOnBalls());
             totalK.set(totalK.get() + pi.getStrikeouts());
-                    salaryLeft.set(salaryLeft.get() - pi.getSalary());
 
         }
         playersNeeded.set(playersNeeded.get() - 1);
+        salaryLeft.set(salaryLeft.get() - p.getSalary());
 
     }
   
@@ -420,10 +386,7 @@ public class Team {
                 salaryLeft.set(salaryLeft.get() + p.getSalary());
 
     }
-//    
-//    public double getTotalIP(){
-//        return totalIP.get();
-//    }
+
     
     public DoubleProperty totalWHIPProperty(){
         return totalWHIP;
@@ -471,12 +434,9 @@ public class Team {
     public DoubleProperty pointsPerPlayerProperty(){
         return pointsPerPlayer;
     }
-    
-    
     public void editTeamPlayer(Player p, DraftType newDraft, double newSalary, Contract newContract, Position newPosition){
         if(!p.getFantasyTeam().equals(name)){
             //Do Nothing
-            
         }
         else{
                 if(newDraft.equals(DraftType.TAXI)){
@@ -510,15 +470,23 @@ public class Team {
                         positionsList.add(newPosition);
                     
                     p.setTeamPosition(newPosition);
-                    
-
                 }
         }
-        
-        
     }
     public double getSalaryLeft(){
         return salaryLeft.get();
+    }
+    public boolean teamFull(){
+        return taxiSquadFilled() && startingLineupFilled();
+    }
+    
+    
+    public void setTotalPoints(double d){
+    totalPoints.set(d);
+}
+    
+    public DoubleProperty totalPointsProperty(){
+        return totalPoints;
     }
     
 }

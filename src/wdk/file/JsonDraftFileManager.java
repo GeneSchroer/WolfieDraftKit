@@ -169,7 +169,7 @@ public class JsonDraftFileManager implements DraftFileManager {
                 pitcher.setHits(jso.getInt(JSON_H));
                 pitcher.setBasesOnBalls(jso.getInt(JSON_BB));
                 pitcher.setStrikeouts(jso.getInt(JSON_K));
-                draftToLoad.addPlayer(pitcher);
+                draftToLoad.addFreePlayer(pitcher);
             }
             else{
                 Hitter hitter = new Hitter(player);
@@ -207,7 +207,7 @@ public class JsonDraftFileManager implements DraftFileManager {
                 hitter.setHomeRuns(jso.getInt(JSON_HR));
                 hitter.setRunsBattedIn(jso.getInt(JSON_RBI));
                 hitter.setStolenBases(jso.getInt(JSON_SB));
-                draftToLoad.addPlayer(hitter);
+                draftToLoad.addFreePlayer(hitter);
             }
             
         }
@@ -310,7 +310,7 @@ public class JsonDraftFileManager implements DraftFileManager {
             
             
             
-            draft.addPlayer(h);
+            draft.addFreePlayer(h);
         }
         for(int i = 0; i < jsonPitchersArray.size(); ++i){
             JsonObject jso = jsonPitchersArray.getJsonObject(i);
@@ -333,7 +333,7 @@ public class JsonDraftFileManager implements DraftFileManager {
             b.setYearOfBirth(jso.getString(JSON_YEAR_OF_BIRTH));
             b.setNationOfBirth(jso.getString(JSON_NATION_OF_BIRTH));
             
-            draft.addPlayer(b);
+            draft.addFreePlayer(b);
         }
         
         return draft;

@@ -5,10 +5,7 @@
  */
 package wdk.data;
 
-import java.text.DecimalFormat;
 import java.util.Comparator;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import static wdk.WDK_StartUpConstants.FREE_AGENT;
@@ -19,7 +16,7 @@ import static wdk.WDK_StartUpConstants.FREE_AGENT;
  */
 public class Draft {
     private ObservableList<Team> teams;
-    private ObservableList<Player> availablePlayers;
+    private ObservableList<Player> allPlayers;
     
     
    // private ObservableList<Log> draftLog;
@@ -28,7 +25,7 @@ public class Draft {
     private int totalMoney;
     public Draft(){
         teams = FXCollections.observableArrayList();
-        availablePlayers = FXCollections.observableArrayList();
+        allPlayers = FXCollections.observableArrayList();
         numTeams=0;
         draftName = "";
         totalMoney = 0;
@@ -36,16 +33,17 @@ public class Draft {
     public void addTeam(Team t){
         teams.add(t);
         ++numTeams;
+        updateEV();
     }
     public void removeTeam(String teamToRemove){
      //   Team draft = teams.c
        // teams.remove(team);
-        for(int i = 0; i < availablePlayers.size() ; ++i){
-            if(availablePlayers.get(i).getFantasyTeam().equals(teamToRemove)){
-                availablePlayers.get(i).setFantasyTeam(FREE_AGENT);
-                availablePlayers.get(i).setContract(Contract.NONE);
-                availablePlayers.get(i).setSalary(0);
-                availablePlayers.get(i).setTeamPosition(Position.NONE);
+        for(int i = 0; i < allPlayers.size() ; ++i){
+            if(allPlayers.get(i).getFantasyTeam().equals(teamToRemove)){
+                allPlayers.get(i).setFantasyTeam(FREE_AGENT);
+                allPlayers.get(i).setContract(Contract.NONE);
+                allPlayers.get(i).setSalary(0);
+                allPlayers.get(i).setTeamPosition(Position.NONE);
                 
             }
         }
@@ -54,31 +52,38 @@ public class Draft {
                 teams.remove(i);
         }
         --numTeams;
-    }
-    public void addPlayer(Player playerToAdd){
-        availablePlayers.add(playerToAdd);
         updateEV();
     }
-    public Player removePlayer(Player playerToRemove){
-        availablePlayers.remove(playerToRemove);
+    public void addFreePlayer(Player playerToAdd){
+        allPlayers.add(playerToAdd);
+        playerToAdd.setFantasyTeam(FREE_AGENT);
+        updateEV();
+    }
+    public Player removeFreePlayer(Player playerToRemove){
+        allPlayers.remove(playerToRemove);
         updateEV();
         return playerToRemove;
     }
-    public void addPlayerToTeam(Player player, Team team){
-        
+    public void addTeamPlayer(Player player, Team team, Position pos) throws Exception{
+        team.addPlayer(player, pos);
+        updateEV();
     }
-    public void removePlayerFromTeam(Player player, Team team){
-        
+    
+    public void editTeamPlayer(Player p, Team team, DraftType newDraft, double newSalary, Contract newContract, Position newPosition)
+        {
+            team.editTeamPlayer(p, newDraft, newSalary, newContract, newPosition);
+            updateEV();
+        }
+    
+    public void removeTeamPlayer(Player player, Team team) throws Exception{
+        team.removePlayer(player);
+        updateEV();
     }
     
     public ObservableList<Player> getAllPlayers(){
-        return availablePlayers;
+        return allPlayers;
     }
   
-
-    void clearTeams() {
-        teams.clear();
-    }
 
     public ObservableList<Team> getTeams() { 
         return teams;
@@ -103,13 +108,9 @@ public class Draft {
         return null;
     }
     
-    public void setAvailablePlayers(ObservableList<Player> players){
-        availablePlayers = FXCollections.observableArrayList(players);
-    }
     
     
     public ObservableList<Player> getAvailablePlayers(){
-        
          ObservableList<Player> temp = FXCollections.observableArrayList();
         for (int i = 0; i< getAllPlayers().size(); ++ i){
             Player p = getAllPlayers().get(i);
@@ -117,7 +118,6 @@ public class Draft {
                 temp.add(p);
             }
         }
-        
         return temp;
     }
     
@@ -152,21 +152,6 @@ public class Draft {
     }
     
     
-    public ObservableList<Player> getAvailablePlayers(PlayerType pT){
-        
-         ObservableList<Player> temp = FXCollections.observableArrayList(getAvailablePlayers());
-                ObservableList<Player> availablePlayers = FXCollections.observableArrayList();
-
-
-         for (int i = 0; i< temp.size(); ++ i){
-            Player p = temp.get(i);
-            if (p.getFantasyTeam().equals(FREE_AGENT) ){
-                availablePlayers.add(p);
-            }
-        }
-        
-        return availablePlayers;
-    }
     
     
     public ObservableList<Player> getTeamPlayers (Team t, DraftType d){
@@ -193,195 +178,6 @@ public class Draft {
         }
         return temp;
     }
-    
-    
-    public double getTeamStatTotal(Team t, Stat s){
-        if(s.equals(Stat.R))
-            return getTotalRuns(t).get();
-        else if (s.equals(Stat.HR))
-            return getTotalHomeRuns(t).get();
-        else if (s.equals(Stat.RBI))
-            return getTotalRunsBattedIn(t).get();
-        else if (s.equals(Stat.SB))
-            return getTotalStolenBases(t).get();
-        else if(s.equals(Stat.W))
-            return getTotalWins(t).get();
-        else if(s.equals(Stat.SV))
-            return getTotalSaves(t).get();
-        else if(s.equals(Stat.ERA))
-            return getTotalEra(t).get();
-        else if(s.equals(Stat.WHIP))
-            return getTotalWhip(t).get();
-        else if(s.equals(Stat.K))
-            return getTotalStrikeout(t).get();
-        else if(s.equals(Stat.BA))
-            return getTotalBA(t).get();
-        return -1;
-    
-    }
-    
-    
-    private SimpleIntegerProperty getTotalRuns(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getRuns();
-                    }
-                }
-                return new SimpleIntegerProperty(total);
-            }
-    
-    private SimpleIntegerProperty getTotalHomeRuns(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getHomeRuns();
-                    }
-                }
-                return new SimpleIntegerProperty(total);
-            }
-    
-    private SimpleIntegerProperty getTotalRunsBattedIn(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getRunsBattedIn();
-                    }
-                }
-                return new SimpleIntegerProperty(total);
-            }
-    
-    private SimpleIntegerProperty getTotalStolenBases(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t, DraftType.STARTING);
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getStolenBases();
-                    }
-                }
-                return new SimpleIntegerProperty(total);
-            }
-    
-    private SimpleIntegerProperty getTotalWins(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher p;
-                    if(temp.get(i) instanceof Pitcher){
-                        p = (Pitcher)temp.get(i);
-                        total += p.getWins();
-                    }
-                }
-                return new SimpleIntegerProperty(total);
-            }
-    
-    private SimpleIntegerProperty getTotalSaves(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher h;
-                    if(temp.get(i) instanceof Pitcher){
-                        h = (Pitcher)temp.get(i);
-                        total += h.getSaves();
-                    }
-                }
-                return new SimpleIntegerProperty(total);
-            }
-    private SimpleDoubleProperty getTotalEra(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int er = 0;
-                int ip = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher p;
-                    if(temp.get(i) instanceof Pitcher){
-                        p = (Pitcher)temp.get(i);
-                        er += p.getEarnedRuns();
-                        ip += p.getInningsPitched();
-                    }
-                }
-                if(ip == 0)
-                    return new SimpleDoubleProperty(0);
-                else{
-                    double era = Double.parseDouble((new DecimalFormat("#.000").format(9*(er/ip))));
-                    return new SimpleDoubleProperty(era);
-            }
-    }
-    private SimpleDoubleProperty getTotalWhip(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int bb = 0;
-                int h = 0;
-                int ip = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher p;
-                    if(temp.get(i) instanceof Pitcher){
-                        p = (Pitcher)temp.get(i);
-                        bb += p.getBasesOnBalls();
-                        h += p.getHits();
-                        ip += p.getInningsPitched();
-                    }
-                }
-                if(ip == 0)
-                    return new SimpleDoubleProperty(0);
-                else{
-                    double whip = Double.parseDouble((new DecimalFormat("#.000").format(( (bb + h) / ip ) ) ) );
-                    return new SimpleDoubleProperty(whip);
-                }
-        }
-    private SimpleDoubleProperty getTotalBA(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int hit = 0;
-                int ab = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        hit += h.getHits();
-                        ab += h.getAtBat();
-                    }
-                }
-                if(ab == 0)
-                    return new SimpleDoubleProperty(0);
-                else{
-                double ba = Double.parseDouble((new DecimalFormat("#.000").format( hit / ab ) ) );
-                return new SimpleDoubleProperty(ba);
-            }
-    }
-    
-    
-    
-    private SimpleIntegerProperty getTotalStrikeout(Team t){
-        
-                 ObservableList<Player> temp = getTeamPlayers(t);
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher h;
-                    if(temp.get(i) instanceof Pitcher){
-                        h = (Pitcher)temp.get(i);
-                        total += h.getStrikeouts();
-                    }
-                }
-                return new SimpleIntegerProperty(total);
-            }
 
     private void updateTotalMoney() {
         
@@ -393,8 +189,6 @@ public class Draft {
               totalMoney+=teamList.get(i).getSalaryLeft();
        }
     }
-    
-    
     
     public enum Stat{
         R,
@@ -408,27 +202,22 @@ public class Draft {
         BA,
         K
         
-        
-        
-        
-        
     }
-    
-    public enum PlayerType{
-        HITTER,
-        PITCHER
-    }
+  
     
     public void updateEV(){
         updateTotalMoney();
         updateRank();
-        
+        updateTotalPoints();
 //        ObservableList<Hitter> hitterList = getAvailableHitters();
 //        ObservableList<Pitcher> pitcherList = getAvailablePitchers();
         ObservableList<Player> playerList = getAvailablePlayers();
         for(int i = 0; i< playerList.size(); ++i){
             Player p = playerList.get(i);
-            p.setEV((totalMoney/p.getAverageRank()));
+            if(p.getAverageRank() == 0)
+                p.setEV(0);
+            else
+                p.setEV((totalMoney/p.getAverageRank()));
             
        }
     }
@@ -439,12 +228,9 @@ public class Draft {
 
             @Override
             public int compare(Hitter o1, Hitter o2) {
-                if(o1.getRuns()<o2.getRuns())
-                    return -1;
-                else if (o1.getRuns() > o2.getRuns())
-                    return 1;
-                else
-                    return 0;
+                Integer i1 = o1.getRuns();
+                Integer i2 = o2.getRuns();
+                return -(i1.compareTo(i2));
             }
          });
        for(int i = 0; i< hitterList.size(); ++i){
@@ -455,12 +241,9 @@ public class Draft {
 
             @Override
             public int compare(Hitter o1, Hitter o2) {
-                if(o1.getHomeRuns()<o2.getHomeRuns())
-                    return -1;
-                else if (o1.getHomeRuns() > o2.getHomeRuns())
-                    return 1;
-                else
-                    return 0;
+                Integer i1 = o1.getHomeRuns();
+                Integer i2 = o2.getHomeRuns();
+                return -( i1.compareTo(i2));
             }
          });
        for(int i = 0; i< hitterList.size(); ++i){
@@ -468,17 +251,15 @@ public class Draft {
            h.setHRRank(i);
        }
          hitterList.sort(new Comparator<Hitter>(){
-
             @Override
             public int compare(Hitter o1, Hitter o2) {
-                if(o1.getRunsBattedIn()<o2.getRunsBattedIn())
-                    return -1;
-                else if (o1.getRunsBattedIn() > o2.getRunsBattedIn())
-                    return 1;
-                else
-                    return 0;
+                Integer i1 = o1.getRunsBattedIn();
+                Integer i2 = o2.getRunsBattedIn();
+                return -(i1.compareTo(i2));
             }
          });
+         
+         
        for(int i = 0; i< hitterList.size(); ++i){
            Hitter h = hitterList.get(i);
            h.setRBIRank(i);
@@ -487,12 +268,9 @@ public class Draft {
 
             @Override
             public int compare(Hitter o1, Hitter o2) {
-                if(o1.getStolenBases()<o2.getStolenBases())
-                    return -1;
-                else if (o1.getStolenBases() > o2.getStolenBases())
-                    return 1;
-                else
-                    return 0;
+            Integer i1 = o1.getStolenBases();
+                Integer i2 = o2.getStolenBases();
+                return -(i1.compareTo(i2)); 
             }
          });
        for(int i = 0; i< hitterList.size(); ++i){
@@ -503,12 +281,9 @@ public class Draft {
 
             @Override
             public int compare(Hitter o1, Hitter o2) {
-                if(o1.battingAverageProperty().get()<o2.battingAverageProperty().get())
-                    return -1;
-                else if (o1.battingAverageProperty().get()> o2.battingAverageProperty().get())
-                    return 1;
-                else
-                    return 0;
+                Double i1 = o1.battingAverageProperty().get();
+                Double i2 = o2.battingAverageProperty().get();
+                return -(i1.compareTo(i2));
             }
          });
        for(int i = 0; i< hitterList.size(); ++i){
@@ -523,12 +298,9 @@ public class Draft {
 
             @Override
             public int compare(Pitcher o1, Pitcher o2) {
-                if(o1.getWins()<o2.getWins())
-                    return -1;
-                else if (o1.getWins() > o2.getWins())
-                    return 1;
-                else
-                    return 0;
+                Integer i1 = o1.getWins();
+                Integer i2 = o2.getWins();
+                return -(i1.compareTo(i2));
             }
          });
        for(int i = 0; i< pitcherList.size(); ++i){
@@ -539,12 +311,9 @@ public class Draft {
 
             @Override
             public int compare(Pitcher o1, Pitcher o2) {
-                if(o1.getSaves()<o2.getSaves())
-                    return -1;
-                else if (o1.getWins() > o2.getWins())
-                    return 1;
-                else
-                    return 0;
+                 Integer i1 = o1.getSaves();
+                Integer i2 = o2.getSaves();
+                return -(i1.compareTo(i2));
             }
          });
        for(int i = 0; i< pitcherList.size(); ++i){
@@ -555,12 +324,9 @@ public class Draft {
 
             @Override
             public int compare(Pitcher o1, Pitcher o2) {
-                if(o1.getStrikeouts()<o2.getStrikeouts())
-                    return -1;
-                else if (o1.getStrikeouts() > o2.getStrikeouts())
-                    return 1;
-                else
-                    return 0;
+                Integer i1 = o1.getStrikeouts();
+                Integer i2 = o2.getStrikeouts();
+                return -(i1.compareTo(i2));
             }
          });
        for(int i = 0; i< pitcherList.size(); ++i){
@@ -571,12 +337,9 @@ public class Draft {
 
             @Override
             public int compare(Pitcher o1, Pitcher o2) {
-                if(o1.estimatedValueProperty().get()<o2.estimatedValueProperty().get())
-                    return -1;
-                else if (o1.estimatedValueProperty().get() > o2.estimatedValueProperty().get())
-                    return 1;
-                else
-                    return 0;
+                Double i1 = o1.earnedRunAverageProperty().get();
+                Double i2 = o2.earnedRunAverageProperty().get();
+                return (i1.compareTo(i2));
             }
          });
        for(int i = 0; i< pitcherList.size(); ++i){
@@ -587,12 +350,9 @@ public class Draft {
 
             @Override
             public int compare(Pitcher o1, Pitcher o2) {
-                if(o1.whipProperty().get()<o2.whipProperty().get())
-                    return -1;
-                else if (o1.whipProperty().get()> o2.whipProperty().get())
-                    return 1;
-                else
-                    return 0;
+                Double i1 = o1.whipProperty().get();
+                Double i2 = o2.whipProperty().get();
+                return (i1.compareTo(i2));
             }
          });
        for(int i = 0; i< pitcherList.size(); ++i){
@@ -601,17 +361,137 @@ public class Draft {
        }
        
        
+    }
+    
+    public void updateTotalPoints(){
+        
        
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
+                for(int z = 0; z<teams.size(); ++z){
+                    Team currentTeam = teams.get(z);
+                    double totalPoints = 0;
+                    ObservableList<Player> temp = getTeamPlayers(currentTeam);
+
+
+
+
+                    int yourR       = currentTeam.totalRProperty().get();
+                    int yourHR      = currentTeam.totalHRProperty().get();
+                    int yourRBI     = currentTeam.totalRBIProperty().get();
+                    int yourSB      = currentTeam.totalSBProperty().get();
+                    int yourW       = currentTeam.totalWProperty().get();                
+                    int yourSV      = currentTeam.totalSVProperty().get();
+                    double yourERA  = currentTeam.totalERAProperty().get();
+                    double yourWHIP = currentTeam.totalWHIPProperty().get();
+                    int yourK       = currentTeam.totalKProperty().get();
+                    double yourBA   = currentTeam.totalBAProperty().get();
+
+                    int equalR      = 1;
+                    int equalHR     = 1;
+                    int equalRBI    = 1;
+                    int equalSB     = 1;
+                    int equalW      = 1;
+                    int equalSV     = 1;
+                    int equalERA    = 1;
+                    int equalWHIP   = 1;
+                    int equalK      = 1;
+                    int equalBA     = 1;
+
+                    double pointsFromR = teams.size();
+                    double pointsFromHR = teams.size();
+                    double pointsFromRBI = teams.size();
+                    double pointsFromSB = teams.size();
+                    double pointsFromW = teams.size();
+                    double pointsFromSV = teams.size();
+                    double pointsFromERA= teams.size();
+                    double pointsFromWHIP = teams.size();
+                    double pointsFromK = teams.size();
+                    double pointsFromBA = teams.size();
+
+                    for(int i = 0; i < teams.size(); ++i){
+
+                        if(teams.get(i) != currentTeam){
+    //
+                        int theirR      = teams.get(i).totalRProperty().get();
+                    int theirHR     = teams.get(i).totalHRProperty().get();
+                    int theirRBI    = teams.get(i).totalRBIProperty().get();
+                    int theirSB     = teams.get(i).totalSBProperty().get();
+                    int theirW      = teams.get(i).totalWProperty().get();
+                    int theirSV     = teams.get(i).totalSVProperty().get();
+                    double theirERA = teams.get(i).totalERAProperty().get();
+                    double theirWHIP = teams.get(i).totalWHIPProperty().get();
+                    int theirK      = teams.get(i).totalKProperty().get();
+                    double theirBA  = teams.get(i).totalBAProperty().get();
+                    
+                    if(theirR>yourR)
+                        --pointsFromR;
+                    else if(theirR == yourR)
+                        ++equalR;
+                    if(theirHR > yourHR)
+                        --pointsFromHR;
+                    else if(theirHR == yourHR)
+                        ++equalHR;
+                    if(theirRBI>yourRBI)
+                        --pointsFromRBI;
+                    else if(theirRBI == yourRBI)
+                        ++equalRBI;
+                    if(theirSB>yourSB)
+                        --pointsFromSB;
+                    else if(theirSB == yourSB)
+                        ++equalSB;
+                    if(theirW>yourW)
+                        --pointsFromW;
+                    else if(theirW == yourW)
+                        ++equalW;
+                    if(theirSV>yourSV)
+                        --pointsFromSV;
+                    else if(theirSV == yourSV)
+                        ++equalSV;
+                    if(theirERA>yourERA)
+                        --pointsFromERA;
+                    else if(theirERA == yourERA)
+                        ++equalERA;
+                    if(theirWHIP>yourWHIP)
+                        --pointsFromWHIP;
+                    else if(theirWHIP == yourWHIP)
+                        ++equalWHIP;
+                    if(theirK>yourK)
+                        --pointsFromK;
+                    else if(theirK == yourK)
+                        ++equalK;
+                    if(theirBA>yourBA)
+                        --pointsFromBA;
+                    else if(theirBA == yourBA)
+                        ++equalBA;
+                    }
+                }
+                totalPoints += (pointsFromR/equalR);
+                totalPoints += (pointsFromHR/equalHR);
+                totalPoints += (pointsFromRBI/equalRBI);
+                totalPoints += (pointsFromSB/equalSB);
+                totalPoints += (pointsFromW/equalW);
+                totalPoints += (pointsFromSV/equalSV);
+                totalPoints += (pointsFromERA/equalERA);
+                totalPoints += (pointsFromWHIP/equalWHIP);
+                totalPoints += (pointsFromK/equalK);
+                totalPoints += (pointsFromBA/equalBA);
+                currentTeam.setTotalPoints(totalPoints);
+            }
+                //Buckle up kids!
+                 
     }
 }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+

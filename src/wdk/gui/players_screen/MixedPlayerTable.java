@@ -22,6 +22,7 @@ import static wdk.WDK_StartUpConstants.FREE_AGENT;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
 import wdk.data.Player;
+import wdk.data.PlayerComparator;
 import wdk.data.Position;
 
 /**
@@ -222,6 +223,8 @@ public class MixedPlayerTable {
                         playerTable.getItems().add(playerList.get(i));
                 }
         }
+                playerTable.getItems().sort(new PlayerComparator());
+
     }
     
     public void setTable(List<Player> players){       

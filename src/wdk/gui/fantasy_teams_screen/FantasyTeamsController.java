@@ -57,6 +57,7 @@ public class FantasyTeamsController {
                 Team team = td.getTeam();
                 draft.addTeam(team);
 
+                draft.updateEV();
                 gui.updateGUI(false);
             }
             else{
@@ -73,7 +74,7 @@ public class FantasyTeamsController {
         if (selection.equals(YesNoCancelDialog.YES)) { 
             Draft draft = gui.getDataManager().getDraft();
             draft.removeTeam(teamToRemove);
-            
+            draft.updateEV();
             gui.updateGUI(false);
         }        
     }
@@ -116,21 +117,22 @@ public class FantasyTeamsController {
             if(pd.getTeamName().equals(FREE_AGENT)){
                 if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
                     team = draft.getTeam(playerToEdit.getFantasyTeam());
-                    team.editTeamPlayer(playerToEdit, pd.getDraftType(), pd.getSalary(), pd.getContract(), pd.getPosition());
+                    draft.removeTeamPlayer(playerToEdit, team);
                 }
             }
             else{
             // UPDATE THE SCHEDULE ITEM
                 if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
                     team = draft.getTeam(playerToEdit.getFantasyTeam());
-                    team.removePlayer(playerToEdit);
+                    draft.editTeamPlayer(playerToEdit, team, pd.getDraftType(), pd.getSalary(), pd.getContract(), pd.getPosition());
+
                 } 
                 Player player = pd.getPlayer();
                 
                       playerToEdit.setContract(pd.getContract());
                     playerToEdit.setSalary(pd.getSalary());
                     team = pd.getTeam();
-                    team.addPlayer(playerToEdit, pd.getPosition());
+                    draft.addTeamPlayer(playerToEdit, team, pd.getPosition());
                     
                     
                 
@@ -141,6 +143,7 @@ public class FantasyTeamsController {
             //Update the Toolbar, because this is not saved.
             
             }
+            draft.updateEV();
             gui.updateGUI(false);
         }
         else {

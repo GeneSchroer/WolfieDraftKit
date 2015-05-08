@@ -34,7 +34,7 @@ import javafx.beans.property.SimpleIntegerProperty;
        this(null);
     }
     public Pitcher(Player p){
-        
+        super();
         inningsPitched  = new SimpleDoubleProperty(0);
         earnedRuns      = new SimpleIntegerProperty(0);
         wins            = new SimpleIntegerProperty(0);

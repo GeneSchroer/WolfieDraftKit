@@ -16,8 +16,10 @@ import javafx.collections.ObservableList;
 import properties_manager.PropertiesManager;
 import static wdk.GeneralPropertyType.REMOVE_PLAYER_MESSAGE;
 import static wdk.WDK_StartUpConstants.FREE_AGENT;
+import wdk.data.Contract;
 import wdk.data.Draft;
 import wdk.data.DraftDataManager;
+import wdk.data.DraftType;
 import wdk.data.Hitter;
 import wdk.data.Pitcher;
 import wdk.data.Position;
@@ -64,17 +66,12 @@ public class PlayersController {
             
             if(pd.getPlayer().getPositionList().contains(Position.P)){
                 Pitcher p = new Pitcher(temp);
-                p.setFantasyTeam(FREE_AGENT);
-                draft.addPlayer(p);
+                draft.addFreePlayer(p);
             }
             else{
                 Hitter p = new Hitter(temp);
-                p.setFantasyTeam(FREE_AGENT);
-                draft.addPlayer(p);
+                draft.addFreePlayer(p);
             }
-            
-            
-            
             gui.updateGUI(false);
         }
         else{
@@ -87,7 +84,7 @@ public class PlayersController {
         String selection = yesNoCancelDialog.getSelection();
         
         if (selection.equals(YesNoCancelDialog.YES)) { 
-            gui.getDataManager().getDraft().removePlayer(playerToRemove);
+            gui.getDataManager().getDraft().removeFreePlayer(playerToRemove);
             //Update the Toolbar, because this is not saved.
             gui.updateGUI(false);
         }        
@@ -111,25 +108,21 @@ public class PlayersController {
             if(pd.getTeamName().equals(FREE_AGENT)){
                 if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
                     team = draft.getTeam(playerToEdit.getFantasyTeam());
-                    team.removePlayer(playerToEdit);
+                    draft.removeTeamPlayer(playerToEdit, team);
                 }
             }
             else{
             // UPDATE THE SCHEDULE ITEM
                 if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
                     team = draft.getTeam(playerToEdit.getFantasyTeam());
-                    team.editTeamPlayer(playerToEdit, pd.getDraftType(), pd.getSalary(), pd.getContract(), pd.getPosition());
+                    draft.editTeamPlayer(playerToEdit, team, pd.getDraftType(), pd.getSalary(), pd.getContract(), pd.getPosition());
                 } 
                 Player player = pd.getPlayer();
                     
                     playerToEdit.setContract(pd.getContract());
                     playerToEdit.setSalary(pd.getSalary());
                     team = pd.getTeam();
-                    team.addPlayer(playerToEdit, pd.getPosition());
-                
-                
-            
-            
+                    draft.addTeamPlayer(playerToEdit, team, pd.getPosition());
             
             //Update the Toolbar, because this is not saved.
             gui.updateGUI(false);

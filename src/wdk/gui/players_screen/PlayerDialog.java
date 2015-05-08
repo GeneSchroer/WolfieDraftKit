@@ -59,14 +59,10 @@ public class PlayerDialog extends Stage{
     private Team currentTeam;
     private Position currentPosition;
     private String teamName;
-    private String positionString;
     private Contract contract;
     private Double salary;
     private DraftType draftType;
 
-    
-
-  
     
     
 
@@ -112,12 +108,6 @@ public class PlayerDialog extends Stage{
     ComboBox contractComboBox;
     Label salaryLabel;
     TextField salaryTextField;
-            
-            
-    
-    
-    
-    
     
             
     Button completeButton;
@@ -154,13 +144,10 @@ public class PlayerDialog extends Stage{
         
         currentTeam = new Team();
         currentPosition = null;
-        positionString = "";
         
         teamList = FXCollections.observableArrayList();
         initModality(Modality.WINDOW_MODAL);
         initOwner(primaryStage);
-        
-        qp = 0;
         
         // FIRST OUR CONTAINER
         gridPane = new GridPane();
@@ -324,8 +311,6 @@ public class PlayerDialog extends Stage{
         });
         
         
-        
-        
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         String imagePath = "file:" + PATH_PLAYERS + props.getProperty(GeneralPropertyType.BLANK_IMAGE);
         playerImage = new Image(imagePath);
@@ -354,7 +339,7 @@ public class PlayerDialog extends Stage{
         positionComboBox.setOnAction(e->{
             if(trigger)
                 if(!fantasyTeamComboBox.getSelectionModel().isEmpty())
-                    convertToPosition(String.valueOf(positionComboBox.getSelectionModel().getSelectedItem()));
+                  currentPosition = (Position) positionComboBox.getSelectionModel().getSelectedItem();
                     
         });
         
@@ -526,7 +511,6 @@ public class PlayerDialog extends Stage{
         
         
         
-        //MethodList.loadComboBox(fantasyTeamComboBox, teamList);
         
         
         
@@ -605,17 +589,7 @@ public class PlayerDialog extends Stage{
         
             
     }
-    public Team getTeam(){
-        return currentTeam;
-    }
-    public Position getPosition(){
-        return currentPosition;
-    }
-    
-    public Player getPlayer() {
-        return player;
-    }
-
+  
     private void uncheckPositions() {
         catcherCheckBox.setSelected(false);
         firstBasemanCheckBox.setSelected(false);
@@ -691,29 +665,6 @@ public class PlayerDialog extends Stage{
         }
     }
     
-      private void convertToPosition(String string) {
-        if (string.equals("C"))
-            currentPosition = Position.C;
-        if (string.equals("1B"))
-            currentPosition = Position.B1;
-        if (string.equals("CI"))
-            currentPosition = Position.CI;
-        if (string.equals("3B"))
-            currentPosition = Position.B3;
-        if (string.equals("2B"))
-            currentPosition = Position.B2;
-        if (string.equals("MI"))
-            currentPosition = Position.MI;
-        if (string.equals("SS"))
-            currentPosition = Position.SS;
-        if (string.equals("OF"))
-            currentPosition = Position.OF;
-        if (string.equals("U"))
-            currentPosition = Position.U;
-        if (string.equals("P"))
-            currentPosition = Position.P;
-    }
-
       public DraftType getDraftType(){
           return draftType;
       }
@@ -726,4 +677,15 @@ public class PlayerDialog extends Stage{
       public Double getSalary(){
               return salary;
       }
+        public Team getTeam(){
+        return currentTeam;
+    }
+    public Position getPosition(){
+        return currentPosition;
+    }
+    
+    public Player getPlayer() {
+        return player;
+    }
+
 }
