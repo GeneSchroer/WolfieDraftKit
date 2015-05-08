@@ -53,10 +53,15 @@ public class FantasyTeamsController {
         }
         else{
             td.showAddTeamDialog();
-            Team team = td.getTeam();
-            draft.addTeam(team);
-       
-            gui.updateGUI(false);
+            if(td.wasCompleteSelected()){
+                Team team = td.getTeam();
+                draft.addTeam(team);
+
+                gui.updateGUI(false);
+            }
+            else{
+                
+            }
         }
 
     }
@@ -111,7 +116,7 @@ public class FantasyTeamsController {
             if(pd.getTeamName().equals(FREE_AGENT)){
                 if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
                     team = draft.getTeam(playerToEdit.getFantasyTeam());
-                    team.removePlayer(playerToEdit);
+                    team.editTeamPlayer(playerToEdit, pd.getDraftType(), pd.getSalary(), pd.getContract(), pd.getPosition());
                 }
             }
             else{
@@ -121,10 +126,12 @@ public class FantasyTeamsController {
                     team.removePlayer(playerToEdit);
                 } 
                 Player player = pd.getPlayer();
+                
+                      playerToEdit.setContract(pd.getContract());
+                    playerToEdit.setSalary(pd.getSalary());
                     team = pd.getTeam();
                     team.addPlayer(playerToEdit, pd.getPosition());
-                    playerToEdit.setContract(pd.getContract());
-                    playerToEdit.setSalary(player.getSalary());
+                    
                     
                 
                 
@@ -134,12 +141,13 @@ public class FantasyTeamsController {
             //Update the Toolbar, because this is not saved.
             
             }
+            gui.updateGUI(false);
         }
         else {
             // THE USER MUST HAVE PRESSED CANCEL, SO
             // WE DO NOTHING
         }   
-        gui.updateGUI(false);
+        
     }
      public ArrayList<String> getTeamNames(Draft d){
         ObservableList<Team> temp = d.getTeams();

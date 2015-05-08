@@ -118,14 +118,14 @@ public class PlayersController {
             // UPDATE THE SCHEDULE ITEM
                 if(!playerToEdit.getFantasyTeam().equals(FREE_AGENT)){
                     team = draft.getTeam(playerToEdit.getFantasyTeam());
-                    team.removePlayer(playerToEdit);
+                    team.editTeamPlayer(playerToEdit, pd.getDraftType(), pd.getSalary(), pd.getContract(), pd.getPosition());
                 } 
                 Player player = pd.getPlayer();
+                    
+                    playerToEdit.setContract(pd.getContract());
+                    playerToEdit.setSalary(pd.getSalary());
                     team = pd.getTeam();
                     team.addPlayer(playerToEdit, pd.getPosition());
-                    playerToEdit.setContract(pd.getContract());
-                    playerToEdit.setSalary(player.getSalary());
-                    
                 
                 
             

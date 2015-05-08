@@ -376,15 +376,17 @@ public class PlayerDialog extends Stage{
 
         salaryTextField = new TextField();
         salaryTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!Character.isDigit(newValue.charAt(newValue.length()-1)))
+           if(!newValue.isEmpty())
+            if(!Character.isDigit(newValue.charAt(newValue.length()-1)) && (newValue.charAt(newValue.length()-1) != '.'))
             {
                 messageDialog.show("This is not a number!");
                 salaryTextField.setText(oldValue);
             }
             else
                 salary = Double.parseDouble(newValue);
-        });
+     //  });
         
+        });
         
         
         // AND FINALLY, THE BUTTONS
@@ -720,5 +722,8 @@ public class PlayerDialog extends Stage{
       }
       public String getTeamName(){
           return teamName;
+      }
+      public Double getSalary(){
+              return salary;
       }
 }

@@ -32,7 +32,7 @@ public class TeamStatsTable {
     private TableColumn playersNeededColumn;
     private TableColumn moneyLeftColumn;
     private TableColumn perPlayerColumn;
-    private TableColumn totalRunsColumn;
+    private TableColumn<Team, Integer> totalRunsColumn;
     private TableColumn totalHomeRunsColumn;
     private TableColumn totalRunsBattedInColumn;
     private TableColumn totalStolenBasesColumn;
@@ -44,7 +44,6 @@ public class TeamStatsTable {
     Draft draft;
     private TableColumn totalStrikeoutsColumn;
     private TableColumn totalBattingAverageColumn;
-    private Callback playersNeeded;
     
     
     
@@ -76,206 +75,41 @@ public TeamStatsTable(Draft draft){
         totalBattingAverageColumn   = new TableColumn("BA");
         totalPointsColumn           = new TableColumn("Total Points");
         
-        playersNeeded = new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-
-          
-
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                IntegerProperty p = new SimpleIntegerProperty(23 - draft.getTeamPlayers(param.getValue()).size());
-                return p.asObject();
-            }
-            
-        };
+      
         
         
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<Team, String>("name"));
-        playersNeededColumn.setCellValueFactory(playersNeeded);
+        playersNeededColumn.setCellValueFactory(new PropertyValueFactory<Team, String>("playersNeeded"));
        
-        moneyLeftColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Player p;
-                        p = temp.get(i);
-                        total += p.getSalary();
-                }
-                return new SimpleIntegerProperty(260 - total).asObject();
-            }
-        });
-        perPlayerColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Double>, ObservableValue<Double>>(){
-            @Override
-            public ObservableValue<Double> call(TableColumn.CellDataFeatures<Team, Double> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                if(temp.isEmpty())
-                    return new SimpleDoubleProperty(0).asObject();
-                else{
-                    double total = 0;
-                    for(int i = 0; i < temp.size() ; ++i){
-                        Player p;
-                            p = temp.get(i);
-                            total += p.getSalary();
-                        }
-                    DecimalFormat df = new DecimalFormat("#.00");
-                    double pp = Double.valueOf(new DecimalFormat("#.00").format((260-total)/temp.size()));
-                    return new SimpleDoubleProperty(pp).asObject();
-                }
-            }
-        });
+        moneyLeftColumn.setCellValueFactory(new PropertyValueFactory<Team, Double>("salaryLeft"));
+        perPlayerColumn.setCellValueFactory(new PropertyValueFactory<Team, Double>("pointsPerPlayer"));
         
-        
-         totalRunsColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
+        totalRunsColumn.setCellValueFactory(new PropertyValueFactory<Team, Integer>("totalR"));
+        totalHomeRunsColumn.setCellValueFactory(new PropertyValueFactory<Team, Integer>("totalHR"));
+        totalRunsBattedInColumn.setCellValueFactory(new PropertyValueFactory<Team, Integer>("totalRBI"));
+        totalStolenBasesColumn.setCellValueFactory(new PropertyValueFactory<Team, Integer>("totalSB"));                
+        totalWinsColumn.setCellValueFactory(new PropertyValueFactory<Team, Integer>("totalW"));
+        totalSavesColumn.setCellValueFactory(new PropertyValueFactory<Team, Integer>("totalSV"));
+        totalEraColumn.setCellValueFactory(new PropertyValueFactory<Team, Double>("totalERA"));
                 
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getRuns();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        totalHomeRunsColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
+        totalWhipColumn.setCellValueFactory(new PropertyValueFactory<Team, Double>("totalWHIP"));
                 
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getHomeRuns();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        totalRunsBattedInColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-                
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getRunsBattedIn();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        totalStolenBasesColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-                
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Hitter h;
-                    if(temp.get(i) instanceof Hitter){
-                        h = (Hitter)temp.get(i);
-                        total += h.getStolenBases();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        totalWinsColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-                
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher p;
-                    if(temp.get(i) instanceof Pitcher){
-                        p = (Pitcher)temp.get(i);
-                        total += p.getWins();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        totalSavesColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-                
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher p;
-                    if(temp.get(i) instanceof Pitcher){
-                        p = (Pitcher)temp.get(i);
-                        total += p.getSaves();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        totalEraColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-                
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher p;
-                    if(temp.get(i) instanceof Pitcher){
-                        p = (Pitcher)temp.get(i);
-                        total += p.earnedRunAverageProperty().get();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        totalWhipColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-                
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
-                int total = 0;
-                for(int i = 0; i < temp.size() ; ++i){
-                    Pitcher p;
-                    if(temp.get(i) instanceof Pitcher){
-                        p = (Pitcher)temp.get(i);
-                        total += p.whipProperty().get();
-                    }
-                }
-                return new SimpleIntegerProperty(total).asObject();
-            }
-            
-        });
-        
-    totalPointsColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Double>, ObservableValue<Double>>(){
+        totalPointsColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Double>, ObservableValue<Double>>(){
             @Override
             public ObservableValue<Double> call(TableColumn.CellDataFeatures<Team, Double> param) {
                 ObservableList<Team> teams = param.getTableView().getItems();
                 double totalPoints = 0;
                 ObservableList<Player> temp = draft.getTeamPlayers(param.getValue());
                 
-                int yourR = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.R);
-                int yourHR = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.HR);
-                int yourRBI = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.RBI);
-                int yourSB = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.SB);
-                int yourW = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.W);
-                int yourSV = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.SV);
+                
+                
+                
+                int yourR = param.getValue().totalRProperty().get();
+                int yourHR = param.getValue().totalHRProperty().get();
+                int yourRBI = param.getValue().totalRBIProperty().get();
+                int yourSB = param.getValue().totalSBProperty().get();
+                int yourW = param.getValue().totalWProperty().get();                
+                int yourSV = param.getValue().totalSVProperty().get();
                 double yourERA = draft.getTeamStatTotal(param.getValue(), Draft.Stat.ERA);
                 double yourWHIP = draft.getTeamStatTotal(param.getValue(), Draft.Stat.WHIP);
                 int yourK = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.K);
@@ -376,24 +210,9 @@ public TeamStatsTable(Draft draft){
                  
     });
 
-        totalStrikeoutsColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Integer>, ObservableValue<Integer>>(){
-
-            @Override
-            public ObservableValue<Integer> call(TableColumn.CellDataFeatures<Team, Integer> param) {
-                int k = (int) draft.getTeamStatTotal(param.getValue(), Draft.Stat.K);
-                return new SimpleIntegerProperty(k).asObject();
-            }
+        totalStrikeoutsColumn.setCellValueFactory(new PropertyValueFactory<Team, Double>("totalK"));
+        totalBattingAverageColumn.setCellValueFactory(new PropertyValueFactory<Team, Double>("totalBA"));
             
-        });
-        totalBattingAverageColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Team, Double>, ObservableValue<Double>>(){
-
-            @Override
-            public ObservableValue<Double> call(TableColumn.CellDataFeatures<Team, Double> param) {
-                double ba =  draft.getTeamStatTotal(param.getValue(), Draft.Stat.BA);
-                return new SimpleDoubleProperty(ba).asObject();
-            }
-            
-        });
         
         teamsTable.setEditable(true);
         teamsTable.getColumns().add(teamNameColumn);
@@ -422,6 +241,8 @@ public TeamStatsTable(Draft draft){
     
     
     public void setTable(){       
+        //teamsTable.getItems().clear();
+                teamsTable.setItems(draft.getTeams());
 
     }
     public TableView<Team> getTable(){

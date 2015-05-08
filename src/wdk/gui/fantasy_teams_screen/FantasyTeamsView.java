@@ -235,8 +235,8 @@ public class FantasyTeamsView implements MenuView{
             MethodList.loadComboBox(selectTeamComboBox, temp);
             
         selectTeamComboBox.getSelectionModel().selectFirst();
-        if(current!=null)    
-        for(int i = 0 ; i< temp.size() ; ++i){
+        if(current != null)
+            for(int i = 0 ; i< temp.size() ; ++i){
             if(temp.get(i).equals(current)){
                 selectTeamComboBox.getSelectionModel().select(current);
                 break;

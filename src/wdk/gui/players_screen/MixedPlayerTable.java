@@ -51,7 +51,7 @@ public class MixedPlayerTable {
     }
 // NOW SETUP THE TABLE COLUMNS
     private void initTable() {    
-        playerTable                         = new TableView<Player>();
+        playerTable                         = new TableView();
         firstNameColumn                     = new TableColumn("First");
         lastNameColumn                      = new TableColumn("Last");
         proTeamColumn                       = new TableColumn("Pro Team");
@@ -203,6 +203,9 @@ public class MixedPlayerTable {
         for(int i = 0; i < playerList.size(); ++i){
             String ln = playerList.get(i).getLastName();
             String fn = playerList.get(i).getFirstName();
+            
+            
+            
             
             if(p == null){
                 if( (ln.toLowerCase().startsWith(sp.toLowerCase())

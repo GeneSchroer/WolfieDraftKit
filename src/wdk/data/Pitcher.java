@@ -25,6 +25,11 @@ import javafx.beans.property.SimpleIntegerProperty;
     IntegerProperty strikeouts;
     DoubleBinding   whip;
     private final DoubleBinding earnedRunAverage;
+    private IntegerProperty whipRank;
+    private IntegerProperty eraRank;
+    private IntegerProperty kRank;
+    private IntegerProperty svRank;
+    private IntegerProperty wRank;
     public Pitcher(){
        this(null);
     }
@@ -85,6 +90,27 @@ import javafx.beans.property.SimpleIntegerProperty;
             }
             
         }
+        
+        
+        
+        wRank = new SimpleIntegerProperty();
+        svRank = new SimpleIntegerProperty();
+        kRank = new SimpleIntegerProperty();
+        eraRank = new SimpleIntegerProperty();
+        whipRank = new SimpleIntegerProperty();
+        averageRank.bind(new DoubleBinding(){
+            {
+                super.bind(wRank, svRank, kRank, eraRank, whipRank);
+            }
+
+            @Override
+            protected double computeValue() {
+                return (wRank.get()+svRank.get() + kRank.get() + eraRank.get() + whipRank.get())/5;
+            }
+            
+            
+            
+        });
         
     }
     public void setInningsPitched(double ip){
@@ -177,6 +203,37 @@ import javafx.beans.property.SimpleIntegerProperty;
         return new SimpleDoubleProperty(earnedRunAverage.getValue());
     }
     
+      public int getWRank(){
+        return wRank.get();
+    }
+    public void setWRank(int i){
+        wRank.set(i);
+    }
+    public int getSVRank(){
+        return svRank.get();
+    }
+    public void setSVRank(int i){
+        svRank.set(i);
+    }
+    public int getKRank(){
+        return kRank.get();
+    }
+    public void setKRank(int i){
+        kRank.set(i);
+    }
+    public int getERARank(){
+        return eraRank.get();
+    }
+    public void setERARank(int i){
+        eraRank.set(i);
+    }
+    public int getWHIPRank(){
+        return whipRank.get();
+    }
+    public void setWHIPRank(int i){
+        whipRank.set(i);
+    }
     
-   
+    
+    
 }

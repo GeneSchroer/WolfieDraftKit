@@ -215,8 +215,14 @@ public class JsonDraftFileManager implements DraftFileManager {
         JsonArray jsonTeamsArray = json.getJsonArray(JSON_TEAMS);
         for (int i = 0; i < jsonTeamsArray.size(); i++){
             JsonObject jso = jsonTeamsArray.getJsonObject(i);
-            JsonObject pos = jso.getJsonObject(JSON_TEAM_POSITION);
-            Team t = new Team(jso.getString(JSON_TEAM_NAME), jso.getString(JSON_TEAM_OWNER), pos.getInt("C"), pos.getInt("1B"), pos.getInt("CI"), pos.getInt("3B"), pos.getInt("2B"), pos.getInt("MI"), pos.getInt("SS"), pos.getInt("OF"), pos.getInt("U"), pos.getInt("P"), jso.getInt(JSON_TAXI));
+//            JsonObject pos = jso.getJsonObject(JSON_TEAM_POSITION);
+            
+            Team t = new Team(jso.getString(JSON_TEAM_NAME), jso.getString(JSON_TEAM_OWNER));
+            ObservableList<Player> startLine = draftToLoad.getTeamPlayers(t, DraftType.STARTING);
+            ObservableList<Player> taxiSquad = draftToLoad.getTeamPlayers(t, DraftType.TAXI);
+            
+            t = new Team(jso.getString(JSON_TEAM_NAME), jso.getString(JSON_TEAM_OWNER), startLine, taxiSquad);
+//            Team t = new Team(jso.getString(JSON_TEAM_NAME), jso.getString(JSON_TEAM_OWNER), pos.getInt("C"), pos.getInt("1B"), pos.getInt("CI"), pos.getInt("3B"), pos.getInt("2B"), pos.getInt("MI"), pos.getInt("SS"), pos.getInt("OF"), pos.getInt("U"), pos.getInt("P"), jso.getInt(JSON_TAXI));
             draftToLoad.addTeam(t);
 
         }
@@ -450,7 +456,6 @@ public class JsonDraftFileManager implements DraftFileManager {
     private JsonValue makeTeamJsonObject(Team t) {
         JsonObject jso = Json.createObjectBuilder() .add(JSON_TEAM_NAME, t.getName())
                                                     .add(JSON_TEAM_OWNER, t.getOwner())
-                                                    .add(JSON_TEAM_POSITION, makeJsonTeamPositionsObject(t))
                                                     .add(JSON_TAXI, t.getTaxi())
                                                     .build();
         return jso;

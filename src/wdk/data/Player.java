@@ -7,6 +7,7 @@ package wdk.data;
 
 import java.awt.Image;
 import java.util.Comparator;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,7 +33,11 @@ public class Player implements Comparable {
     Contract contract;
     DoubleProperty salary;
     ObservableList<Position> PositionList;
+    DoubleProperty estimatedValue;
         
+    
+    
+    DoubleProperty averageRank;
     //Position positions;
     
     
@@ -63,6 +68,21 @@ public class Player implements Comparable {
        
        fantasyTeam = new SimpleStringProperty(FREE_AGENT);
        teamPosition = Position.NONE;
+       averageRank = new SimpleDoubleProperty(0);
+       estimatedValue = new SimpleDoubleProperty();
+//       estimatedValue.bind(new DoubleBinding(){
+//           
+//           {
+//               super.bind(averageRank);
+//           }
+//            @Override
+//            protected double computeValue() {
+//                return averageRank.get();
+//            }
+//        
+//    });
+       
+       
     }
     
 //    public Player(Player p){
@@ -267,6 +287,18 @@ public class Player implements Comparable {
     public void setTeamPosition(Position p){
         teamPosition = p;
     }
+    
+    
+    
+    public DoubleProperty estimatedValueProperty(){
+        return estimatedValue;
+    }
+    
+    
+    
+    
+    
+    
 //    public void addPosition(ExplicitPosition position){
 //        
 //    }
@@ -302,6 +334,16 @@ public class Player implements Comparable {
      
         
         
+    }
+    public void setEV(double d){
+        estimatedValue.set(d);
+    }
+    
+    public double getAverageRank(){
+        return averageRank.get();
+    }
+    public DoubleProperty averageRankProperty(){
+        return averageRank;
     }
 }
 

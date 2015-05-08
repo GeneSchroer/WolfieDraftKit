@@ -25,6 +25,11 @@ public class Hitter extends Player{
     IntegerProperty runsBattedIn;
     IntegerProperty stolenBases;
     DoubleBinding battingAverage;
+    private IntegerProperty rRank;
+    private IntegerProperty hrRank;
+    private IntegerProperty rbiRank;
+    private IntegerProperty sbRank;
+    private IntegerProperty baRank;
     public Hitter(){
         this(null);
         
@@ -71,6 +76,24 @@ public class Hitter extends Player{
             }
             
         }
+        rRank = new SimpleIntegerProperty();
+        hrRank= new SimpleIntegerProperty();
+        rbiRank= new SimpleIntegerProperty();
+        sbRank= new SimpleIntegerProperty();
+        baRank= new SimpleIntegerProperty();
+        averageRank.bind(new DoubleBinding(){
+            {
+                super.bind(rRank,hrRank,rbiRank,sbRank,baRank);
+            }
+
+            @Override
+            protected double computeValue() {
+                return (rRank.get() + hrRank.get() + rbiRank.get() + sbRank.get() + baRank.get())/5;
+            }
+            
+            
+        });
+        
     }
     
     public void setAtBat(int ab){
@@ -115,7 +138,7 @@ public class Hitter extends Player{
     }
     
     public IntegerProperty homeRunsProperty(){
-        return runs;
+        return homeRuns;
     }
     
     public void setRunsBattedIn(int rbi){
@@ -161,4 +184,36 @@ public class Hitter extends Player{
         qualifiedPositions.set(pos);
     }
     
-}
+    public int getRRank(){
+        return rRank.get();
+    }
+    public void setRRank(int i){
+        rRank .set(i);
+    }
+    public int getHRRank(){
+        return hrRank.get();
+    }
+    public void setHRRank(int i){
+        hrRank.set(i);
+    }
+    public int getRBIank(){
+        return rbiRank.get();
+    }
+    public void setRBIRank(int i){
+        rbiRank .set(i);
+    }
+    public int getSBRank(){
+        return sbRank.get();
+    }
+    public void setSBRank(int i){
+        sbRank.set( i);
+    }
+    public int getBARank(){
+        return baRank.get();
+    }
+    public void setBARank(int i){
+        baRank .set(i);
+    }
+    
+    
+}    

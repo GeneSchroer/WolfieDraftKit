@@ -22,12 +22,15 @@ import static wdk.WDK_StartUpConstants.FREE_AGENT;
  * @author Work
  */
 public class Team {
+    
+    private final int MAXPLAYERS = 23;
+    
     private IntegerProperty playersNeeded;
     private StringProperty name;
     private StringProperty owner;
     private ObservableList<Position> positionsList;
-    private IntegerProperty salaryLeft;
-    private DoubleProperty moneyPerPlayer;
+    private DoubleProperty salaryLeft;
+    private DoubleProperty pointsPerPlayer;
     
     private IntegerProperty totalR;
     private IntegerProperty totalHR;
@@ -36,7 +39,7 @@ public class Team {
     private IntegerProperty totalHH;
     private IntegerProperty totalAB;
     
-    private DoubleBinding totalBA;
+    private DoubleProperty totalBA;
     private IntegerProperty totalW;
     private IntegerProperty totalSV;
      private IntegerProperty totalK;
@@ -46,9 +49,8 @@ public class Team {
     private SimpleDoubleProperty totalIP;
     private SimpleIntegerProperty totalER;
     
-    private DoubleBinding totalERA;
-    private DoubleBinding totalWHIP;  
-    
+    private DoubleProperty totalERA;
+    private DoubleProperty totalWHIP;  
     
     private int catchers;
     private int outFielders;
@@ -60,22 +62,35 @@ public class Team {
     public Team(){
         name = new SimpleStringProperty();
         owner = new SimpleStringProperty();
+        salaryLeft = new SimpleDoubleProperty(260);
+         playersNeeded = new SimpleIntegerProperty(23); 
+        pointsPerPlayer = new SimpleDoubleProperty();
+        pointsPerPlayer.bind(new DoubleBinding (){
+            { super.bind(salaryLeft, playersNeeded); }
+            @Override
+            protected double computeValue() {
+                if((MAXPLAYERS - playersNeeded.getValue()) == 0)
+                    return 0;
+                else{
+                    Double ba = Double.parseDouble(new DecimalFormat("#.###").format(salaryLeft.getValue()/(double)(playersNeeded.getValue()))); 
+                    return ba;
+                }}});  
         positionsList = FXCollections.observableArrayList();
         catchers = 0;
         outFielders = 0;
         pitchers = 0;
         taxi = 0;
         
-        
+      
     totalR = new SimpleIntegerProperty(0);
     totalHR = new SimpleIntegerProperty(0);
     totalRBI = new SimpleIntegerProperty(0);
     totalSB = new SimpleIntegerProperty(0);
     
-    
     totalHH = new SimpleIntegerProperty(0);
     totalAB = new SimpleIntegerProperty(0);
-    totalBA  = new DoubleBinding(){
+    totalBA = new SimpleDoubleProperty(0);
+    totalBA.bind(new DoubleBinding(){
             { super.bind(totalHH, totalAB); }
             @Override
             protected double computeValue() {
@@ -84,7 +99,7 @@ public class Team {
                 else{
                     Double ba = Double.parseDouble(new DecimalFormat("#.###").format((double)totalHH.getValue()/(double)totalAB.getValue())); 
                     return ba;
-                }}};    
+                }}});    
     
     totalW = new SimpleIntegerProperty(0);
     totalSV = new SimpleIntegerProperty(0);
@@ -94,7 +109,9 @@ public class Team {
     totalER = new SimpleIntegerProperty(0);
     totalIP = new SimpleDoubleProperty(0);
     totalHP = new SimpleIntegerProperty(0);
-    totalERA = new DoubleBinding(){
+    
+    totalERA = new SimpleDoubleProperty(0);
+    totalERA.bind(new DoubleBinding(){
             { super.bind(totalER, totalIP); }
             @Override
             protected double computeValue() {
@@ -102,8 +119,9 @@ public class Team {
                     return 0;
                 Double era = Double.parseDouble(DecimalFormat.getInstance().format(9 * (totalER.getValue() / totalIP.getValue())));
                 return era;
-            }};
-     totalWHIP = new DoubleBinding(){
+            }});
+     totalWHIP = new SimpleDoubleProperty(0);
+     totalWHIP.bind( new DoubleBinding(){
             {
                 super.bind(totalBB, totalHH, totalIP);
             }
@@ -114,12 +132,23 @@ public class Team {
                 Double w = Double.parseDouble(DecimalFormat.getInstance().format((totalBB.getValue() + totalHP.getValue())/totalIP.getValue()));
                 return w;
             }
-        };
+        });
     }
     
     
     
-    
+    public Team(String name, String owner, ObservableList<Player> startLine, ObservableList<Player> taxiSquad){
+        this(name, owner);
+        for(int i = 0; i < startLine.size() ; ++i){
+            addStartPlayer(startLine.get(i), startLine.get(i).getTeamPosition());
+            addToTotals(startLine.get(i));
+        }
+        for(int i = 0; i < taxiSquad.size() ; ++i){
+            addTaxiPlayer(taxiSquad.get(i), taxiSquad.get(i).getTeamPosition());
+            addToTotals(taxiSquad.get(i));
+        }
+        
+    }
     
     public Team(String name, String owner, int c, int b1, int ci, int b3, int b2, int mi, int ss, int of, int u, int p, int t){
         this.name = new SimpleStringProperty(name);
@@ -149,6 +178,7 @@ public class Team {
     
     
     public Team(String name, String owner){
+        this();
         this.name.set(name);
         this.owner.set(owner);
         
@@ -219,22 +249,8 @@ public class Team {
         
     }
     
-    public void addPlayer(Player p, Position pos) throws Exception{
-        
-        
-        if(startingLineupFilled())
-            if(!taxiSquadFilled()){
-                p.setDraftType(DraftType.TAXI);
-                p.setFantasyTeam(getName());
-                p.setTeamPosition(pos);
-                p.setSalary(1);
-                ++taxi;
-            
-            }
-            else
-                throw new Exception("This position is full ");
-        else{
-            p.setFantasyTeam(getName());
+    private void addStartPlayer(Player p, Position pos){
+         p.setFantasyTeam(getName());
             p.setTeamPosition(pos);
             p.setDraftType(DraftType.STARTING);
             if(pos.equals(Position.C))
@@ -245,10 +261,31 @@ public class Team {
                 ++pitchers ;
             else
                 positionsList.add(pos);
+    }
+    private void addTaxiPlayer(Player p, Position pos){
+         p.setDraftType(DraftType.TAXI);
+                p.setFantasyTeam(getName());
+                p.setTeamPosition(pos);
+                p.setContract(Contract.X);
+                p.setSalary(1);
+                ++taxi;
+    }
+    
+    public void addPlayer(Player p, Position pos) throws Exception{
+        
+        
+        if(startingLineupFilled())
+            if(!taxiSquadFilled()){
+               addTaxiPlayer(p, pos);
+            
+            }
+            else
+                throw new Exception("This position is full ");
+        else{
+           addStartPlayer(p, pos);
         }
         
         addToTotals(p);
-       
     }
     public void removePlayer(Player p) throws Exception{
         
@@ -335,6 +372,9 @@ public class Team {
         totalSB.set(totalSB.get() + h.getStolenBases());
         totalHH.set(totalHH.get() + h.getHits());
         totalAB.set(totalAB.get() + h.getAtBat());
+                salaryLeft.set(salaryLeft.get() - h.getSalary());
+                
+
         }
         
         else if(p instanceof Pitcher){
@@ -346,8 +386,11 @@ public class Team {
             totalHP.set(totalHP.get() + pi.getHits());
             totalBB.set(totalBB.get() + pi.getBasesOnBalls());
             totalK.set(totalK.get() + pi.getStrikeouts());
+                    salaryLeft.set(salaryLeft.get() - pi.getSalary());
+
         }
-        
+        playersNeeded.set(playersNeeded.get() - 1);
+
     }
   
     private void deductFromTotals(Player p){
@@ -373,7 +416,109 @@ public class Team {
             totalBB.set(totalBB.get() - pi.getBasesOnBalls());
             totalK.set(totalK.get() - pi.getStrikeouts());
         }
+                playersNeeded.set(playersNeeded.get() + 1);
+                salaryLeft.set(salaryLeft.get() + p.getSalary());
+
+    }
+//    
+//    public double getTotalIP(){
+//        return totalIP.get();
+//    }
+    
+    public DoubleProperty totalWHIPProperty(){
+        return totalWHIP;
+    }
+    public IntegerProperty totalRProperty(){
+        return totalR;
+    }
+    public IntegerProperty totalHRProperty(){
+        return totalHR;
+    }
+    public IntegerProperty totalRBIProperty(){
+        return totalRBI;
+    }
+    public IntegerProperty totalSBProperty(){
+        return totalSB;
+    }
+    public IntegerProperty totalHHProperty(){
+        return totalHH;
+    }
+    public IntegerProperty totalABProperty(){
+        return totalAB;
+    }
+    public DoubleProperty totalBAProperty(){
+        return totalBA;
+    }
+    public IntegerProperty totalWProperty(){
+        return totalW;
+    }
+    public IntegerProperty totalSVProperty(){
+        return totalSV;
+    }
+    public IntegerProperty totalKProperty(){
+        return totalK;
+    }
+    public IntegerProperty totalHPProperty(){
+        return totalHP;
+    }
+    public DoubleProperty totalERAProperty(){
+        return new SimpleDoubleProperty(totalERA.get());
+    }
+   
+    public DoubleProperty salaryLeftProperty(){
+        return salaryLeft;
+    }
+    public DoubleProperty pointsPerPlayerProperty(){
+        return pointsPerPlayer;
+    }
+    
+    
+    public void editTeamPlayer(Player p, DraftType newDraft, double newSalary, Contract newContract, Position newPosition){
+        if(!p.getFantasyTeam().equals(name)){
+            //Do Nothing
+            
+        }
+        else{
+                if(newDraft.equals(DraftType.TAXI)){
+                    //Salary and Contract set to 1 and X
+                    salaryLeft.set(salaryLeft.get() + p.getSalary() -1);
+                    p.setDraftType(DraftType.TAXI);
+                    p.setSalary(1);
+                    p.setTeamPosition(newPosition);
+                }
+                else{
+                    salaryLeft.set(salaryLeft.get() + p.getSalary() - newSalary);
+                    p.setSalary(newSalary);
+                    p.setContract(newContract);
+                    if(p.getTeamPosition().equals(Position.C))
+                        --catchers;
+                    else if(p.getTeamPosition().equals(Position.OF))
+                        --outFielders;
+                    else if(p.getTeamPosition().equals(Position.P))
+                        --pitchers ;
+                    else
+                        positionsList.remove(p.getTeamPosition());
+                
+                    
+                    if(newPosition.equals(Position.C))
+                        ++catchers;
+                    else if(newPosition.equals(Position.OF))
+                        ++outFielders;
+                    else if(newPosition.equals(Position.P))
+                        ++pitchers ;
+                    else
+                        positionsList.add(newPosition);
+                    
+                    p.setTeamPosition(newPosition);
+                    
+
+                }
+        }
         
+        
+    }
+    public double getSalaryLeft(){
+        return salaryLeft.get();
     }
     
 }

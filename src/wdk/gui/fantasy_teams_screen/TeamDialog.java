@@ -102,16 +102,17 @@ public class TeamDialog extends Stage {
         EventHandler completeCancelHandler = (EventHandler<ActionEvent>) (ActionEvent ae) -> {
             Button sourceButton = (Button)ae.getSource();
             TeamDialog.this.selection = sourceButton.getText();
-            if(selection.equals(COMPLETE)
-                    && (teamNameTextField.getText() == null
-                        || teamOwnerTextField.getText()==null)){
+            if(selection.equals(COMPLETE)){
+                    if (teamNameTextField.getText() == null
+                        || teamOwnerTextField.getText()==null){
                 messageDialog.show("You have not filled in all the needed information");
-            }
-            else{
-                if(teamNameTextField.getText().equalsIgnoreCase(FREE_AGENT))
-                    messageDialog.show("You can not name your team Free Agent.");
-                else
-                    TeamDialog.this.hide();
+                    }
+                    else{
+                        if(teamNameTextField.getText().equalsIgnoreCase(FREE_AGENT))
+                            messageDialog.show("You can not name your team Free Agent.");
+                        else
+                            TeamDialog.this.hide();
+                    }
             }
             TeamDialog.this.hide();
         };

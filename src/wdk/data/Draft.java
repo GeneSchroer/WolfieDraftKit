@@ -6,6 +6,7 @@
 package wdk.data;
 
 import java.text.DecimalFormat;
+import java.util.Comparator;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
@@ -24,14 +25,13 @@ public class Draft {
    // private ObservableList<Log> draftLog;
     private String draftName;
     private int numTeams;
+    private int totalMoney;
     public Draft(){
         teams = FXCollections.observableArrayList();
         availablePlayers = FXCollections.observableArrayList();
         numTeams=0;
         draftName = "";
-    }
-    private void updatePoints(){
-        
+        totalMoney = 0;
     }
     public void addTeam(Team t){
         teams.add(t);
@@ -57,10 +57,11 @@ public class Draft {
     }
     public void addPlayer(Player playerToAdd){
         availablePlayers.add(playerToAdd);
-        
+        updateEV();
     }
     public Player removePlayer(Player playerToRemove){
         availablePlayers.remove(playerToRemove);
+        updateEV();
         return playerToRemove;
     }
     public void addPlayerToTeam(Player player, Team team){
@@ -118,6 +119,53 @@ public class Draft {
         }
         
         return temp;
+    }
+    
+    
+    public ObservableList<Pitcher> getAvailablePitchers(){
+        
+        ObservableList<Player> temp = FXCollections.observableArrayList(getAvailablePlayers());
+                ObservableList<Pitcher> availablePitchers = FXCollections.observableArrayList();
+
+
+         for (int i = 0; i< temp.size(); ++ i){
+            Player p = temp.get(i);
+            if (p.getFantasyTeam().equals(FREE_AGENT) && p instanceof Pitcher ){
+                availablePitchers.add((Pitcher)p);
+            }
+        }
+         return availablePitchers;
+    }
+    
+    public ObservableList<Hitter> getAvailableHitters(){
+        ObservableList<Player> temp = FXCollections.observableArrayList(getAvailablePlayers());
+                ObservableList<Hitter> availableHitters = FXCollections.observableArrayList();
+
+
+         for (int i = 0; i< temp.size(); ++ i){
+            Player p = temp.get(i);
+            if (p.getFantasyTeam().equals(FREE_AGENT) && p instanceof Hitter ){
+                availableHitters.add((Hitter)p);
+            }
+        }
+         return availableHitters;
+    }
+    
+    
+    public ObservableList<Player> getAvailablePlayers(PlayerType pT){
+        
+         ObservableList<Player> temp = FXCollections.observableArrayList(getAvailablePlayers());
+                ObservableList<Player> availablePlayers = FXCollections.observableArrayList();
+
+
+         for (int i = 0; i< temp.size(); ++ i){
+            Player p = temp.get(i);
+            if (p.getFantasyTeam().equals(FREE_AGENT) ){
+                availablePlayers.add(p);
+            }
+        }
+        
+        return availablePlayers;
     }
     
     
@@ -334,7 +382,17 @@ public class Draft {
                 }
                 return new SimpleIntegerProperty(total);
             }
-    
+
+    private void updateTotalMoney() {
+        
+           ObservableList<Team> teamList = getTeams();
+         totalMoney = 0;
+        
+       for(int i = 0; i < teamList.size() ; ++i){
+           if(teamList.get(i).getPlayersNeeded()!=0)
+              totalMoney+=teamList.get(i).getSalaryLeft();
+       }
+    }
     
     
     
@@ -356,7 +414,204 @@ public class Draft {
         
     }
     
+    public enum PlayerType{
+        HITTER,
+        PITCHER
+    }
     
+    public void updateEV(){
+        updateTotalMoney();
+        updateRank();
+        
+//        ObservableList<Hitter> hitterList = getAvailableHitters();
+//        ObservableList<Pitcher> pitcherList = getAvailablePitchers();
+        ObservableList<Player> playerList = getAvailablePlayers();
+        for(int i = 0; i< playerList.size(); ++i){
+            Player p = playerList.get(i);
+            p.setEV((totalMoney/p.getAverageRank()));
+            
+       }
+    }
     
-    
+    public void updateRank(){
+        ObservableList<Hitter> hitterList = getAvailableHitters();
+         hitterList.sort(new Comparator<Hitter>(){
+
+            @Override
+            public int compare(Hitter o1, Hitter o2) {
+                if(o1.getRuns()<o2.getRuns())
+                    return -1;
+                else if (o1.getRuns() > o2.getRuns())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< hitterList.size(); ++i){
+           Hitter h = hitterList.get(i);
+           h.setRRank(i);
+       }
+         hitterList.sort(new Comparator<Hitter>(){
+
+            @Override
+            public int compare(Hitter o1, Hitter o2) {
+                if(o1.getHomeRuns()<o2.getHomeRuns())
+                    return -1;
+                else if (o1.getHomeRuns() > o2.getHomeRuns())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< hitterList.size(); ++i){
+           Hitter h = hitterList.get(i);
+           h.setHRRank(i);
+       }
+         hitterList.sort(new Comparator<Hitter>(){
+
+            @Override
+            public int compare(Hitter o1, Hitter o2) {
+                if(o1.getRunsBattedIn()<o2.getRunsBattedIn())
+                    return -1;
+                else if (o1.getRunsBattedIn() > o2.getRunsBattedIn())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< hitterList.size(); ++i){
+           Hitter h = hitterList.get(i);
+           h.setRBIRank(i);
+       }
+         hitterList.sort(new Comparator<Hitter>(){
+
+            @Override
+            public int compare(Hitter o1, Hitter o2) {
+                if(o1.getStolenBases()<o2.getStolenBases())
+                    return -1;
+                else if (o1.getStolenBases() > o2.getStolenBases())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< hitterList.size(); ++i){
+           Hitter h = hitterList.get(i);
+           h.setSBRank(i);
+       }
+         hitterList.sort(new Comparator<Hitter>(){
+
+            @Override
+            public int compare(Hitter o1, Hitter o2) {
+                if(o1.battingAverageProperty().get()<o2.battingAverageProperty().get())
+                    return -1;
+                else if (o1.battingAverageProperty().get()> o2.battingAverageProperty().get())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< hitterList.size(); ++i){
+           Hitter h = hitterList.get(i);
+           h.setBARank(i);
+       }
+       
+       
+       
+        ObservableList<Pitcher> pitcherList = getAvailablePitchers();
+        pitcherList.sort(new Comparator<Pitcher>(){
+
+            @Override
+            public int compare(Pitcher o1, Pitcher o2) {
+                if(o1.getWins()<o2.getWins())
+                    return -1;
+                else if (o1.getWins() > o2.getWins())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< pitcherList.size(); ++i){
+           Pitcher h = pitcherList.get(i);
+           h.setWRank(i);
+       }
+        pitcherList.sort(new Comparator<Pitcher>(){
+
+            @Override
+            public int compare(Pitcher o1, Pitcher o2) {
+                if(o1.getSaves()<o2.getSaves())
+                    return -1;
+                else if (o1.getWins() > o2.getWins())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< pitcherList.size(); ++i){
+           Pitcher h = pitcherList.get(i);
+           h.setSVRank(i);
+       }
+        pitcherList.sort(new Comparator<Pitcher>(){
+
+            @Override
+            public int compare(Pitcher o1, Pitcher o2) {
+                if(o1.getStrikeouts()<o2.getStrikeouts())
+                    return -1;
+                else if (o1.getStrikeouts() > o2.getStrikeouts())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< pitcherList.size(); ++i){
+           Pitcher h = pitcherList.get(i);
+           h.setKRank(i);
+       }
+        pitcherList.sort(new Comparator<Pitcher>(){
+
+            @Override
+            public int compare(Pitcher o1, Pitcher o2) {
+                if(o1.estimatedValueProperty().get()<o2.estimatedValueProperty().get())
+                    return -1;
+                else if (o1.estimatedValueProperty().get() > o2.estimatedValueProperty().get())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< pitcherList.size(); ++i){
+           Pitcher h = pitcherList.get(i);
+           h.setERARank(i);
+       }
+        pitcherList.sort(new Comparator<Pitcher>(){
+
+            @Override
+            public int compare(Pitcher o1, Pitcher o2) {
+                if(o1.whipProperty().get()<o2.whipProperty().get())
+                    return -1;
+                else if (o1.whipProperty().get()> o2.whipProperty().get())
+                    return 1;
+                else
+                    return 0;
+            }
+         });
+       for(int i = 0; i< pitcherList.size(); ++i){
+           Pitcher h = pitcherList.get(i);
+           h.setWHIPRank(i);
+       }
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+    }
 }
