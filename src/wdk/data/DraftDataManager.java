@@ -45,7 +45,7 @@ public class DraftDataManager {
         view = initView;
         this.startingDraft = startingDraft;
         draft = new Draft();
-        draft.setAvailablePlayers(startingDraft.getAllPlayers());
+        draft.setPlayers(startingDraft.getAllPlayers());
     }
     
     public Draft getDraft(){
@@ -68,7 +68,7 @@ public class DraftDataManager {
         JsonDraftFileManager temp = JsonDraftFileManager.getPropertiesManager();
         startingDraft = temp.loadStartingDraft(filePathList);
         
-        draft.setAvailablePlayers(startingDraft.getAllPlayers());
+        draft.setPlayers(startingDraft.getAllPlayers());
 
         
         view.reloadDraft(draft);

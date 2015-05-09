@@ -55,7 +55,7 @@ public class Team {
     private int catchers;
     private int outFielders;
     private int pitchers;
-    private int taxi;
+    private int taxiNeeded;
     private SimpleIntegerProperty totalBB;
     private SimpleDoubleProperty totalPoints;
    
@@ -70,7 +70,8 @@ public class Team {
             { super.bind(salaryLeft, playersNeeded); }
             @Override
             protected double computeValue() {
-                if((MAXPLAYERS - playersNeeded.getValue()) == 0)
+                
+                if((playersNeeded.getValue()) <= 0)
                     return 0;
                 else{
                     Double ba = Double.parseDouble(new DecimalFormat("#.###").format(salaryLeft.getValue()/(double)(playersNeeded.getValue()))); 
@@ -80,7 +81,7 @@ public class Team {
         catchers = 0;
         outFielders = 0;
         pitchers = 0;
-        taxi = 0;
+        taxiNeeded = 8;
         totalPoints = new SimpleDoubleProperty();
       
     totalR = new SimpleIntegerProperty(0);
@@ -159,7 +160,7 @@ public class Team {
     }
     
     public boolean taxiSquadFilled(){
-        return taxi == 11;
+        return taxiNeeded == 0;
     }
     public boolean pitchersFilled(){
         return pitchers  == 9;
@@ -240,7 +241,7 @@ public class Team {
                 p.setTeamPosition(pos);
                 p.setContract(Contract.X);
                 p.setSalary(1);
-                ++taxi;
+                --taxiNeeded;
     }
     
     public void addPlayer(Player p, Position pos) throws Exception{
@@ -262,7 +263,7 @@ public class Team {
     public void removePlayer(Player p) throws Exception{
         
             if(p.getDraftType().equals(DraftType.TAXI)){
-                --taxi;
+                ++taxiNeeded;
                 p.setFantasyTeam(FREE_AGENT);
                 p.setDraftType(DraftType.NONE);
                 p.setTeamPosition(Position.NONE);
@@ -322,7 +323,7 @@ public class Team {
     
     
     public int getTaxi(){
-        return taxi;
+        return taxiNeeded;
     }
     @Override
     public String toString(){
@@ -354,9 +355,10 @@ public class Team {
             totalK.set(totalK.get() + pi.getStrikeouts());
 
         }
-        playersNeeded.set(playersNeeded.get() - 1);
-        salaryLeft.set(salaryLeft.get() - p.getSalary());
-
+        if(p.getDraftType().equals(DraftType.STARTING)){
+            playersNeeded.set(playersNeeded.get() - 1);
+            salaryLeft.set(salaryLeft.get() - p.getSalary());
+        }
     }
   
     private void deductFromTotals(Player p){
@@ -382,8 +384,10 @@ public class Team {
             totalBB.set(totalBB.get() - pi.getBasesOnBalls());
             totalK.set(totalK.get() - pi.getStrikeouts());
         }
-                playersNeeded.set(playersNeeded.get() + 1);
-                salaryLeft.set(salaryLeft.get() + p.getSalary());
+        if(p.getDraftType().equals(DraftType.STARTING)){
+            playersNeeded.set(playersNeeded.get() - 1);
+            salaryLeft.set(salaryLeft.get() - p.getSalary());
+        }
 
     }
 
@@ -434,17 +438,13 @@ public class Team {
     public DoubleProperty pointsPerPlayerProperty(){
         return pointsPerPlayer;
     }
-    public void editTeamPlayer(Player p, DraftType newDraft, double newSalary, Contract newContract, Position newPosition){
+    public void editTeamPlayer(Player p, double newSalary, Contract newContract, Position newPosition){
         if(!p.getFantasyTeam().equals(name)){
             //Do Nothing
         }
         else{
-                if(newDraft.equals(DraftType.TAXI)){
-                    //Salary and Contract set to 1 and X
-                    salaryLeft.set(salaryLeft.get() + p.getSalary() -1);
-                    p.setDraftType(DraftType.TAXI);
-                    p.setSalary(1);
-                    p.setTeamPosition(newPosition);
+                if(p.getDraftType().equals(DraftType.TAXI)){
+                    //Do nothing
                 }
                 else{
                     salaryLeft.set(salaryLeft.get() + p.getSalary() - newSalary);

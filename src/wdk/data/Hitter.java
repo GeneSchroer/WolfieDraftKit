@@ -81,6 +81,7 @@ public class Hitter extends Player{
             protected double computeValue() {
                 return (double)(rRank.get() + hrRank.get() + rbiRank.get() + sbRank.get() + baRank.get())/5;
             }});
+        
     }
     
     public void setAtBat(int ab){ atBat.set(ab);}

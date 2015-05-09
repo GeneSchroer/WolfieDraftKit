@@ -54,6 +54,12 @@ public class Draft {
         --numTeams;
         updateEV();
     }
+    
+    public void addNewPlayer(Player playerToAdd){
+                allPlayers.add(playerToAdd);
+
+    }
+    
     public void addFreePlayer(Player playerToAdd){
         allPlayers.add(playerToAdd);
         playerToAdd.setFantasyTeam(FREE_AGENT);
@@ -71,7 +77,7 @@ public class Draft {
     
     public void editTeamPlayer(Player p, Team team, DraftType newDraft, double newSalary, Contract newContract, Position newPosition)
         {
-            team.editTeamPlayer(p, newDraft, newSalary, newContract, newPosition);
+            team.editTeamPlayer(p, newSalary, newContract, newPosition);
             updateEV();
         }
     
@@ -189,6 +195,11 @@ public class Draft {
               totalMoney+=teamList.get(i).getSalaryLeft();
        }
     }
+
+    public void setPlayers(ObservableList<Player> allPlayers) {
+        this.allPlayers.clear();
+                this.allPlayers.setAll(allPlayers); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public enum Stat{
         R,
@@ -264,6 +275,14 @@ public class Draft {
            Hitter h = hitterList.get(i);
            h.setRBIRank(i);
        }
+       
+       
+       
+       
+       
+       
+       
+       
          hitterList.sort(new Comparator<Hitter>(){
 
             @Override
@@ -273,6 +292,22 @@ public class Draft {
                 return -(i1.compareTo(i2)); 
             }
          });
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
        for(int i = 0; i< hitterList.size(); ++i){
            Hitter h = hitterList.get(i);
            h.setSBRank(i);
@@ -294,6 +329,7 @@ public class Draft {
        
        
         ObservableList<Pitcher> pitcherList = getAvailablePitchers();
+        System.out.print(pitcherList.size());
         pitcherList.sort(new Comparator<Pitcher>(){
 
             @Override
@@ -411,7 +447,7 @@ public class Draft {
 
                         if(teams.get(i) != currentTeam){
     //
-                        int theirR      = teams.get(i).totalRProperty().get();
+                    int theirR      = teams.get(i).totalRProperty().get();
                     int theirHR     = teams.get(i).totalHRProperty().get();
                     int theirRBI    = teams.get(i).totalRBIProperty().get();
                     int theirSB     = teams.get(i).totalSBProperty().get();
@@ -446,11 +482,11 @@ public class Draft {
                         --pointsFromSV;
                     else if(theirSV == yourSV)
                         ++equalSV;
-                    if(theirERA>yourERA)
+                    if(theirERA<yourERA)
                         --pointsFromERA;
                     else if(theirERA == yourERA)
                         ++equalERA;
-                    if(theirWHIP>yourWHIP)
+                    if(theirWHIP<yourWHIP)
                         --pointsFromWHIP;
                     else if(theirWHIP == yourWHIP)
                         ++equalWHIP;
@@ -479,8 +515,7 @@ public class Draft {
                 //Buckle up kids!
                  
     }
-}
-    
+}    
     
     
     

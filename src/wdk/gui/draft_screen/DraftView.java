@@ -111,7 +111,7 @@ public class DraftView implements MenuView {
             }
         });
         startAutomatedDraftButton.setOnAction(e->{
-            draftController.handleStartAutomatedDraftRequest(this);
+            draftController.handleStartAutomatedDraftRequest(this.gui);
         });
         pauseAutomatedDraftButton.setOnAction(e->{
             draftController.handlepauseAutomatedDraftRequest(this);

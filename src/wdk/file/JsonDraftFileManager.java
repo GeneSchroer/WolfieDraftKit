@@ -98,6 +98,7 @@ public class JsonDraftFileManager implements DraftFileManager {
      private String JSON_SALARY = "Salary";
     private String JSON_TAXI = "Taxi";
     private String JSON_DRAFT_NAME = "Draft";
+    private String JSON_EV = "EV";
     
     
     @Override
@@ -155,6 +156,7 @@ public class JsonDraftFileManager implements DraftFileManager {
             player.setDraftType(DraftType.parse(jso.getString(JSON_DRAFT_TYPE)));
             player.setContract(jso.getString(JSON_CONTRACT));
             player.setSalary(jso.getJsonNumber(JSON_SALARY).doubleValue());
+            player.setEV(jso.getJsonNumber(JSON_EV).doubleValue());
             String qp = jso.getString(JSON_QP);
             
             
@@ -169,7 +171,7 @@ public class JsonDraftFileManager implements DraftFileManager {
                 pitcher.setHits(jso.getInt(JSON_H));
                 pitcher.setBasesOnBalls(jso.getInt(JSON_BB));
                 pitcher.setStrikeouts(jso.getInt(JSON_K));
-                draftToLoad.addFreePlayer(pitcher);
+                draftToLoad.addNewPlayer(pitcher);
             }
             else{
                 Hitter hitter = new Hitter(player);
@@ -207,7 +209,7 @@ public class JsonDraftFileManager implements DraftFileManager {
                 hitter.setHomeRuns(jso.getInt(JSON_HR));
                 hitter.setRunsBattedIn(jso.getInt(JSON_RBI));
                 hitter.setStolenBases(jso.getInt(JSON_SB));
-                draftToLoad.addFreePlayer(hitter);
+                draftToLoad.addNewPlayer(hitter);
             }
             
         }
@@ -222,7 +224,6 @@ public class JsonDraftFileManager implements DraftFileManager {
             ObservableList<Player> taxiSquad = draftToLoad.getTeamPlayers(t, DraftType.TAXI);
             
             t = new Team(jso.getString(JSON_TEAM_NAME), jso.getString(JSON_TEAM_OWNER), startLine, taxiSquad);
-//            Team t = new Team(jso.getString(JSON_TEAM_NAME), jso.getString(JSON_TEAM_OWNER), pos.getInt("C"), pos.getInt("1B"), pos.getInt("CI"), pos.getInt("3B"), pos.getInt("2B"), pos.getInt("MI"), pos.getInt("SS"), pos.getInt("OF"), pos.getInt("U"), pos.getInt("P"), jso.getInt(JSON_TAXI));
             draftToLoad.addTeam(t);
 
         }
@@ -411,6 +412,8 @@ public class JsonDraftFileManager implements DraftFileManager {
                                                     .add(JSON_DRAFT_TYPE, hitter.getDraftType().toString())
                                                     .add(JSON_CONTRACT, hitter.getContract().toString())
                                                     .add(JSON_SALARY, hitter.getSalary())
+                                                    .add(JSON_EV, hitter.getEV())
+                     
                                                     .build();
         }
         else{
@@ -434,6 +437,8 @@ public class JsonDraftFileManager implements DraftFileManager {
                                                     .add(JSON_DRAFT_TYPE, pitcher.getDraftType().toString())
                                                     .add(JSON_CONTRACT, pitcher.getContract().toString())
                                                     .add(JSON_SALARY, pitcher.getSalary())
+                                                                        .add(JSON_EV, pitcher.getEV())
+
                                                     .build();
         }
      

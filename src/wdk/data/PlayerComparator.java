@@ -20,7 +20,8 @@ public class PlayerComparator implements Comparator<Player>{
                 String n2 = p2.getLastName();
                 if (n1.compareTo(n2) < 0)
                     return -1;
-                else                 if (n1.compareTo(n2) > 0)
+                else                 
+                    if (n1.compareTo(n2) > 0)
                       return 1;
                 else{
                     n1 = p1.getFirstName();

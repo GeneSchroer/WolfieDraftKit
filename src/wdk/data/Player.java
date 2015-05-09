@@ -6,14 +6,15 @@
 package wdk.data;
 
 import java.awt.Image;
+import java.text.DecimalFormat;
 import java.util.Comparator;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import static wdk.WDK_StartUpConstants.FREE_AGENT;
 
 /**
  *
@@ -56,7 +57,6 @@ public class Player implements Comparable {
         yearOfBirth         = new SimpleStringProperty();
         nationOfBirth       = new SimpleStringProperty();
         fantasyTeam         = new SimpleStringProperty();
-        fullName = "";
         
        PositionList = FXCollections.observableArrayList();
        
@@ -65,10 +65,20 @@ public class Player implements Comparable {
        contract = Contract.NONE;
        salary = new SimpleDoubleProperty(0);
        
-       fantasyTeam = new SimpleStringProperty(FREE_AGENT);
+       fantasyTeam = new SimpleStringProperty();
        teamPosition = Position.NONE;
        averageRank = new SimpleDoubleProperty(0);
        estimatedValue = new SimpleDoubleProperty();
+//       estimatedValue.bind(new DoubleBinding(){
+//
+//            @Override
+//            protected double computeValue() {
+//                Double ba = Double.parseDouble(new DecimalFormat("#.###").format(estimatedValue.get())); 
+//                return ba;
+//            }
+//           
+//       });
+      
        
         firstName           = new SimpleStringProperty();
         qualifiedPositions  = new SimpleStringProperty();
@@ -76,7 +86,6 @@ public class Player implements Comparable {
         yearOfBirth         = new SimpleStringProperty();
         nationOfBirth       = new SimpleStringProperty();
         fantasyTeam         = new SimpleStringProperty();
-        fullName = "";
     }
     
 //    public Player(Player p){
@@ -330,7 +339,9 @@ public class Player implements Comparable {
         
     }
     public void setEV(double d){
-        estimatedValue.set(d);
+                        Double ba = Double.parseDouble(new DecimalFormat("#.###").format(d)); 
+
+        estimatedValue.set(ba);
     }
     
     public double getAverageRank(){

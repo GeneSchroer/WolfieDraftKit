@@ -47,7 +47,7 @@ class DraftTable {
         salaryColumn                = new TableColumn("Salary");
         
         
-        pickNumberColumn.setCellValueFactory(new PropertyValueFactory<Player, String>(""));
+        pickNumberColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("pick"));
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("firstName"));
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("lastName"));
         teamColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("fantasyTeam")); 

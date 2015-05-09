@@ -18,7 +18,7 @@ public class DraftScreen implements MenuScreen{
     DraftController draftController;
 
     public DraftScreen(WDK_GUI gui){
-        draftController = new DraftController(gui.getDataManager().getDraft());
+        draftController = new DraftController(gui.getDataManager().getDraft(), gui);
         draftView = new DraftView(draftController, gui);
     }
     public void initGUI(){
